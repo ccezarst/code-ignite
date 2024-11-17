@@ -52,7 +52,7 @@ class CompleteDrive: OpMode() {
 
         //TODO Adjust these variables according to the needs
 
-        var DUMP_TIME_LOW = 0.1
+        var DUMP_TIME_LOW = 0.2
         var DUMP_TIME_UP = 0.2
         var DUMP_TIME_MEDIUM = 0.9
 
