@@ -16,11 +16,17 @@ class Test2Servo: LinearOpMode() {
         val hwMap = hardwareMap
         var servoUnit = 0.005
 
-        val servoTest = hwMap.servo["outtakeTest1"] ?: throw Exception("Failed to find servo outtakeTest1")
-        val servoTest2 = hwMap.servo["outtakeTest2"] ?: throw Exception("Failed to find servo outtakeTest2")
+        val servoRotR = hwMap.servo["servoRotatieR"] ?: throw Exception("Failed to find servo outtakeTest1")
+        val servoRotL = hwMap.servo["servoRotatieL"] ?: throw Exception("Failed to find servo outtakeTest2")
+        val servoDifR = hwMap.servo["servoDiferentialR"]
+        val servoDifl = hwMap.servo["servoDiferentialL"]
+
         // 0.7 start
-          servoTest.position = 0.735 // 0.645
-          servoTest2.position =0.204
+          servoRotR.position = 0.4358 // 0.645
+          servoRotL.position =0.4378
+
+        servoDifR.position = 0.535
+        servoDifl.position = 0.575
         waitForStart()
         runtime.reset()
 
@@ -33,37 +39,50 @@ class Test2Servo: LinearOpMode() {
 
             if(gp1.checkToggle(Gamepad.Button.DPAD_UP))
             {
-                servoTest.position += servoUnit
-                servoTest2.position -=servoUnit
+                servoDifR.position += servoUnit
+                servoDifl.position -=servoUnit
             }
             if(gp1.checkToggle(Gamepad.Button.DPAD_DOWN))
             {
-                servoTest.position -= servoUnit
-                servoTest2.position +=servoUnit
+                servoDifR.position -= servoUnit
+                servoDifl.position +=servoUnit
             }
 
-                if(gp1.checkToggle(Gamepad.Button.DPAD_LEFT))
+            if(gp1.checkToggle(Gamepad.Button.DPAD_LEFT))
                 {
-                    servoTest.position -= servoUnit
-                    servoTest2.position -=servoUnit
+                    servoDifR.position -= servoUnit
+                    servoDifl.position -=servoUnit
                 }
             if(gp1.checkToggle(Gamepad.Button.DPAD_RIGHT))
             {
-                servoTest.position += servoUnit
-                servoTest2.position +=servoUnit
+                servoDifR.position += servoUnit
+                servoDifl.position +=servoUnit
+            }
+
+            if(gp1.checkToggle(Gamepad.Button.X)) {
+                servoRotR.position += servoUnit
+                servoRotL.position -=servoUnit
+            }
+            if(gp1.checkToggle(Gamepad.Button.Y)) {
+                servoRotR.position -= servoUnit
+                servoRotL.position +=servoUnit
             }
 
             if (gp1.checkToggle(Gamepad.Button.B)){
-                servoUnit +=0.001
+                servoRotL.position = 0.3928
+                servoRotR.position = 0.4806
             }
             if (gp1.checkToggle(Gamepad.Button.A)){
-                servoUnit -=0.001
+                servoRotL.position = 0.4378
+                servoRotR.position = 0.4358
             }
 
 
 
-            telemetry.addData("Status(servo 1): ", servoTest.position)
-            telemetry.addData("Status(servo 2): ", servoTest2.position)
+            telemetry.addData("Status(servoDifR ): ", servoDifR.position)
+            telemetry.addData("Status(servoDifL): ", servoDifl.position)
+            telemetry.addData("Status(servoRotR ): ", servoRotR.position)
+            telemetry.addData("Status(servoRotL): ", servoRotL.position)
 
             telemetry.update()
         }

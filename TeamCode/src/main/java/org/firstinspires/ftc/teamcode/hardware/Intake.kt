@@ -18,176 +18,222 @@ import com.qualcomm.robotcore.hardware.DistanceSensor
 
 
 /**
- * intake subsystem.
+ * OutTake subsystem.
  *
  * This class controls the hardware for placing freight
  */
 
 class Intake(hwMap: HardwareMap) {
     companion object {
-        //SERVOS
-        const val intakeClawOpenPosition = 0.80
-        const val intakeClawHoldPosition = 0.30
+        /***Pozitii de tranzitie***/
+        const val servoRotatieL_up = 0.4378
+        const val servoRotatieR_up = 0.4358
+        const val servoDifR_up = 0.54
+        const val servoDifL_up = 0.32
+
+
+        /***Pozitie cu care tii intake-ul putin deasupra sample-ului, urmand sa il lasi jso cu poz de luat***/
+        const val servoRotatieL_toggle = 0.4028
+        const val servoRotatieR_toggle = 0.4706
+        const val servoDifR_toggle = 0.41
+        const val servoDifL_toggle = 0.45
+
+
+        /***Pozitii de luat***/
+        const val servoRotatieL_down = 0.3858
+        const val servoRotatieR_down = 0.4856
+
+        /*** Poz cleste ***/
+        const val cleste_open = 0.5
+        const val cleste_closed = 0.0
+
 
 
     }
-    var isOpen:Boolean = false
-    //val touchSensor = hwMap.get(RevTouchSensor::class.java,"touchSensor") ?: throw Exception("Failed to find RevTouchSensor touchSensor")
+    private val motorIntakeR = hwMap.dcMotor["motorIntakeR"]
+        ?: throw Exception("Failed to find motor motorIntakeR")
 
-    var intakePosition: Int = 0
-    private val motor1 = hwMap.dcMotor["intakeRight"]
-    private val motor2 = hwMap.dcMotor["intakeLeft"]
-
-
-    private val servoHang = hwMap.servo["outtakeTest"]
+    private val motorIntakeL = hwMap.dcMotor["motorIntakeL"]
+        ?: throw Exception("Failed to find motor motorIntakeL")
 
 
+    private val servoRotatieR = hwMap.servo["servoRotatieR"]
+        ?: throw Exception("Failed to find servo servoRotatieR")
 
-    //servos
-    private val intakeSliderServoRight = hwMap.servo["intakeSliderServoRight"] ?: throw Exception("Failed to find servo intakeSliderServoRight")
-    private val intakeSliderServoLeft = hwMap.servo["intakeSliderServoLeft"] ?: throw Exception("Failed to find servo intakeSliderServoLeft")
-    private val intakeDifServoRight = hwMap.servo["intakeDifServoRight"] ?: throw Exception("Failed to find servo intakeSliderServoRight")
-    private val intakeDifServoLeft = hwMap.servo["intakeDifServoLeft"] ?: throw Exception("Failed to find servo intakeSliderServoLeft")
-    //private val intakeServoClaw = hwMap.servo["intakeServoClaw"] ?: throw Exception("Failed to find servo intakeServoClaw")
+    private val servoRotatieL = hwMap.servo["servoRotatieL"]
+        ?: throw Exception("Failed to find servo servoRotatieL")
 
+    private val servoDiferentialR = hwMap.servo["servoDiferentialR "]
+        ?: throw Exception("Failed to find servo servoDiferentialR ")
+
+    private val servoDiferentialL = hwMap.servo["servoDiferentialL "]
+        ?: throw Exception("Failed to find servo servoDiferentialL ")
+
+    /*** PT diferential, setezi pozitia de start ale servo-urilor ca pozitia la care ar lua, si doar prima data :
+     * rotesti clestele ( cresti un sevrvo,scazi altul) si apoi dai peste cap ; pt intoarcere faci pasul invers;
+     * te folosesti de adunare/scadere, nu de poz
+     */
+
+    private val servoIntakeCleste = hwMap.servo["servoIntakeCleste "]
+        ?: throw Exception("Failed to find servo servoIntakeCleste ")
+
+
+
+
+
+    var isOpen:Boolean = true
+    var eSus:Boolean =true
     init {
+        motorIntakeL.zeroPowerBehavior=DcMotor.ZeroPowerBehavior.FLOAT
+        motorIntakeL.mode=DcMotor.RunMode.RUN_USING_ENCODER
+        motorIntakeL.mode=DcMotor.RunMode.STOP_AND_RESET_ENCODER
+        motorIntakeL.direction=DcMotorSimple.Direction.FORWARD // de schimbat in REVERSE daca e gresta directia
+        motorIntakeL.power=0.0
 
 
-        motor1.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
-        motor1.mode = DcMotor.RunMode.RUN_USING_ENCODER
-        motor1.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-        motor1.direction = DcMotorSimple.Direction.REVERSE
-        motor1.power = 0.0
+        motorIntakeR.zeroPowerBehavior=DcMotor.ZeroPowerBehavior.FLOAT
+        motorIntakeR.mode=DcMotor.RunMode.RUN_USING_ENCODER
+        motorIntakeR.mode=DcMotor.RunMode.STOP_AND_RESET_ENCODER
+        motorIntakeR.direction=DcMotorSimple.Direction.REVERSE // de schimbat in FORWARD daca e gresta directia
+        motorIntakeR.power=0.0
 
-        motor2.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
-        motor2.mode = DcMotor.RunMode.RUN_USING_ENCODER
-        motor2.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-        motor2.direction = DcMotorSimple.Direction.FORWARD
-        motor2.power = 0.0
 
-        //servo
-        intakeSliderServoRight.position = 0.52
-        intakeSliderServoLeft.position = 0.48
-        intakeDifServoRight.position = 0.18
-        intakeDifServoLeft.position = 0.73
-    }
+        //servos
+        servoRotatieL.position = servoRotatieL_toggle
+        servoRotatieR.position = servoRotatieR_toggle
 
-    fun extendSlider(){
-        intakePosition += 50
-        motor1.targetPosition = intakePosition
-        motor1.mode = DcMotor.RunMode.RUN_TO_POSITION
-        motor1.power = 0.8
+        servoDiferentialL.position = servoDifL_toggle
+        servoDiferentialR.position = servoDifR_toggle
 
-        motor2.targetPosition = intakePosition
-        motor2.mode = DcMotor.RunMode.RUN_TO_POSITION
-        motor2.power = 0.8
-    }
-
-    fun openSlider() {
-
-        intakePosition =  550
-        motor1.targetPosition = intakePosition
-        motor1.mode = DcMotor.RunMode.RUN_TO_POSITION
-        motor1.power = 0.8
-
-        motor2.targetPosition = intakePosition
-        motor2.mode = DcMotor.RunMode.RUN_TO_POSITION
-        motor2.power = 0.8
-    }
-    fun RetractSlider(){
-            intakePosition -= 50
-            motor1.targetPosition = intakePosition
-            motor1.mode = DcMotor.RunMode.RUN_TO_POSITION
-            motor1.power = 1.0
-
-            motor2.targetPosition = intakePosition
-            motor2.mode = DcMotor.RunMode.RUN_TO_POSITION
-            motor2.power = 1.0
+        servoIntakeCleste.position = cleste_open
 
     }
-
-
-    fun closeSlider() {
-
-        intakePosition = 0
-        motor1.targetPosition = intakePosition
-        motor1.mode = DcMotor.RunMode.RUN_TO_POSITION
-        motor1.power = 1.0
-
-        intakePosition = 0
-        motor2.targetPosition = intakePosition
-        motor2.mode = DcMotor.RunMode.RUN_TO_POSITION
-        motor2.power = 1.0
-    }
-
-
-    fun increaseSliderServo(){
-        intakeSliderServoRight.position += 0.005
-        intakeSliderServoLeft.position -= 0.005
-    }
-
-    fun decreaseSliderServo(){
-        intakeSliderServoRight.position -= 0.005
-        intakeSliderServoLeft.position += 0.005
-    }
-
-    fun rotateDif(direction: Boolean){
-        if (direction){
-            intakeDifServoRight.position += 0.005
-            intakeDifServoLeft.position += 0.005
-        }else{
-            intakeDifServoRight.position -= 0.005
-            intakeDifServoLeft.position -= 0.005
-        }
-    }
-
-    fun difUp(){
-        intakeDifServoRight.position += 0.005
-        intakeDifServoLeft.position -= 0.005
-    }
-
-    fun difDown(){
-        intakeDifServoRight.position -= 0.005
-        intakeDifServoLeft.position += 0.005
-    }
-
-    fun pos(telemetry: Telemetry)
+    /*** de modificat pozitiile de target ***/
+    /*** COD GLISIERA ***/
+    fun openSlider()
     {
-        telemetry.addData("SliderRight:",intakeSliderServoRight.position)
-        telemetry.addData("SliderLeft",intakeSliderServoLeft.position)
-        telemetry.addData("DifRight",intakeDifServoRight.position)
-        telemetry.addData("DifLeft",intakeDifServoLeft.position)
-        telemetry.addData("Motor1:",motor1.currentPosition)
-        telemetry.addData("Motor2:",motor2.currentPosition)
-        telemetry.update()
+        motorIntakeL.targetPosition = 600
+        motorIntakeL.mode=DcMotor.RunMode.RUN_TO_POSITION
+        motorIntakeL.power=1.0
+
+        motorIntakeL.targetPosition = 600
+        motorIntakeL.mode=DcMotor.RunMode.RUN_TO_POSITION
+        motorIntakeL.power=1.0
 
     }
-   /* fun releaseIntakePixel() {
+
+    fun midSlider()
+    {
+        motorIntakeL.targetPosition = 400
+        motorIntakeL.mode=DcMotor.RunMode.RUN_TO_POSITION
+        motorIntakeL.power=1.0
+
+        motorIntakeL.targetPosition = 400
+        motorIntakeL.mode=DcMotor.RunMode.RUN_TO_POSITION
+        motorIntakeL.power=1.0
+
+    }
+
+    fun lowSlider()
+    {
+        motorIntakeL.targetPosition = 200
+        motorIntakeL.mode=DcMotor.RunMode.RUN_TO_POSITION
+        motorIntakeL.power=1.0
+
+        motorIntakeL.targetPosition = 200
+        motorIntakeL.mode=DcMotor.RunMode.RUN_TO_POSITION
+        motorIntakeL.power=1.0
+
+    }
+
+    fun closeSlider()
+    {
+        motorIntakeL.targetPosition = 0
+        motorIntakeL.mode=DcMotor.RunMode.RUN_TO_POSITION
+        motorIntakeL.power=1.0
+
+        motorIntakeL.targetPosition = 0
+        motorIntakeL.mode=DcMotor.RunMode.RUN_TO_POSITION
+        motorIntakeL.power=1.0
+
+    }
+
+
+    /*** COD SERVO ***/
+    fun releaseIntakeSample() {
         isOpen = true
-        intakeServoClaw.position = intakeClawOpenPosition
+        servoIntakeCleste.position = cleste_open
     }
 
-    fun holdIntakePixel() {
+    fun holdIntakeSample() {
         isOpen = false
-        intakeServoClaw.position = intakeClawHoldPosition
+        servoIntakeCleste.position = cleste_closed
     }
 
-    fun toggleIntakePixel() {
+    fun toggleIntakeSample() {
         if (isOpen) {
-            holdIntakePixel()
+            holdIntakeSample()
         } else {
-            releaseIntakePixel()
+            releaseIntakeSample()
         }
     }
-    */
 
 
+    /*** de adaugat poz pt diferential***/
+    fun pozTranzitie()
+    {
+        servoRotatieL.position= servoRotatieL_up
+        servoRotatieR.position= servoRotatieR_up
+        servoDiferentialL.position = servoDifL_up
+        servoDiferentialR.position = servoDifR_up
+    }
+    fun pozDeasupraSample()
+    {
+        servoRotatieL.position= servoRotatieL_toggle
+        servoRotatieR.position= servoRotatieR_toggle
+        servoDiferentialL.position = servoDifL_toggle
+        servoDiferentialR.position = servoDifR_toggle
+    }
+    fun pozLuat()
+    {
+        servoRotatieL.position= servoRotatieL_down
+        servoRotatieR.position= servoRotatieR_down
+    }
 
+    fun deasupraSample() {
+        eSus = true
+        pozDeasupraSample()
+    }
 
+    fun luatSample() {
+        eSus= false
+        pozLuat()
+    }
 
+    fun toggleSample() {
+        if (eSus) {
+            luatSample()
+        } else {
+            deasupraSample()
+        }
+    }
 
-
-
+    fun showPositions(telemetry: Telemetry) {
+        telemetry.addData("IntakeMotorRight:",motorIntakeR.currentPosition,)
+        telemetry.addLine()
+        telemetry.addData("IntakeMotorLeft:",motorIntakeL.currentPosition)
+        telemetry.addLine()
+        telemetry.addData("ServoRotR:",servoRotatieR.position)
+        telemetry.addLine()
+        telemetry.addData("ServoRotL:",servoRotatieL.position)
+        telemetry.addLine()
+        telemetry.addData("ServoDifR:",servoDiferentialR.position)
+        telemetry.addLine()
+        telemetry.addData("ServoDifL:",servoDiferentialL.position)
+        telemetry.addLine()
+        telemetry.addData("ServoCleste:",servoIntakeCleste.position)
+        telemetry.update()
+    }
 
 
 
