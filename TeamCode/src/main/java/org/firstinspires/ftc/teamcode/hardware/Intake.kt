@@ -97,7 +97,6 @@ class Intake(hwMap: HardwareMap) {
         motorIntakeR.direction=DcMotorSimple.Direction.REVERSE // de schimbat in FORWARD daca e gresta directia
         motorIntakeR.power=0.0
 
-
         //servos
         servoRotatieL.position = servoRotatieL_toggle
         servoRotatieR.position = servoRotatieR_toggle
@@ -112,9 +111,9 @@ class Intake(hwMap: HardwareMap) {
     /*** COD GLISIERA ***/
     fun openSlider()
     {
-        motorIntakeL.targetPosition = 600
-        motorIntakeL.mode=DcMotor.RunMode.RUN_TO_POSITION
-        motorIntakeL.power=1.0
+        motorIntakeR.targetPosition = 600
+        motorIntakeR.mode=DcMotor.RunMode.RUN_TO_POSITION
+        motorIntakeR.power=1.0
 
         motorIntakeL.targetPosition = 600
         motorIntakeL.mode=DcMotor.RunMode.RUN_TO_POSITION
@@ -124,9 +123,9 @@ class Intake(hwMap: HardwareMap) {
 
     fun midSlider()
     {
-        motorIntakeL.targetPosition = 400
-        motorIntakeL.mode=DcMotor.RunMode.RUN_TO_POSITION
-        motorIntakeL.power=1.0
+        motorIntakeR.targetPosition = 400
+        motorIntakeR.mode=DcMotor.RunMode.RUN_TO_POSITION
+        motorIntakeR.power=1.0
 
         motorIntakeL.targetPosition = 400
         motorIntakeL.mode=DcMotor.RunMode.RUN_TO_POSITION
@@ -136,9 +135,9 @@ class Intake(hwMap: HardwareMap) {
 
     fun lowSlider()
     {
-        motorIntakeL.targetPosition = 200
-        motorIntakeL.mode=DcMotor.RunMode.RUN_TO_POSITION
-        motorIntakeL.power=1.0
+        motorIntakeR.targetPosition = 200
+        motorIntakeR.mode=DcMotor.RunMode.RUN_TO_POSITION
+        motorIntakeR.power=1.0
 
         motorIntakeL.targetPosition = 200
         motorIntakeL.mode=DcMotor.RunMode.RUN_TO_POSITION
@@ -148,9 +147,9 @@ class Intake(hwMap: HardwareMap) {
 
     fun closeSlider()
     {
-        motorIntakeL.targetPosition = 0
-        motorIntakeL.mode=DcMotor.RunMode.RUN_TO_POSITION
-        motorIntakeL.power=1.0
+        motorIntakeR.targetPosition = 0
+        motorIntakeR.mode=DcMotor.RunMode.RUN_TO_POSITION
+        motorIntakeR.power=1.0
 
         motorIntakeL.targetPosition = 0
         motorIntakeL.mode=DcMotor.RunMode.RUN_TO_POSITION
