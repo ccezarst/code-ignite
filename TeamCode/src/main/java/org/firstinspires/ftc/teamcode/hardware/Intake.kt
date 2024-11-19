@@ -28,15 +28,15 @@ class Intake(hwMap: HardwareMap) {
         /***Pozitii de tranzitie***/
         const val servoRotatieL_up = 0.4378
         const val servoRotatieR_up = 0.4358
-        const val servoDifR_up = 0.53
-        const val servoDifL_up = 0.26
+        const val servoDifR_up = 0.40
+        const val servoDifL_up = 0.224
 
 
         /***Pozitie cu care tii intake-ul putin deasupra sample-ului, urmand sa il lasi jso cu poz de luat***/
         const val servoRotatieL_toggle = 0.4028
         const val servoRotatieR_toggle = 0.4706
-        const val servoDifR_toggle = 0.42
-        const val servoDifL_toggle = 0.37
+        const val servoDifR_toggle = 0.284
+        const val servoDifL_toggle = 0.334
 
 
         /***Pozitii de luat***/

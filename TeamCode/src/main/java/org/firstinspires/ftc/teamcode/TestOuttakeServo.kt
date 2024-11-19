@@ -23,7 +23,7 @@ class TestOuttakeServo: LinearOpMode() {
         // 0.7 start
         servoRotR.position = 0.5 // 0.645
         servoRotL.position =0.5
-        servoArt.position = 0.0
+        servoArt.position = 0.7
 
         waitForStart()
         runtime.reset()

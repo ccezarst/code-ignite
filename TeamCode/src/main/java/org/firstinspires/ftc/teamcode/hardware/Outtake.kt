@@ -30,17 +30,22 @@ class Outtake(hwMap: HardwareMap) {
         const val servoRotatieR_down = 0.46
         const val servoArt_down = 0.78
 
+        /*** Pozitii luat specimen***/
+        const val servoRotatieL_specimen = 0.58
+        const val servoRotatieR_specimen = 0.42
+        const val servoArt_specimen = 0.685
 
         /***Pozitii de pus***/
         const val servoRotatieL_up = 0.62
         const val servoRotatieR_up = 0.38
-        const val servoArt_up = 0.78
+        const val servoArt_up = 0.70
 
         /*** Poz cleste ***/
-        const val cleste_open = 0.30
+        const val cleste_open = 0.40
         const val cleste_closed = 0.10
 
 
+        const val putere_motoare = 0.7
 
     }
     private val motorOuttakeR = hwMap.dcMotor["motorOuttakeR"]
@@ -91,7 +96,7 @@ class Outtake(hwMap: HardwareMap) {
         motorOuttakeR.power=0.0
 
 
-        servoArticulatieOuttake.position = servoArt_up
+        servoArticulatieOuttake.position = servoArt_down
         servoOuttakeCleste.position = cleste_open
         servoRotatieOuttakeR.position = servoRotatieR_down
         servoRotatieOuttakeL.position = servoRotatieL_down
@@ -102,11 +107,11 @@ class Outtake(hwMap: HardwareMap) {
     {
         motorOuttakeL.targetPosition = 1900
         motorOuttakeL.mode=DcMotor.RunMode.RUN_TO_POSITION
-        motorOuttakeL.power=0.7
+        motorOuttakeL.power= putere_motoare
 
         motorOuttakeR.targetPosition = 1900
         motorOuttakeR.mode=DcMotor.RunMode.RUN_TO_POSITION
-        motorOuttakeR.power=0.7
+        motorOuttakeR.power=putere_motoare
 
     }
 
@@ -114,11 +119,11 @@ class Outtake(hwMap: HardwareMap) {
     {
         motorOuttakeR.targetPosition = 1400
         motorOuttakeR.mode=DcMotor.RunMode.RUN_TO_POSITION
-        motorOuttakeR.power=0.7
+        motorOuttakeR.power=putere_motoare
 
         motorOuttakeL.targetPosition =1400
         motorOuttakeL.mode=DcMotor.RunMode.RUN_TO_POSITION
-        motorOuttakeL.power=0.7
+        motorOuttakeL.power=putere_motoare
 
     }
 
@@ -126,11 +131,11 @@ class Outtake(hwMap: HardwareMap) {
     {
         motorOuttakeR.targetPosition = 700
         motorOuttakeR.mode=DcMotor.RunMode.RUN_TO_POSITION
-        motorOuttakeR.power=0.7
+        motorOuttakeR.power=putere_motoare
 
         motorOuttakeL.targetPosition = 700
         motorOuttakeL.mode=DcMotor.RunMode.RUN_TO_POSITION
-        motorOuttakeL.power=0.7
+        motorOuttakeL.power=putere_motoare
 
     }
 
@@ -138,11 +143,11 @@ class Outtake(hwMap: HardwareMap) {
     {
         motorOuttakeR.targetPosition = 0
         motorOuttakeR.mode=DcMotor.RunMode.RUN_TO_POSITION
-        motorOuttakeR.power=0.7
+        motorOuttakeR.power=putere_motoare
 
         motorOuttakeL.targetPosition = 0
         motorOuttakeL.mode=DcMotor.RunMode.RUN_TO_POSITION
-        motorOuttakeL.power=0.7
+        motorOuttakeL.power=putere_motoare
 
     }
 
@@ -166,24 +171,28 @@ class Outtake(hwMap: HardwareMap) {
         }
     }
 
+    fun takeSpecimen(){
+        servoRotatieOuttakeR.position = servoRotatieR_specimen
+        servoRotatieOuttakeL.position = servoRotatieL_specimen
+        servoArticulatieOuttake.position = servoArt_specimen
+    }
 
 
     fun pozTranzitie()
     {
         motorOuttakeR.targetPosition = 400
         motorOuttakeR.mode=DcMotor.RunMode.RUN_TO_POSITION
-        motorOuttakeR.power=0.7
+        motorOuttakeR.power=putere_motoare
 
         motorOuttakeL.targetPosition = 400
         motorOuttakeL.mode=DcMotor.RunMode.RUN_TO_POSITION
-        motorOuttakeL.power=0.7
+        motorOuttakeL.power=putere_motoare
 
         servoRotatieOuttakeR.position = servoRotatieR_down
         servoRotatieOuttakeL.position = servoRotatieL_down
         servoArticulatieOuttake.position = servoArt_down
     }
-    fun pozPus()
-    {
+    fun pozPus(){
         servoRotatieOuttakeR.position = servoRotatieR_up
         servoRotatieOuttakeL.position = servoRotatieL_up
         servoArticulatieOuttake.position = servoArt_up

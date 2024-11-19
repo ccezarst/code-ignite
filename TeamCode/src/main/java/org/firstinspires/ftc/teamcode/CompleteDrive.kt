@@ -98,10 +98,10 @@ class CompleteDrive: OpMode() {
             if(gp2.checkToggle(Gamepad.Button.DPAD_UP))
                 intake.toggleIntakeSample()
 
-            if(gp2.checkToggle(Gamepad.Button.X))
+            if(gp2.checkToggle(Gamepad.Button.X)) {
                 outtake.pozTranzitie()
                 intake.pozTranzitie()
-
+            }
             if(gp2.checkToggle(Gamepad.Button.DPAD_LEFT))
                 intake.pozTranzitie()
 
@@ -110,6 +110,9 @@ class CompleteDrive: OpMode() {
 
             if(gp2.checkToggle(Gamepad.Button.DPAD_RIGHT))
                 intake.toggleSample()
+
+            if (gp2.checkToggle(Gamepad.Button.A))
+                outtake.takeSpecimen()
 
             intake.showPositions(telemetry)
             outtake.showPositions(telemetry)
@@ -192,7 +195,7 @@ class CompleteDrive: OpMode() {
                     if (gp2.checkToggle(Gamepad.Button.RIGHT_BUMPER)) {
                         outtake.lowSlider()
                         liftStateOuttake = LiftState.Outtake.LIFT_LOW
-                        intake.pozTranzitie()
+                        intake.toggleIntakeSample()
                     }
                 }
 

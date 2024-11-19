@@ -24,8 +24,8 @@ class TestIntakeServo: LinearOpMode() {
           servoRotR.position = 0.4358 // 0.645
           servoRotL.position =0.4378
 
-        servoDifR.position = 0.535
-        servoDifl.position = 0.575
+        servoDifR.position = 0.224
+        servoDifl.position = 0.344
         waitForStart()
         runtime.reset()
 
