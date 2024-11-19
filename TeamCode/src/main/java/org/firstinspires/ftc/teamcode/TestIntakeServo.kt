@@ -1,13 +1,12 @@
 package org.firstinspires.ftc.teamcode
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.util.ElapsedTime
 import java.lang.Exception
 
 @TeleOp
-class Test2Servo: LinearOpMode() {
+class TestIntakeServo: LinearOpMode() {
     override fun runOpMode() {
         val runtime = ElapsedTime()
 

@@ -28,15 +28,15 @@ class Intake(hwMap: HardwareMap) {
         /***Pozitii de tranzitie***/
         const val servoRotatieL_up = 0.4378
         const val servoRotatieR_up = 0.4358
-        const val servoDifR_up = 0.54
-        const val servoDifL_up = 0.32
+        const val servoDifR_up = 0.53
+        const val servoDifL_up = 0.26
 
 
         /***Pozitie cu care tii intake-ul putin deasupra sample-ului, urmand sa il lasi jso cu poz de luat***/
         const val servoRotatieL_toggle = 0.4028
         const val servoRotatieR_toggle = 0.4706
-        const val servoDifR_toggle = 0.41
-        const val servoDifL_toggle = 0.45
+        const val servoDifR_toggle = 0.42
+        const val servoDifL_toggle = 0.37
 
 
         /***Pozitii de luat***/
@@ -78,7 +78,8 @@ class Intake(hwMap: HardwareMap) {
         ?: throw Exception("Failed to find servo servoIntakeCleste ")
 
 
-
+    private val senzorTouch = hwMap.colorSensor["senzorIntake"]
+        ?: throw Exception("Failed to find the intake color sensor")
 
 
     var isOpen:Boolean = true
@@ -185,6 +186,7 @@ class Intake(hwMap: HardwareMap) {
         servoRotatieR.position= servoRotatieR_up
         servoDiferentialL.position = servoDifL_up
         servoDiferentialR.position = servoDifR_up
+
     }
     fun pozDeasupraSample()
     {
@@ -219,19 +221,12 @@ class Intake(hwMap: HardwareMap) {
 
     fun showPositions(telemetry: Telemetry) {
         telemetry.addData("IntakeMotorRight:",motorIntakeR.currentPosition,)
-        telemetry.addLine()
         telemetry.addData("IntakeMotorLeft:",motorIntakeL.currentPosition)
-        telemetry.addLine()
         telemetry.addData("ServoRotR:",servoRotatieR.position)
-        telemetry.addLine()
         telemetry.addData("ServoRotL:",servoRotatieL.position)
-        telemetry.addLine()
         telemetry.addData("ServoDifR:",servoDiferentialR.position)
-        telemetry.addLine()
         telemetry.addData("ServoDifL:",servoDiferentialL.position)
-        telemetry.addLine()
         telemetry.addData("ServoCleste:",servoIntakeCleste.position)
-        telemetry.update()
     }
 
 

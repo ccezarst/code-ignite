@@ -100,6 +100,7 @@ class CompleteDrive: OpMode() {
 
             if(gp2.checkToggle(Gamepad.Button.X))
                 outtake.pozTranzitie()
+                intake.pozTranzitie()
 
             if(gp2.checkToggle(Gamepad.Button.DPAD_LEFT))
                 intake.pozTranzitie()
@@ -110,11 +111,8 @@ class CompleteDrive: OpMode() {
             if(gp2.checkToggle(Gamepad.Button.DPAD_RIGHT))
                 intake.toggleSample()
 
-
-
-
-
             intake.showPositions(telemetry)
+            outtake.showPositions(telemetry)
             /*** Glisiere intake ***/
             when (liftStateIntake) {
 
@@ -136,12 +134,15 @@ class CompleteDrive: OpMode() {
                     if (gp1.checkToggle(Gamepad.Button.LEFT_BUMPER)) {
                         intake.closeSlider()
                         liftStateIntake = LiftState.Intake.LIFT_START
+                        intake.pozTranzitie()
+                        outtake.pozTranzitie()
 
                     }
                     if (gp1.checkToggle(Gamepad.Button.DPAD_DOWN)) {
                         intake.closeSlider()
                         liftStateIntake = LiftState.Intake.LIFT_START
-
+                        intake.pozTranzitie()
+                        outtake.pozTranzitie()
 
                     }
                 }
@@ -155,12 +156,13 @@ class CompleteDrive: OpMode() {
                     if (gp1.checkToggle(Gamepad.Button.DPAD_DOWN)) {
                         intake.closeSlider()
                         liftStateIntake = LiftState.Intake.LIFT_START
+                        intake.pozTranzitie()
+                        outtake.pozTranzitie()
 
                     }
                     if (gp1.checkToggle(Gamepad.Button.LEFT_BUMPER)) {
                         intake.lowSlider()
                         liftStateIntake = LiftState.Intake.LIFT_LOW
-
                     }
                 }
 
@@ -169,6 +171,8 @@ class CompleteDrive: OpMode() {
                     if (gp1.checkToggle(Gamepad.Button.DPAD_DOWN)) {
                         intake.closeSlider()
                         liftStateIntake = LiftState.Intake.LIFT_START
+                        intake.pozTranzitie()
+                        outtake.pozTranzitie()
 
                     }
                     if (gp1.checkToggle(Gamepad.Button.LEFT_BUMPER)) {
@@ -188,6 +192,7 @@ class CompleteDrive: OpMode() {
                     if (gp2.checkToggle(Gamepad.Button.RIGHT_BUMPER)) {
                         outtake.lowSlider()
                         liftStateOuttake = LiftState.Outtake.LIFT_LOW
+                        intake.pozTranzitie()
                     }
                 }
 

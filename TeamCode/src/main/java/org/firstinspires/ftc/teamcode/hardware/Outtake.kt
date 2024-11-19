@@ -26,18 +26,18 @@ import com.qualcomm.robotcore.hardware.DistanceSensor
 class Outtake(hwMap: HardwareMap) {
     companion object {
         /***Pozitii de tranzitie***/
-        const val servoRotatieL_down = 0.0
-        const val servoRotatieR_down = 0.0
-        const val servoArt_down = 0.7
+        const val servoRotatieL_down = 0.54
+        const val servoRotatieR_down = 0.46
+        const val servoArt_down = 0.78
 
 
         /***Pozitii de pus***/
-        const val servoRotatieL_up = 0.0
-        const val servoRotatieR_up = 0.0
-        const val servoArt_up = 0.5
+        const val servoRotatieL_up = 0.62
+        const val servoRotatieR_up = 0.38
+        const val servoArt_up = 0.78
 
         /*** Poz cleste ***/
-        const val cleste_open = 0.22
+        const val cleste_open = 0.30
         const val cleste_closed = 0.10
 
 
@@ -93,6 +93,8 @@ class Outtake(hwMap: HardwareMap) {
 
         servoArticulatieOuttake.position = servoArt_up
         servoOuttakeCleste.position = cleste_open
+        servoRotatieOuttakeR.position = servoRotatieR_down
+        servoRotatieOuttakeL.position = servoRotatieL_down
     }
     /*** de modificat pozitiile de target ***/
     /*** COD GLISIERA ***/
@@ -100,11 +102,11 @@ class Outtake(hwMap: HardwareMap) {
     {
         motorOuttakeL.targetPosition = 1900
         motorOuttakeL.mode=DcMotor.RunMode.RUN_TO_POSITION
-        motorOuttakeL.power=1.0
+        motorOuttakeL.power=0.7
 
         motorOuttakeR.targetPosition = 1900
         motorOuttakeR.mode=DcMotor.RunMode.RUN_TO_POSITION
-        motorOuttakeR.power=1.0
+        motorOuttakeR.power=0.7
 
     }
 
@@ -112,11 +114,11 @@ class Outtake(hwMap: HardwareMap) {
     {
         motorOuttakeR.targetPosition = 1400
         motorOuttakeR.mode=DcMotor.RunMode.RUN_TO_POSITION
-        motorOuttakeR.power=1.0
+        motorOuttakeR.power=0.7
 
         motorOuttakeL.targetPosition =1400
         motorOuttakeL.mode=DcMotor.RunMode.RUN_TO_POSITION
-        motorOuttakeL.power=1.0
+        motorOuttakeL.power=0.7
 
     }
 
@@ -124,11 +126,11 @@ class Outtake(hwMap: HardwareMap) {
     {
         motorOuttakeR.targetPosition = 700
         motorOuttakeR.mode=DcMotor.RunMode.RUN_TO_POSITION
-        motorOuttakeR.power=1.0
+        motorOuttakeR.power=0.7
 
         motorOuttakeL.targetPosition = 700
         motorOuttakeL.mode=DcMotor.RunMode.RUN_TO_POSITION
-        motorOuttakeL.power=1.0
+        motorOuttakeL.power=0.7
 
     }
 
@@ -136,11 +138,11 @@ class Outtake(hwMap: HardwareMap) {
     {
         motorOuttakeR.targetPosition = 0
         motorOuttakeR.mode=DcMotor.RunMode.RUN_TO_POSITION
-        motorOuttakeR.power=1.0
+        motorOuttakeR.power=0.7
 
         motorOuttakeL.targetPosition = 0
         motorOuttakeL.mode=DcMotor.RunMode.RUN_TO_POSITION
-        motorOuttakeL.power=1.0
+        motorOuttakeL.power=0.7
 
     }
 
@@ -168,6 +170,14 @@ class Outtake(hwMap: HardwareMap) {
 
     fun pozTranzitie()
     {
+        motorOuttakeR.targetPosition = 400
+        motorOuttakeR.mode=DcMotor.RunMode.RUN_TO_POSITION
+        motorOuttakeR.power=0.7
+
+        motorOuttakeL.targetPosition = 400
+        motorOuttakeL.mode=DcMotor.RunMode.RUN_TO_POSITION
+        motorOuttakeL.power=0.7
+
         servoRotatieOuttakeR.position = servoRotatieR_down
         servoRotatieOuttakeL.position = servoRotatieL_down
         servoArticulatieOuttake.position = servoArt_down
@@ -182,15 +192,10 @@ class Outtake(hwMap: HardwareMap) {
     fun showPositions(telemetry: Telemetry)
     {
         telemetry.addData("OuttakeMotorRight:",motorOuttakeR.currentPosition,)
-        telemetry.addLine()
         telemetry.addData("OuttakeMotorLeft:",motorOuttakeL.currentPosition)
-        telemetry.addLine()
         telemetry.addData("ServoRotR:",servoRotatieOuttakeR.position)
-        telemetry.addLine()
         telemetry.addData("ServoRotL:",servoRotatieOuttakeL.position)
-        telemetry.addLine()
         telemetry.addData("ServoArt:",servoArticulatieOuttake.position)
-        telemetry.addLine()
         telemetry.addData("ServoCleste:",servoOuttakeCleste.position)
         telemetry.update()
     }
