@@ -14,6 +14,7 @@ public class StateMachine extends CoreComponent {
     private ArrayList<HardwareInterface> hwInterfaces;
     private ArrayList<SoftwareInterface> swInterfaces;
     private ArrayList<State> states;
+    private State currentState;
     private ArrayList<String> stateQueue;
 
     private void checkStatesConnections(ArrayList<State> states) throws FormatException {
@@ -68,25 +69,68 @@ public class StateMachine extends CoreComponent {
         }
         return allFoundPaths;
     }
+
+    private ArrayList<State> getBestPath(ArrayList<ArrayList<State>> pathes){
+        ArrayList<State> best = pathes.get(0); // instead of empty it is first element(if it was empty it would always be the smallest)
+        for(int i = 0; i < pathes.size(); i++){
+            if(pathes.get(i).size() < best.size()){
+                best = pathes.get(i);
+            }
+        }
+        return best;
+    }
+
     public StateMachine(ArrayList<HardwareInterface> hwInterfaces, ArrayList<SoftwareInterface> swInterfaces, ArrayList<State> states) throws FormatException {
         this.hwInterfaces = hwInterfaces;
         this.swInterfaces = swInterfaces;
         this.states = states;
         this.stateQueue = new ArrayList<String>();
         this.checkStatesConnections(this.states);
-        // calculate paths
+        // calculate best pathes for each state to others
+        // iterate through all states
         for(int i = 0; i < this.states.size(); i++){
             // iterate through all other states and for each calculate shortest path
             State currentState = this.states.get(i);
             for(int b = 0; b < this.states.size(); b++){
                 if(this.states.get(b).name != currentState.name) {
                     ArrayList<ArrayList<State>> pathes = findPathes(currentState, this.states.get(b), new ArrayList<State>(), new ArrayList<ArrayList<State>>(), this.states);
+                    ArrayList<State> bestPath = getBestPath(pathes);
+                    StateToStatePath nPath = new StateToStatePath(bestPath, this.states.get(b).name);
+                    currentState.pushToPathToOtherStates(nPath);
                 }
             }
         }
     }
 
-    public void changeState(String newStateName){}
+    public boolean changeState(String newStateName){
+        // check if we can change to that state from current state
+        if(this.currentState != null){
+            if(this.currentState.isConnectedToState(newStateName) && newStateName != null){
+                this.stateQueue.addAll(this.currentState.getPathToStateNames(newStateName));
+                this.step();
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            this.stateQueue.add(newStateName);
+            return true;
+        }
+    }
 
-    public void step(){}
+    public boolean step(){
+        if(!this.stateQueue.isEmpty()) {
+            if (this.currentState.checkRequirements(hwInterfaces, swInterfaces)) {
+                String newStateName = this.stateQueue.remove(0);
+                State newState = lookupStateFromName(newStateName, this.states);
+                newState.call(this.hwInterfaces, this.swInterfaces);
+                this.currentState = newState;
+                return true;
+            } else {
+                return false;
+            }
+        }else{
+            return true;
+        }
+    }
 }

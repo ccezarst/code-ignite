@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.Core.StateMachine;
 
+import org.firstinspires.ftc.teamcode.Core.HardwareInterface;
+import org.firstinspires.ftc.teamcode.Core.SoftwareInterface;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class State {
@@ -7,9 +11,68 @@ public class State {
     public final ArrayList<String> inputs;
     public final ArrayList<String> outputs;
     public final String name;
-    public void updatePathsToOtherStates(ArrayList<StateToStatePath> paths){
-        this.pathsToOtherStates = paths;
+    public final void pushToPathToOtherStates(StateToStatePath path){
+        this.pathsToOtherStates.add(path);
     }
+    public final boolean isConnectedToState(State st){
+        for(int i = 0; i < this.pathsToOtherStates.size(); i++){
+            if(st.name == this.pathsToOtherStates.get(i).endStateName){
+                return true;
+            }
+        }
+        return false;
+    }
+    public final boolean isConnectedToState(String st){
+        for(int i = 0; i < this.pathsToOtherStates.size(); i++){
+            if(st == this.pathsToOtherStates.get(i).endStateName){
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public final StateToStatePath getPathToState(State st){
+        for(int i = 0; i < this.pathsToOtherStates.size(); i++){
+            if(st.name == this.pathsToOtherStates.get(i).endStateName){
+                return this.pathsToOtherStates.get(i);
+            }
+        }
+        return null;
+    }
+    public final StateToStatePath getPathToState(String st){
+        for(int i = 0; i < this.pathsToOtherStates.size(); i++){
+            if(st == this.pathsToOtherStates.get(i).endStateName){
+                return this.pathsToOtherStates.get(i);
+            }
+        }
+        return null;
+    }
+    public final ArrayList<String> getPathToStateNames(State st){
+        for(int i = 0; i < this.pathsToOtherStates.size(); i++){
+            if(st.name == this.pathsToOtherStates.get(i).endStateName){
+                ArrayList<String> toReturn = new ArrayList<>();
+                for(int b = 0; b < this.pathsToOtherStates.get(b).path.size(); b++){
+                    toReturn.add(this.pathsToOtherStates.get(b).path.get(b).name);
+                }
+                return toReturn;
+            }
+        }
+        return null;
+    }
+    public final ArrayList<String> getPathToStateNames(String st){
+        for(int i = 0; i < this.pathsToOtherStates.size(); i++){
+            ArrayList<String> toReturn = new ArrayList<>();
+            for(int b = 0; b < this.pathsToOtherStates.get(b).path.size(); b++){
+                toReturn.add(this.pathsToOtherStates.get(b).path.get(b).name);
+            }
+            return toReturn;
+        }
+        return null;
+    }
+    // incase we need a special state that has special requirements(eg. robot is in position x)
+    public boolean checkRequirements(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf){return true;}
+    public void call(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf){};
     public State(String name, ArrayList<String> inputs, ArrayList<String> outputs){
         this.inputs = inputs;
         this.outputs = outputs;
