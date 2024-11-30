@@ -2,9 +2,10 @@ package org.firstinspires.ftc.teamcode.Core.DefaultComponents;
 
 import org.opencv.core.Core;
 
-public class StateMachineButtonMapper extends CoreComponent {
+public class StateMachineButtonMapper extends ButtonMapper {
     public StateMachineButtonMapper(String name, Boolean active){
-        super(name, active, ComponentType.BUTTON_MAPPER);
+        // mapping is button-
+        super(name, active); // no need to specify type as this extends button mapper which sets the type in it's constructor
     }
 
 }
