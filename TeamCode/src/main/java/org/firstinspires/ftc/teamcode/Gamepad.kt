@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode
 import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.hardware.Gamepad
 
-class Gamepad(private val gp: Gamepad) {
+class Gamepad(private val gp: Gamepad, var number: Int) {
     enum class Button {
         A,
         B,

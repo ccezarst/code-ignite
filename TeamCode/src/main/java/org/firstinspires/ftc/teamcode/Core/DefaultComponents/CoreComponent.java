@@ -19,4 +19,6 @@ public class CoreComponent {
     }
     public ArrayList<String> getStatus(){return null;}
     public void step(DefaultCore core){};
+    public void update(DefaultCore core){}; // update function should contain all init code
+    // to allow real-time updating of components and hot testing of components
 }
