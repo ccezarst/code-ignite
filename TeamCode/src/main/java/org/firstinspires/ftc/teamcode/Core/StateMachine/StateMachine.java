@@ -2,9 +2,11 @@ package org.firstinspires.ftc.teamcode.Core.StateMachine;
 
 import android.nfc.FormatException;
 
-import org.firstinspires.ftc.teamcode.Core.CoreComponent;
-import org.firstinspires.ftc.teamcode.Core.HardwareInterface;
-import org.firstinspires.ftc.teamcode.Core.SoftwareInterface;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.ComponentType;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.CoreComponent;
+import org.firstinspires.ftc.teamcode.Core.DefaultCore;
+import org.firstinspires.ftc.teamcode.Core.Interfaces.HardwareInterface;
+import org.firstinspires.ftc.teamcode.Core.Interfaces.SoftwareInterface;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -80,7 +82,8 @@ public class StateMachine extends CoreComponent {
         return best;
     }
 
-    public StateMachine(ArrayList<HardwareInterface> hwInterfaces, ArrayList<SoftwareInterface> swInterfaces, ArrayList<State> states) throws FormatException {
+    public StateMachine(ArrayList<HardwareInterface> hwInterfaces, ArrayList<SoftwareInterface> swInterfaces, ArrayList<State> states, Boolean active, String name) throws FormatException {
+        super(name, active, ComponentType.STATE_MACHINE);
         this.hwInterfaces = hwInterfaces;
         this.swInterfaces = swInterfaces;
         this.states = states;
@@ -107,7 +110,7 @@ public class StateMachine extends CoreComponent {
         if(this.currentState != null){
             if(this.currentState.isConnectedToState(newStateName) && newStateName != null){
                 this.stateQueue.addAll(this.currentState.getPathToStateNames(newStateName));
-                this.step();
+                this.step(null);
                 return true;
             }else{
                 return false;
@@ -117,20 +120,25 @@ public class StateMachine extends CoreComponent {
             return true;
         }
     }
-
-    public boolean step(){
-        if(!this.stateQueue.isEmpty()) {
-            if (this.currentState.checkRequirements(hwInterfaces, swInterfaces)) {
-                String newStateName = this.stateQueue.remove(0);
-                State newState = lookupStateFromName(newStateName, this.states);
-                newState.call(this.hwInterfaces, this.swInterfaces);
-                this.currentState = newState;
-                return true;
-            } else {
-                return false;
+    @Override
+    public void step(DefaultCore core){
+        if(this.active){
+            if(!this.stateQueue.isEmpty()) {
+                if (this.currentState.checkRequirements(hwInterfaces, swInterfaces)) {
+                    String newStateName = this.stateQueue.remove(0);
+                    State newState = lookupStateFromName(newStateName, this.states);
+                    newState.call(this.hwInterfaces, this.swInterfaces);
+                    this.currentState = newState;
+                }
             }
-        }else{
-            return true;
         }
+    }
+    @Override
+    public ArrayList<String> getStatus(){
+        // send information about current state
+        ArrayList<String> toReturn = new ArrayList<String>();
+        toReturn.add("States: " + this.states.toString());
+        toReturn.add("Current state: " + this.currentState.name);
+        return toReturn;
     }
 }

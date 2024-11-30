@@ -1,9 +1,8 @@
 package org.firstinspires.ftc.teamcode.Core.StateMachine;
 
-import org.firstinspires.ftc.teamcode.Core.HardwareInterface;
-import org.firstinspires.ftc.teamcode.Core.SoftwareInterface;
+import org.firstinspires.ftc.teamcode.Core.Interfaces.HardwareInterface;
+import org.firstinspires.ftc.teamcode.Core.Interfaces.SoftwareInterface;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class State {
