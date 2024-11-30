@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Core.DefaultComponents;
+package org.firstinspires.ftc.teamcode.Core.DefaultComponents.InputMappers;
 
 import org.firstinspires.ftc.teamcode.Gamepad;
 

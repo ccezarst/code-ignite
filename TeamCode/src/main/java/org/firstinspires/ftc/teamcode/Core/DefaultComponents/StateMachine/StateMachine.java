@@ -1,12 +1,12 @@
-package org.firstinspires.ftc.teamcode.Core.StateMachine;
+package org.firstinspires.ftc.teamcode.Core.DefaultComponents.StateMachine;
 
 import android.nfc.FormatException;
 
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.ComponentType;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.CoreComponent;
 import org.firstinspires.ftc.teamcode.Core.DefaultCore;
-import org.firstinspires.ftc.teamcode.Core.Interfaces.HardwareInterface;
-import org.firstinspires.ftc.teamcode.Core.Interfaces.SoftwareInterface;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.HardwareInterface;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.SoftwareInterface;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -82,8 +82,8 @@ public class StateMachine extends CoreComponent {
         return best;
     }
 
-    public StateMachine(ArrayList<HardwareInterface> hwInterfaces, ArrayList<SoftwareInterface> swInterfaces, ArrayList<State> states, Boolean active, String name) throws FormatException {
-        super(name, active, ComponentType.STATE_MACHINE);
+    public StateMachine(ArrayList<HardwareInterface> hwInterfaces, ArrayList<SoftwareInterface> swInterfaces, ArrayList<State> states, Boolean active, String name, DefaultCore core) throws FormatException {
+        super(name, active, ComponentType.STATE_MACHINE, core);
         this.hwInterfaces = hwInterfaces;
         this.swInterfaces = swInterfaces;
         this.states = states;
@@ -141,4 +141,7 @@ public class StateMachine extends CoreComponent {
         toReturn.add("Current state: " + this.currentState.name);
         return toReturn;
     }
+
+    @Override
+    public void update(DefaultCore core){}
 }

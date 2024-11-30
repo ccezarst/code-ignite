@@ -1,20 +1,17 @@
-package org.firstinspires.ftc.teamcode.Core.DefaultComponents;
+package org.firstinspires.ftc.teamcode.Core.DefaultComponents.InputMappers;
 
-import org.checkerframework.checker.units.qual.C;
 import org.firstinspires.ftc.teamcode.Core.DefaultCore;
-import org.firstinspires.ftc.teamcode.Core.StateMachine.StateMachine;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.StateMachine.StateMachine;
 import org.firstinspires.ftc.teamcode.Gamepad;
-import org.opencv.core.Core;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 public class StateMachineButtonMapper extends ButtonMapper {
     private final ButtonMapperKeybindMap[] keybinds;
     private final StateMachine st;
-    public StateMachineButtonMapper(String name, Boolean active, StateMachine st, ButtonMapperKeybindMap... bt){
+    public StateMachineButtonMapper(String name, Boolean active, StateMachine st, DefaultCore core, ButtonMapperKeybindMap... bt){
         // mapping is gamepadNr-(button-status)
-        super(name, active); // no need to specify type as this extends button mapper which sets the type in it's constructor
+        super(name, active, core); // no need to specify type as this extends button mapper which sets the type in it's constructor
         this.keybinds = bt;
         this.st = st; // single state machine
         // this is specified in code and not searched for automatically
@@ -34,6 +31,8 @@ public class StateMachineButtonMapper extends ButtonMapper {
     }
 
     @Override
+    public void buttonToggle(Gamepad gp, Gamepad.Button btn) {}
+    @Override
     public ArrayList<String> getStatus(){
         ArrayList<String> toReturn = new ArrayList<>();
         for(int i = 0; i < this.keybinds.length; i++){
@@ -43,4 +42,10 @@ public class StateMachineButtonMapper extends ButtonMapper {
         }
         return toReturn;
     }
+
+    @Override
+    public void step(DefaultCore core) {}
+
+    @Override
+    public void update(DefaultCore core) {}
 }

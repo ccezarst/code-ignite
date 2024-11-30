@@ -1,15 +1,21 @@
-package org.firstinspires.ftc.teamcode.Core.DefaultComponents;
+package org.firstinspires.ftc.teamcode.Core.DefaultComponents.Managers;
 
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.ComponentType;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.CoreComponent;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.InputMappers.ButtonMapper;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.InputMappers.ThumbstickMapper;
 import org.firstinspires.ftc.teamcode.Core.DefaultCore;
 import org.firstinspires.ftc.teamcode.Gamepad;
 
 import java.util.ArrayList;
 
-public class GamepadManager extends CoreComponent {
-    private Gamepad[] gps;
-    private ArrayList<ButtonMapper> btnMappers = new ArrayList<ButtonMapper>();
-    public GamepadManager(String name, Boolean active, Gamepad... gp){
-        super(name, active, ComponentType.GAMEPAD_MANAGER);
+public abstract class InputSource extends CoreComponent {
+    Gamepad[] gps;
+    ArrayList<ButtonMapper> btnMappers = new ArrayList<ButtonMapper>();
+    ArrayList<ThumbstickMapper> thmbstMappers = new ArrayList<ThumbstickMapper>();
+
+    public InputSource(String name, Boolean active, DefaultCore core, Gamepad... gp){
+        super(name, active, ComponentType.INPUT_SOURCE, core);
         this.gps = gp;
     }
 
@@ -49,27 +55,21 @@ public class GamepadManager extends CoreComponent {
         return toReturn;
     }
 
-    @Override
-    public void step(DefaultCore core){
-        // we will look for all button mapper components and send them pressed keys
-        // and the button mappers will have no step functions, only waiting to recieve keys
-        // from this function
-        for(int i = 0; i < this.gps.length; i++){
-            Gamepad gp = this.gps[i];
-            ArrayList<Gamepad.Button> btnHold = this.getHoldButtons(gp);
-            ArrayList<Gamepad.Button> btnToggle = this.getToggleButtons(gp);
-            // loop through holding/toggled keys and then loop through each button mapper
-            for(int b = 0; b < btnHold.size(); b++){
-                for(int c = 0; c < this.btnMappers.size(); c++){
-                    this.btnMappers.get(c).buttonHold(gp, btnHold.get(b));
-                }
-            }
-            for(int b = 0; b < btnHold.size(); b++){
-                for(int c = 0; c < this.btnMappers.size(); c++){
-                    this.btnMappers.get(c).buttonToggle(gp, btnToggle.get(b));
-                }
+    public boolean checkHold(int gamepadNumber, Gamepad.Button btn){
+        for(int i = 0; i < this.gps.length; i ++){
+            if(this.gps[i].getNumber() == gamepadNumber){
+                return this.gps[i].checkHold(btn);
             }
         }
+        return false;
+    }
 
+    public boolean checkToggle(int gamepadNumber, Gamepad.Button btn){
+        for(int i = 0; i < this.gps.length; i ++){
+            if(this.gps[i].getNumber() == gamepadNumber){
+                return this.gps[i].checkHold(btn);
+            }
+        }
+        return false;
     }
 }

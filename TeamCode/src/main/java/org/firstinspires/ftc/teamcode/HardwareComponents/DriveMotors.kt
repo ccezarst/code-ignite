@@ -102,6 +102,7 @@ DriveMotors(hwMap: HardwareMap) {
         motors.forEach { it.power = 0.0 }
     }
     // idk what to say but i m killing ma self
+    // cezar- esti okay cipi?
     fun printPosition(telemetry: Telemetry) {
         telemetry.addLine("Position Back ")
                 .addData("Left", "%d", backLeftMotor.currentPosition)

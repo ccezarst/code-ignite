@@ -1,7 +1,7 @@
-package org.firstinspires.ftc.teamcode.Core.StateMachine;
+package org.firstinspires.ftc.teamcode.Core.DefaultComponents.StateMachine;
 
-import org.firstinspires.ftc.teamcode.Core.Interfaces.HardwareInterface;
-import org.firstinspires.ftc.teamcode.Core.Interfaces.SoftwareInterface;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.HardwareInterface;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.SoftwareInterface;
 
 import java.util.ArrayList;
 

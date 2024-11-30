@@ -45,8 +45,8 @@ class CompleteDrive: OpMode() {
 
     override fun Hardware.run() {
 
-        val gp1 = Gamepad(gamepad1)
-        val gp2 = Gamepad(gamepad2)
+        val gp1 = Gamepad(gamepad1, 1)
+        val gp2 = Gamepad(gamepad2, 2)
 
 
         var leftTriggerIsPressed = false
@@ -277,7 +277,5 @@ class CompleteDrive: OpMode() {
 
             return Math.sqrt((x * x) + (y * y))
         }
-
-
 
 }
