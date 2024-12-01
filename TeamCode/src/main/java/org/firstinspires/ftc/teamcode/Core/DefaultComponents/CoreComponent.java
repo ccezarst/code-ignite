@@ -12,7 +12,7 @@ public abstract class CoreComponent {
     public CoreComponent(String name, Boolean active, ComponentType type, DefaultCore core){
         if(name != null && !name.isEmpty()){
             this.name = name;
-            this.active = active;
+            this.active = true; // dumb feature, don't use
             this.type = type;
             this.core = core;
         }else{
@@ -20,6 +20,11 @@ public abstract class CoreComponent {
         }
     }
     public ArrayList<String> getStatus(){return null;}
+    public final void primitiveStep(DefaultCore core){
+        if(this.active){
+            this.step(core);
+        }
+    }
     public abstract void step(DefaultCore core);
     public abstract void update(DefaultCore core); // update function should contain all init code
     // to allow real-time updating of components and hot testing of components

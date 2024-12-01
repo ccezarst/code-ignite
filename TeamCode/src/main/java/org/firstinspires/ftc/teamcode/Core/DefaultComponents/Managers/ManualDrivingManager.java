@@ -2,14 +2,18 @@ package org.firstinspires.ftc.teamcode.Core.DefaultComponents.Managers;
 
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.ComponentType;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.CoreComponent;
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.InputMappers.ThumbstickMapper;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.InputMappers.AnalogMapper;
 import org.firstinspires.ftc.teamcode.Core.DefaultCore;
 import org.firstinspires.ftc.teamcode.Gamepad;
+import org.firstinspires.ftc.teamcode.hardware.DriveMotors;
 
 import java.util.ArrayList;
+import java.util.Map;
 
-public class ManualDrivingManager extends ThumbstickMapper {
+public class ManualDrivingManager extends AnalogMapper {
     private int gamepadNumber;
+    private ArrayList<InputSource> inSources = new ArrayList<InputSource>();
+    private DriveMotors mot;
     public ManualDrivingManager(String name, Boolean active, int gamepadNumber, DefaultCore core){
         super(name, active, core); // thmbstck mappr to recieve thumbstick values
         this.gamepadNumber = gamepadNumber;
@@ -32,13 +36,19 @@ public class ManualDrivingManager extends ThumbstickMapper {
 
     // aceste 3 functii de mai sus sunt toate furate din CompleteDrive
     // de la ciprian
+
     @Override
-    public void thumbstick(Gamepad gp, float Lx, float Ly, float Rx, float Ry){
-        if(gp.getNumber() == this.gamepadNumber){
-            // because we want special features, we're gonna have to manually search for a input source and check right thumbstick
-            // TODO: FINNISH IMPLEMENTING DRIVING LOGIC
-            // check complete drive, in the beginning of hardware.run you will find the code
+    public void step(DefaultCore core) {
+
+    }
+    // gets a speifid gamepad number from all input sources
+    private Gamepad getGamepadFromNumber(int gamepadNr){
+        for(int i = 0; i < this.inSources.size(); i++){
+            if(this.inSources.get(i).containsGamepad(gamepadNr)){
+                return this.inSources.get(i).getGamepad(gamepadNr);
+            }
         }
+        return null;
     }
 
     private ArrayList<InputSource> getInputSources(){
@@ -72,13 +82,22 @@ public class ManualDrivingManager extends ThumbstickMapper {
         return  toReturn;
     }
 
+
     @Override
-    public void step(DefaultCore core) {
+    public void update(DefaultCore core) {
+        this.inSources = this.getInputSources();
+        this.mot = new DriveMotors();
 
     }
 
     @Override
-    public void update(DefaultCore core) {
+    public void analog(Gamepad gp, Map<Gamepad.Analog, Double> in) {
+        if(in.get(Gamepad.Analog.RIGHT_TRIGGER) > 0.2){
 
+        }else if(in.get(Gamepad.Analog.LEFT_TRIGGER) > 0.2){
+
+        }else{
+
+        }
     }
 }

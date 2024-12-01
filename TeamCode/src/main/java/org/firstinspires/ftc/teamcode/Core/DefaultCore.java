@@ -49,7 +49,9 @@ public class DefaultCore {
 
     public final void step(){
         for(int i = 0; i < this.components.size(); i++){
-            this.components.get(i).step(this);
+            // primitive step to help not accidentally run components
+            // that don't check if they should be active or not
+            this.components.get(i).primitiveStep(this);
         }
     }
 

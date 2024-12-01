@@ -17,7 +17,14 @@ class Gamepad(private val gp: Gamepad, var number: Int) {
         DPAD_RIGHT,
         DPAD_LEFT
     }
-
+    enum class Analog{
+        LEFT_TRIGGER,
+        RIGHT_TRIGGER,
+        LEFT_STICK_X,
+        LEFT_STICK_Y,
+        RIGHT_STICK_X,
+        RIGHT_STICK_Y
+    }
     private var lastStates = Button.values().map { it to false }.toMap().toMutableMap()
 
     val left_trigger

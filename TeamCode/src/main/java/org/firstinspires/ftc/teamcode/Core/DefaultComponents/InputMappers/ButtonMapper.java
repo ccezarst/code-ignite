@@ -10,6 +10,18 @@ public abstract class ButtonMapper extends CoreComponent {
         super(name, active, ComponentType.BUTTON_MAPPER, core);
     }
 
+    public final void primitiveButtonToggle(Gamepad gp, Gamepad.Button btn){
+        if(this.active){
+            this.buttonToggle(gp, btn);
+        }
+    }
+
+    public final void primitiveButtonHold(Gamepad gp, Gamepad.Button btn){
+        if(this.active){
+            this.buttonHold(gp, btn);
+        }
+    }
+
     public abstract void buttonToggle(Gamepad gp, Gamepad.Button btn);
     public abstract void buttonHold(Gamepad gp, Gamepad.Button btn);
 

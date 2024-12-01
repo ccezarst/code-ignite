@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.Core.DefaultComponents.Managers;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.ComponentType;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.CoreComponent;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.InputMappers.ButtonMapper;
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.InputMappers.ThumbstickMapper;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.InputMappers.AnalogMapper;
 import org.firstinspires.ftc.teamcode.Core.DefaultCore;
 import org.firstinspires.ftc.teamcode.Gamepad;
 
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public abstract class InputSource extends CoreComponent {
     Gamepad[] gps;
     ArrayList<ButtonMapper> btnMappers = new ArrayList<ButtonMapper>();
-    ArrayList<ThumbstickMapper> thmbstMappers = new ArrayList<ThumbstickMapper>();
+    ArrayList<AnalogMapper> analogMappers = new ArrayList<AnalogMapper>();
 
     public InputSource(String name, Boolean active, DefaultCore core, Gamepad... gp){
         super(name, active, ComponentType.INPUT_SOURCE, core);
@@ -71,5 +71,22 @@ public abstract class InputSource extends CoreComponent {
             }
         }
         return false;
+    }
+
+    public boolean containsGamepad(int gamepadNr){
+        for(int i = 0; i < this.gps.length; i++){
+            if(this.gps[i].getNumber() == gamepadNr){
+                return true;
+            }
+        }
+        return false;
+    }
+    public Gamepad getGamepad(int gamepadNr){
+        for(int i = 0; i < this.gps.length; i++){
+            if(this.gps[i].getNumber() == gamepadNr){
+                return this.gps[i];
+            }
+        }
+        return null;
     }
 }

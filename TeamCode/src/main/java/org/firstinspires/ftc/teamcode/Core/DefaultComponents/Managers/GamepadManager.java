@@ -1,16 +1,21 @@
 package org.firstinspires.ftc.teamcode.Core.DefaultComponents.Managers;
 
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.InputMappers.ButtonMapper;
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.ComponentType;
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.CoreComponent;
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.InputMappers.ThumbstickMapper;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import org.firstinspires.ftc.teamcode.Core.DefaultCore;
 import org.firstinspires.ftc.teamcode.Gamepad;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class
 GamepadManager extends InputSource {
+    private Map<Gamepad.Analog, Double> vals = new HashMap<>();
     public GamepadManager(String name, Boolean active, DefaultCore core,  Gamepad... gp){
         super(name, active, core, gp);
     }
@@ -25,8 +30,15 @@ GamepadManager extends InputSource {
         // from this function
         for(int i = 0; i < this.gps.length; i++){
             Gamepad gp = this.gps[i];
-            for(int b = 0; b < this.thmbstMappers.size(); b++){
-                this.thmbstMappers.get(i).thumbstick(gp, gp.getLeft_stick_x(), gp.getLeft_stick_y(), gp.getRight_stick_x(), gp.getRight_stick_y());
+            for(int b = 0; b < this.analogMappers.size(); b++){
+                this.vals.clear();
+                this.vals.put(Gamepad.Analog.LEFT_STICK_X, (double) gp.getLeft_stick_x());
+                this.vals.put(Gamepad.Analog.LEFT_STICK_Y, (double) gp.getLeft_stick_y());
+                this.vals.put(Gamepad.Analog.RIGHT_STICK_X, (double) gp.getRight_stick_x());
+                this.vals.put(Gamepad.Analog.RIGHT_STICK_Y, (double) gp.getRight_stick_y());
+                this.vals.put(Gamepad.Analog.LEFT_TRIGGER, (double) gp.getLeft_trigger());
+                this.vals.put(Gamepad.Analog.RIGHT_TRIGGER, (double) gp.getRight_trigger());
+                 this.analogMappers.get(i).primitiveAnalog(gp, this.vals);
             }
 
             ArrayList<Gamepad.Button> btnHold = this.getHoldButtons(gp);
@@ -34,12 +46,12 @@ GamepadManager extends InputSource {
             // loop through holding/toggled keys and then loop through each button mapper
             for(int b = 0; b < btnHold.size(); b++){
                 for(int c = 0; c < this.btnMappers.size(); c++){
-                    this.btnMappers.get(c).buttonHold(gp, btnHold.get(b));
+                    this.btnMappers.get(c).primitiveButtonHold(gp, btnHold.get(b));
                 }
             }
             for(int b = 0; b < btnHold.size(); b++){
                 for(int c = 0; c < this.btnMappers.size(); c++){
-                    this.btnMappers.get(c).buttonToggle(gp, btnToggle.get(b));
+                    this.btnMappers.get(c).primitiveButtonToggle(gp, btnToggle.get(b));
                 }
             }
         }
