@@ -4,6 +4,7 @@ import org.firstinspires.ftc.teamcode.Core.DefaultComponents.ComponentType;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.CoreComponent;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class DefaultCore {
     private ArrayList<CoreComponent> components = new ArrayList<CoreComponent>();
@@ -27,11 +28,20 @@ public class DefaultCore {
 
     public final ArrayList<CoreComponent> getAllComponents(){return this.components;}
 
+    private boolean containsCompType(ComponentType[] list, ComponentType type){
+        for(int i = 0; i < list.length; i++){
+            if(list[i].name().equals(type.name())){
+                return true;
+            }
+        }
+        return false;
+    }
+
     public final ArrayList<CoreComponent> getComponentsOfType(ComponentType type){
         ArrayList<CoreComponent> toReturn = new ArrayList<CoreComponent>();
 
         for(int i =0; i< this.components.size(); i++){
-            if(this.components.get(i).type == type){
+            if(this.containsCompType(this.components.get(i).types, type)){
                 toReturn.add(this.components.get(i));
             }
         }
@@ -60,10 +70,10 @@ public class DefaultCore {
         for(int i = 0; i < this.components.size(); i ++){
             ArrayList<String> status = this.components.get(i).getStatus();
             String temp = "";
-            for(int b = 0; b < status.size(); b++){
-                temp += this.components.get(i).type.toString() + "-" + this.components.get(i).name + ": " + status.get(i) + "\n";
+            for(int b = 0; b < status.size(); b++) {
+                temp += Arrays.toString(this.components.get(i).types) + "-" + this.components.get(i).name + ": " + status.get(b) + "\n";
             }
-            toReturn += temp + "\n";
+            toReturn += temp;
         }
         return toReturn;
     }

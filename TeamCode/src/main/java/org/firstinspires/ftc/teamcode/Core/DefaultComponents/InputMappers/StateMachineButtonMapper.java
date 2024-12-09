@@ -9,11 +9,11 @@ import java.util.ArrayList;
 public class StateMachineButtonMapper extends ButtonMapper {
     private final ButtonMapperKeybindMap[] keybinds;
     private final StateMachine st;
-    public StateMachineButtonMapper(String name, Boolean active, StateMachine st, DefaultCore core, ButtonMapperKeybindMap... bt){
+    public StateMachineButtonMapper(String name, Boolean active, String stName, DefaultCore core, ButtonMapperKeybindMap... bt){
         // mapping is gamepadNr-(button-status)
         super(name, active, core); // no need to specify type as this extends button mapper which sets the type in it's constructor
         this.keybinds = bt;
-        this.st = st; // single state machine
+        this.st = (StateMachine) this.core.getComponentFromName(stName); // single state machine
         // this is specified in code and not searched for automatically
         // to allow multiple independent state machines
     }

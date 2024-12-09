@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.Gamepad;
 
 public abstract class ButtonMapper extends CoreComponent {
     public ButtonMapper(String name, Boolean active, DefaultCore core){
-        super(name, active, ComponentType.BUTTON_MAPPER, core);
+        super(name, active, core, ComponentType.BUTTON_MAPPER);
     }
 
     public final void primitiveButtonToggle(Gamepad gp, Gamepad.Button btn){

@@ -49,7 +49,7 @@ GamepadManager extends InputSource {
                     this.btnMappers.get(c).primitiveButtonHold(gp, btnHold.get(b));
                 }
             }
-            for(int b = 0; b < btnHold.size(); b++){
+            for(int b = 0; b < btnToggle.size(); b++){
                 for(int c = 0; c < this.btnMappers.size(); c++){
                     this.btnMappers.get(c).primitiveButtonToggle(gp, btnToggle.get(b));
                 }

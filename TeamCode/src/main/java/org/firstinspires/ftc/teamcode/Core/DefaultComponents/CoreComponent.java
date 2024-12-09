@@ -7,19 +7,23 @@ import java.util.ArrayList;
 public abstract class CoreComponent {
     public boolean active = false;
     public final String name;
-    public final ComponentType type;
+    public final ComponentType[] types;
     public final DefaultCore core;
-    public CoreComponent(String name, Boolean active, ComponentType type, DefaultCore core){
+    public CoreComponent(String name, Boolean active, DefaultCore core, ComponentType... type){
         if(name != null && !name.isEmpty()){
             this.name = name;
             this.active = true; // dumb feature, don't use
-            this.type = type;
+            this.types = type;
             this.core = core;
         }else{
             throw new IllegalArgumentException("Name cannot be empty (CoreComponent constructor)");
         }
     }
-    public ArrayList<String> getStatus(){return null;}
+    public ArrayList<String> getStatus(){
+        ArrayList<String> caca = new ArrayList<>();
+        caca.add(this.name + " active");
+        return caca;
+    }
     public final void primitiveStep(DefaultCore core){
         if(this.active){
             this.step(core);

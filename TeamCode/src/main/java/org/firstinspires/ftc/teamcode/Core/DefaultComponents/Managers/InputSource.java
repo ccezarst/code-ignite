@@ -15,7 +15,7 @@ public abstract class InputSource extends CoreComponent {
     ArrayList<AnalogMapper> analogMappers = new ArrayList<AnalogMapper>();
 
     public InputSource(String name, Boolean active, DefaultCore core, Gamepad... gp){
-        super(name, active, ComponentType.INPUT_SOURCE, core);
+        super(name, active,  core, ComponentType.INPUT_SOURCE);
         this.gps = gp;
     }
 

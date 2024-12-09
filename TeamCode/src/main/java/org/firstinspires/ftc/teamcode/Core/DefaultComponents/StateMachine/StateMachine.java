@@ -83,7 +83,7 @@ public class StateMachine extends CoreComponent {
     }
 
     public StateMachine(ArrayList<HardwareInterface> hwInterfaces, ArrayList<SoftwareInterface> swInterfaces, ArrayList<State> states, Boolean active, String name, DefaultCore core) throws FormatException {
-        super(name, active, ComponentType.STATE_MACHINE, core);
+        super(name, active,core, ComponentType.STATE_MACHINE);
         this.hwInterfaces = hwInterfaces;
         this.swInterfaces = swInterfaces;
         this.states = states;

@@ -3,6 +3,9 @@ package org.firstinspires.ftc.teamcode.Core.DefaultComponents.Managers;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.ComponentType;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.CoreComponent;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.InputMappers.AnalogMapper;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.HW_DriveMotors;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.HardwareInterface;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.InterfaceType;
 import org.firstinspires.ftc.teamcode.Core.DefaultCore;
 import org.firstinspires.ftc.teamcode.Gamepad;
 import org.firstinspires.ftc.teamcode.hardware.DriveMotors;
@@ -13,7 +16,7 @@ import java.util.Map;
 public class ManualDrivingManager extends AnalogMapper {
     private int gamepadNumber;
     private ArrayList<InputSource> inSources = new ArrayList<InputSource>();
-    private DriveMotors mot;
+    private HW_DriveMotors mot;
     public ManualDrivingManager(String name, Boolean active, int gamepadNumber, DefaultCore core){
         super(name, active, core); // thmbstck mappr to recieve thumbstick values
         this.gamepadNumber = gamepadNumber;
@@ -37,10 +40,6 @@ public class ManualDrivingManager extends AnalogMapper {
     // aceste 3 functii de mai sus sunt toate furate din CompleteDrive
     // de la ciprian
 
-    @Override
-    public void step(DefaultCore core) {
-
-    }
     // gets a speifid gamepad number from all input sources
     private Gamepad getGamepadFromNumber(int gamepadNr){
         for(int i = 0; i < this.inSources.size(); i++){
@@ -82,12 +81,27 @@ public class ManualDrivingManager extends AnalogMapper {
         return  toReturn;
     }
 
+    private HW_DriveMotors getDriveMotors(){
+        ArrayList<CoreComponent> interfaces = this.core.getComponentsOfType(ComponentType.HARDARE_INTERFACE);
+        for(int i = 0; i < interfaces.size(); i++){
+            if(((HardwareInterface)interfaces.get(i)).interfaceType == InterfaceType.DRIVE_MOTORS){
+                return (HW_DriveMotors) interfaces.get(i);
+            }
+        }
+        return null;
+    }
+
+
 
     @Override
     public void update(DefaultCore core) {
         this.inSources = this.getInputSources();
-        this.mot = new DriveMotors();
+        this.mot = this.getDriveMotors();
+    }
 
+    @Override
+    public void step(DefaultCore core) {
+        if
     }
 
     @Override

@@ -7,20 +7,18 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.ComponentType;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.CoreComponent;
 import org.firstinspires.ftc.teamcode.Core.DefaultCore;
+import org.firstinspires.ftc.teamcode.hardware.DriveMotors;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class HW_DriveMotors extends HardwareInterface{
-    Map<String, DcMotorSimple.Direction> motors = new HashMap<>();
-    Map<String, DcMotor> physicalMotors = new HashMap<>();
+
+    private DriveMotors drive;
     public HW_DriveMotors(String name, Boolean active, DefaultCore core){
         super(name, active, core, InterfaceType.DRIVE_MOTORS);
-        this.motors.put("leftFront", DcMotorSimple.Direction.REVERSE);
-        this.motors.put("rightFront", DcMotorSimple.Direction.FORWARD);
-        this.motors.put("leftRear", DcMotorSimple.Direction.REVERSE);
-        this.motors.put("rightRead", DcMotorSimple.Direction.FORWARD);
     }
 
     @Override
@@ -40,14 +38,6 @@ public class HW_DriveMotors extends HardwareInterface{
 
     @Override
     public void update(DefaultCore core) {
-        HardwareMap hwMap = this.getHardwareMap();
-        this.physicalMotors.clear();
-        for(int i = 0; i < this.motors.keySet().size(); i++){
-            DcMotor motor = hwMap.dcMotor.get(this.motors.keySet().toArray()[i].toString());
-            motor.setDirection(this.motors.get(this.motors.keySet().toArray()[i]));
-            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            this.physicalMotors.put(this.motors.keySet().toArray()[i].toString(), motor);
-        }
+        this.drive = new DriveMotors(Objects.requireNonNull(this.getHardwareMap()));
     }
 }

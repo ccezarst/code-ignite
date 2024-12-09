@@ -8,7 +8,7 @@ public abstract class SoftwareInterface extends CoreComponent {
     public final InterfaceType interfaceType;
 
     public SoftwareInterface(String cName, Boolean active, DefaultCore core, InterfaceType interfaceTye){
-        super(cName, active, ComponentType.HARDARE_INTERFACE, core);
+        super(cName, active, core, ComponentType.SOFTWARE_INTERFACE);
         this.interfaceType = interfaceTye;
     }
 

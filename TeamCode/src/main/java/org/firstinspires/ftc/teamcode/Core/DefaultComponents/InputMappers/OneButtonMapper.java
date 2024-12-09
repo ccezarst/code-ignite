@@ -4,12 +4,12 @@ import org.firstinspires.ftc.teamcode.Core.DefaultCore;
 import org.firstinspires.ftc.teamcode.Gamepad;
 
 // maps a button to a callback
-public class OneButtonMap extends ButtonMapper {
+public class OneButtonMapper extends ButtonMapper {
     private Gamepad.Button btn;
 
     private int gamepadNr;
     private Boolean hold;
-    public OneButtonMap(Gamepad.Button btn, Boolean hold, int gamepadNr, String name, Boolean active, DefaultCore core){
+    public OneButtonMapper(Gamepad.Button btn, Boolean hold, int gamepadNr, String name, Boolean active, DefaultCore core){
         super(name, active, core);
         this.btn = btn;
         this.hold = hold;

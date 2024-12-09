@@ -10,7 +10,7 @@ import java.util.Map;
 public abstract class AnalogMapper extends CoreComponent {
 
     public AnalogMapper(String name, Boolean active, DefaultCore core){
-        super(name, active, ComponentType.BUTTON_MAPPER, core);
+        super(name, active, core, ComponentType.BUTTON_MAPPER);
     }
     public final void primitiveAnalog(Gamepad gp, Map<Gamepad.Analog, Double> in){
         if(this.active){
