@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Software
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class StateMachine extends CoreComponent {
     private ArrayList<HardwareInterface> hwInterfaces;
@@ -19,7 +20,7 @@ public class StateMachine extends CoreComponent {
     private State currentState;
     private ArrayList<String> stateQueue;
 
-    private void checkStatesConnections(ArrayList<State> states) throws FormatException {
+    private void checkStatesConnections(ArrayList<State> states) {
             // keep track if connections are reciprocated in both states
             // map with the keys being a state and being it's inputs assembled from other states ouputs
             Map<String, ArrayList<String>> pula = new HashMap<>();
@@ -38,10 +39,10 @@ public class StateMachine extends CoreComponent {
             // now re-iterate over states but check if inputs are same as outputs
             for(int i =0; i < states.size(); i++){
                 // if the current state inputs contain all the outputs saved in the mapz
-                if(states.get(i).inputs.containsAll(pula.get(states.get(i)))){
+                if(states.get(i).inputs.containsAll(Objects.requireNonNull(pula.get(states.get(i))))){
                     // acc do nothing
                 }else{
-                    throw new FormatException("State Machine configuration is not proper; " + states.get(i).name + "'s inputs do not math other states outputs; check connections");
+                    throw new IllegalArgumentException("State Machine configuration is not proper; " + states.get(i).name + "'s inputs do not math other states outputs; check connections");
                 }
             }
     }
@@ -82,13 +83,13 @@ public class StateMachine extends CoreComponent {
         return best;
     }
 
-    public StateMachine(ArrayList<HardwareInterface> hwInterfaces, ArrayList<SoftwareInterface> swInterfaces, ArrayList<State> states, Boolean active, String name, DefaultCore core) throws FormatException {
+    public StateMachine(ArrayList<HardwareInterface> hwInterfaces, ArrayList<SoftwareInterface> swInterfaces, ArrayList<State> states, Boolean active, String name, DefaultCore core) {
         super(name, active,core, ComponentType.STATE_MACHINE);
         this.hwInterfaces = hwInterfaces;
         this.swInterfaces = swInterfaces;
         this.states = states;
         this.stateQueue = new ArrayList<String>();
-        this.checkStatesConnections(this.states);
+        //this.checkStatesConnections(this.states);
         // calculate best pathes for each state to others
         // iterate through all states
         for(int i = 0; i < this.states.size(); i++){
@@ -124,8 +125,8 @@ public class StateMachine extends CoreComponent {
     public void step(DefaultCore core){
         if(this.active){
             if(!this.stateQueue.isEmpty()) {
-                if (this.currentState.checkRequirements(hwInterfaces, swInterfaces)) {
-                    String newStateName = this.stateQueue.remove(0);
+                String newStateName = this.stateQueue.remove(0);
+                if (this.currentState.checkRequirements(hwInterfaces, swInterfaces) && this.currentState.name != newStateName) {
                     State newState = lookupStateFromName(newStateName, this.states);
                     newState.call(this.hwInterfaces, this.swInterfaces);
                     this.currentState = newState;

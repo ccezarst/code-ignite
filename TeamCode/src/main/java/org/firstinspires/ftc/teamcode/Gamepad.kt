@@ -25,6 +25,8 @@ class Gamepad(private val gp: Gamepad, var number: Int) {
         RIGHT_STICK_X,
         RIGHT_STICK_Y
     }
+
+
     private var lastStates = Button.values().map { it to false }.toMap().toMutableMap()
 
     val left_trigger
@@ -62,6 +64,16 @@ class Gamepad(private val gp: Gamepad, var number: Int) {
 
     val dpad_left
         get() = gp.dpad_left
+
+    fun getAnalog(an: Analog): Float =
+        when (an) {
+            Analog.LEFT_STICK_X -> gp.left_stick_x
+            Analog.LEFT_TRIGGER -> gp.left_stick_y
+            Analog.RIGHT_TRIGGER -> gp.right_trigger
+            Analog.LEFT_STICK_Y -> gp.left_stick_y
+            Analog.RIGHT_STICK_X -> gp.right_stick_x
+            Analog.RIGHT_STICK_Y -> gp.right_stick_y
+        }
 
     fun checkHold(button: Button): Boolean =
             when (button) {

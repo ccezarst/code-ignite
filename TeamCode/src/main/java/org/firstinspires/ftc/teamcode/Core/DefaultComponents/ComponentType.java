@@ -7,6 +7,7 @@ public enum ComponentType {
     HARDARE_INTERFACE,
     SOFTWARE_INTERFACE,
     STATE_MACHINE,
+    DRIVING_MANAGER,
     OTHER
 
 

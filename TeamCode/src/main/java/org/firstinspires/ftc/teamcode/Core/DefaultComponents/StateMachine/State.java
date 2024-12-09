@@ -5,7 +5,7 @@ import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Software
 
 import java.util.ArrayList;
 
-public class State {
+public abstract class State {
     private ArrayList<StateToStatePath> pathsToOtherStates;
     public final ArrayList<String> inputs;
     public final ArrayList<String> outputs;
@@ -70,8 +70,8 @@ public class State {
         return null;
     }
     // incase we need a special state that has special requirements(eg. robot is in position x)
-    public boolean checkRequirements(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf){return true;}
-    public void call(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf){};
+    public abstract boolean checkRequirements(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf);
+    public abstract void call(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf);
     public State(String name, ArrayList<String> inputs, ArrayList<String> outputs){
         this.inputs = inputs;
         this.outputs = outputs;

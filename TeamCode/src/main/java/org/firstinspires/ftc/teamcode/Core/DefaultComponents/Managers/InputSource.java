@@ -73,6 +73,14 @@ public abstract class InputSource extends CoreComponent {
         return false;
     }
 
+    public double getAnalog(int gamepadNumer, Gamepad.Analog btn){
+        for(int i = 0; i < this.gps.length; i++){
+            if(this.gps[i].getNumber() == gamepadNumer){
+                return this.gps[i].getAnalog(btn);
+            }
+        }
+        return 0;
+    }
     public boolean containsGamepad(int gamepadNr){
         for(int i = 0; i < this.gps.length; i++){
             if(this.gps[i].getNumber() == gamepadNr){

@@ -21,7 +21,7 @@ public abstract class CoreComponent {
     }
     public ArrayList<String> getStatus(){
         ArrayList<String> caca = new ArrayList<>();
-        caca.add(this.name + " active");
+        caca.add("active");
         return caca;
     }
     public final void primitiveStep(DefaultCore core){
