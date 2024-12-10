@@ -68,7 +68,7 @@ class Gamepad(private val gp: Gamepad, var number: Int) {
     fun getAnalog(an: Analog): Float =
         when (an) {
             Analog.LEFT_STICK_X -> gp.left_stick_x
-            Analog.LEFT_TRIGGER -> gp.left_stick_y
+            Analog.LEFT_TRIGGER -> gp.left_trigger
             Analog.RIGHT_TRIGGER -> gp.right_trigger
             Analog.LEFT_STICK_Y -> gp.left_stick_y
             Analog.RIGHT_STICK_X -> gp.right_stick_x

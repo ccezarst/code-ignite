@@ -9,10 +9,13 @@ import org.firstinspires.ftc.teamcode.Core.DefaultComponents.InputMappers.OneBut
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.HW_HwMap;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.HardwareInterface;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.InterfaceType;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.SW_Telemetry;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.SoftwareInterface;
 import org.firstinspires.ftc.teamcode.Core.DefaultCore;
 import org.firstinspires.ftc.teamcode.Gamepad;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class motorRunner extends OneButtonMapper {
 
@@ -27,23 +30,26 @@ public class motorRunner extends OneButtonMapper {
     }
 
     public void extend(double amount){
-        int finalAm = (int) Math.round((amount * highLimit) + lowLimmit);
+        int finalAm = (int) Math.round((amount * this.highLimit) + this.lowLimmit);
         this.rightMotor.setTargetPosition(finalAm);
         this.rightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         this.rightMotor.setPower(0.5);
         this.leftMotor.setTargetPosition(finalAm);
         this.leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         this.leftMotor.setPower(0.5);
+        Objects.requireNonNull(this.getTelemetry()).telemetry.addLine(String.valueOf(finalAm));
+
 
     }
-    private int currentPos = 10;
+    private double currentPos = 0;
     @Override
     public void callback() {
-        this.extend(currentPos / 100);
-        this.currentPos += 1;
+        this.extend((double) this.currentPos / 100);
+        this.currentPos += 0.2;
         if(this.currentPos >= 100){
             this.currentPos = 10;
         }
+        Objects.requireNonNull(this.getTelemetry()).telemetry.addLine(String.valueOf(this.currentPos));
     }
 
     private HW_HwMap getHwMap(){
@@ -51,6 +57,16 @@ public class motorRunner extends OneButtonMapper {
         for(int i = 0; i < interfs.size(); i++){
             if(((HardwareInterface)(interfs.get(i))).interfaceType == InterfaceType.HARDWARE_MAP){
                 return (HW_HwMap) interfs.get(i);
+            }
+        }
+        return null;
+    }
+
+    private SW_Telemetry getTelemetry(){
+        ArrayList<CoreComponent> interfs = this.core.getComponentsOfType(ComponentType.SOFTWARE_INTERFACE);
+        for(int i = 0; i < interfs.size(); i++){
+            if(((SoftwareInterface)(interfs.get(i))).interfaceType == InterfaceType.TELEMETRY){
+                return (SW_Telemetry) interfs.get(i);
             }
         }
         return null;

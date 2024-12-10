@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.Core.DefaultComponents.CoreComponent;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.InputMappers.ButtonOutput;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.InputMappers.PrintCoreStatusBind;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.HardwareInterface;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.SW_Telemetry;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.SoftwareInterface;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.StateMachine.State;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.StateMachine.StateMachine;
@@ -45,6 +46,7 @@ public class ManualCoreTest extends LinearOpMode {
         ManualCore core = new ManualCore(hardwareMap, 1, gp1, gp2);
         core.addComponent(new PrintCoreStatusBind(1, core, telemetry));
         core.addComponent(new ButtonOutput("ButtonOutGP1", true, core, telemetry));
+        core.addComponent(new SW_Telemetry("TelemetryInterface", true, core, telemetry));
         core.addComponent(new motorRunner(core));
         ArrayList<State> intakeStates = new ArrayList<State>();
         ArrayList<String> in = new ArrayList<>();
