@@ -5,17 +5,16 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.ComponentType;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.CoreComponent;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Extra.PeripheralValuePrinter;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.InputMappers.ButtonOutput;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.InputMappers.PrintCoreStatusBind;
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.HardwareInterface;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.HardwareInterface;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.SW_Telemetry;
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.SoftwareInterface;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.SoftwareInterface;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.StateMachine.State;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.StateMachine.StateMachine;
 import org.firstinspires.ftc.teamcode.Core.ManualCore;
 import org.firstinspires.ftc.teamcode.CustomComponents.IdleState;
-import org.firstinspires.ftc.teamcode.CustomComponents.motorRunner;
-import org.firstinspires.ftc.teamcode.CustomComponents.motorRunnerOut;
 import org.firstinspires.ftc.teamcode.CustomComponents.motorRunnerTwo;
 
 import java.util.ArrayList;
@@ -47,8 +46,7 @@ public class ManualCoreTest extends LinearOpMode {
         core.addComponent(new PrintCoreStatusBind(1, core, telemetry));
         core.addComponent(new ButtonOutput("ButtonOutGP1", true, core, telemetry));
         core.addComponent(new SW_Telemetry("TelemetryInterface", true, core, telemetry));
-        core.addComponent(new motorRunner(core));
-        core.addComponent(new motorRunnerOut(core));
+        core.addComponent(new PeripheralValuePrinter("PeripheralValuePrinter", true, core));
         core.addComponent(new motorRunnerTwo(core));
         ArrayList<State> intakeStates = new ArrayList<State>();
         ArrayList<String> in = new ArrayList<>();

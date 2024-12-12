@@ -2,17 +2,14 @@ package org.firstinspires.ftc.teamcode.Core.DefaultComponents.Managers;
 
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.ComponentType;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.CoreComponent;
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.InputMappers.AnalogMapper;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.HW_DriveMotors;
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.HardwareInterface;
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.InterfaceType;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.HardwareInterface;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.InterfaceType;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Managers.Template.InputSource;
 import org.firstinspires.ftc.teamcode.Core.DefaultCore;
 import org.firstinspires.ftc.teamcode.Gamepad;
-import org.firstinspires.ftc.teamcode.hardware.DriveMotors;
-import org.opencv.core.Core;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 public class ManualDrivingManager extends CoreComponent {
     private int gamepadNumber;

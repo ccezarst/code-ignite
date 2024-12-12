@@ -4,16 +4,14 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.checkerframework.checker.units.qual.A;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.ComponentType;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.CoreComponent;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.HW_HwMap;
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.HardwareInterface;
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.InterfaceType;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.HardwareInterface;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.InterfaceType;
 import org.firstinspires.ftc.teamcode.Core.DefaultCore;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class IntakeInterface extends HardwareInterface {
     public IntakeInterface(String cName, Boolean active, DefaultCore core) {
@@ -22,6 +20,11 @@ public class IntakeInterface extends HardwareInterface {
 
     private DcMotor rightMotor;
     private DcMotor leftMotor;
+
+    private Servo rightRotate;
+    private Servo leftRotate;
+
+    private Servo intakeServo;
 
     private int lowLimmit = 5;
     private int highLimit = 500;
@@ -42,13 +45,7 @@ public class IntakeInterface extends HardwareInterface {
     }
 
     private HW_HwMap getHwMap(){
-        ArrayList<CoreComponent> interfs = this.core.getComponentsOfType(ComponentType.HARDARE_INTERFACE);
-        for(int i = 0; i < interfs.size(); i++){
-            if(((HardwareInterface)(interfs.get(i))).interfaceType == InterfaceType.HARDWARE_MAP){
-                return (HW_HwMap) interfs.get(i);
-            }
-        }
-        return null;
+        return ((HW_HwMap) this.core.getInterfacesOfType(InterfaceType.HARDWARE_MAP).get(0));
     }
 
     @Override

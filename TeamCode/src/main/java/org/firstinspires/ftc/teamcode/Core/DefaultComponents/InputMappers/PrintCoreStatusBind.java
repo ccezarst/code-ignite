@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Core.DefaultComponents.InputMappers;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.InputMappers.Template.OneButtonMapper;
 import org.firstinspires.ftc.teamcode.Core.DefaultCore;
 import org.firstinspires.ftc.teamcode.Gamepad;
 

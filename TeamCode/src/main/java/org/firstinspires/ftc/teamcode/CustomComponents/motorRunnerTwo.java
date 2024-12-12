@@ -2,18 +2,16 @@ package org.firstinspires.ftc.teamcode.CustomComponents;
 
 import android.os.Build;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.ComponentType;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.CoreComponent;
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.InputMappers.OneButtonMapper;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.InputMappers.Template.OneButtonMapper;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.HW_HwMap;
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.HardwareInterface;
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.InterfaceType;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.HardwareInterface;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.InterfaceType;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.SW_Telemetry;
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.SoftwareInterface;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.SoftwareInterface;
 import org.firstinspires.ftc.teamcode.Core.DefaultCore;
 import org.firstinspires.ftc.teamcode.Gamepad;
 
@@ -31,23 +29,11 @@ public class motorRunnerTwo extends OneButtonMapper {
     }
 
     public void toggleRun(){
-        if(toggle){
             motor.setPosition(1);
-        }else{
-            motor.setPosition(1);
-        }
-        toggle = !toggle;
     }
     @Override
     public void callback() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if(Instant.now().toEpochMilli() - last > 2000){
-                this.toggleRun();
-                this.last = Instant.now().toEpochMilli();
-                Objects.requireNonNull(this.getTelemetry()).telemetry.addLine("pula1");
-            }
-            Objects.requireNonNull(this.getTelemetry()).telemetry.addLine("pula2");
-        }
+        this.toggleRun();
     }
 
     private HW_HwMap getHwMap(){

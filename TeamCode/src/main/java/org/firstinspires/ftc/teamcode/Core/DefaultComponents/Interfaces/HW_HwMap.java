@@ -2,9 +2,11 @@ package org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.HardwareInterface;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.InterfaceType;
 import org.firstinspires.ftc.teamcode.Core.DefaultCore;
 
-public class HW_HwMap extends HardwareInterface{
+public class HW_HwMap extends HardwareInterface {
     public final HardwareMap hwMap;
     public HW_HwMap(String name, Boolean active, DefaultCore core, HardwareMap hwMap){
         super(name, active, core, InterfaceType.HARDWARE_MAP);

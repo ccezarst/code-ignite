@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.Core;
 
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.ComponentType;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.CoreComponent;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.Interface;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.InterfaceType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,6 +48,17 @@ public class DefaultCore {
             }
         }
 
+        return toReturn;
+    }
+
+    public final ArrayList<Interface> getInterfacesOfType(InterfaceType type){
+        ArrayList<CoreComponent> interfs = this.getComponentsOfType(ComponentType.INTERFACE);
+        ArrayList<Interface> toReturn = new ArrayList<>();
+        for(int i = 0; i < interfs.size(); i++){
+            if(((Interface)(interfs.get(i))).interfaceType == type){
+                toReturn.add((Interface) interfs.get(i));
+            }
+        }
         return toReturn;
     }
 

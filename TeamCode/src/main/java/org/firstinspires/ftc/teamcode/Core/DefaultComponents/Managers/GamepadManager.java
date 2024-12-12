@@ -1,17 +1,12 @@
 package org.firstinspires.ftc.teamcode.Core.DefaultComponents.Managers;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Managers.Template.InputSource;
 import org.firstinspires.ftc.teamcode.Core.DefaultCore;
 import org.firstinspires.ftc.teamcode.Gamepad;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class
 GamepadManager extends InputSource {

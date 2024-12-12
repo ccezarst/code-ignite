@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode.Core.DefaultComponents;
 
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.InterfaceType;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.Interface;
 import org.firstinspires.ftc.teamcode.Core.DefaultCore;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 public abstract class CoreComponent {
@@ -29,6 +32,7 @@ public abstract class CoreComponent {
             this.step(core);
         }
     }
+
     public abstract void step(DefaultCore core);
     public abstract void update(DefaultCore core); // update function should contain all init code
     // to allow real-time updating of components and hot testing of components

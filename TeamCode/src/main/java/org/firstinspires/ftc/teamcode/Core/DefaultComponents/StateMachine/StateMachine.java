@@ -1,12 +1,10 @@
 package org.firstinspires.ftc.teamcode.Core.DefaultComponents.StateMachine;
 
-import android.nfc.FormatException;
-
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.ComponentType;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.CoreComponent;
 import org.firstinspires.ftc.teamcode.Core.DefaultCore;
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.HardwareInterface;
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.SoftwareInterface;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.HardwareInterface;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.SoftwareInterface;
 
 import java.util.ArrayList;
 import java.util.HashMap;
