@@ -32,7 +32,7 @@ class Intake(hwMap: HardwareMap) {
         const val servoDifL_up = 0.224
 
 
-        /***Pozitie cu care tii intake-ul putin deasupra sample-ului, urmand sa il lasi jso cu poz de luat***/
+        /***Pozitie cu care tii intake-ul putin deasupra sample-ului, urmand sa il lasi jos cu poz de luat***/
         const val servoRotatieL_toggle = 0.4028
         const val servoRotatieR_toggle = 0.4706
         const val servoDifR_toggle = 0.284

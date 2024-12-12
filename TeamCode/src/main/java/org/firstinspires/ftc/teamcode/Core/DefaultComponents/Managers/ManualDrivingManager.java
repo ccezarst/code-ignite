@@ -113,11 +113,11 @@ public class ManualDrivingManager extends CoreComponent {
     public void step(DefaultCore core) {
         if(this.getAnalogFromAllInputSources(gamepadNumber, Gamepad.Analog.RIGHT_TRIGGER) > 0.2){
             this.mot.drive.move(this.direction(this.getAnalogFromAllInputSources(gamepadNumber, Gamepad.Analog.LEFT_STICK_X), this.getAnalogFromAllInputSources(gamepadNumber, Gamepad.Analog.LEFT_STICK_Y)),
-                    this.speed(this.getAnalogFromAllInputSources(gamepadNumber, Gamepad.Analog.LEFT_STICK_X), this.getAnalogFromAllInputSources(gamepadNumber, Gamepad.Analog.LEFT_STICK_Y) * scale),
+                    this.speed(this.getAnalogFromAllInputSources(gamepadNumber, Gamepad.Analog.LEFT_STICK_X), this.getAnalogFromAllInputSources(gamepadNumber, Gamepad.Analog.LEFT_STICK_Y)),
                     this.rotation(this.getAnalogFromAllInputSources(gamepadNumber, Gamepad.Analog.RIGHT_STICK_X)) * scale);
         }else if(this.getAnalogFromAllInputSources(gamepadNumber, Gamepad.Analog.LEFT_TRIGGER) > 0.2){
             this.mot.drive.move(this.direction(this.getAnalogFromAllInputSources(gamepadNumber, Gamepad.Analog.LEFT_STICK_X), this.getAnalogFromAllInputSources(gamepadNumber, Gamepad.Analog.LEFT_STICK_Y)),
-                    this.speed(this.getAnalogFromAllInputSources(gamepadNumber, Gamepad.Analog.LEFT_STICK_X), this.getAnalogFromAllInputSources(gamepadNumber, Gamepad.Analog.LEFT_STICK_Y) * scale/ 2),
+                    this.speed(this.getAnalogFromAllInputSources(gamepadNumber, Gamepad.Analog.LEFT_STICK_X), this.getAnalogFromAllInputSources(gamepadNumber, Gamepad.Analog.LEFT_STICK_Y)),
                     this.rotation(this.getAnalogFromAllInputSources(gamepadNumber, Gamepad.Analog.RIGHT_STICK_X)) * scale / 2);
         }else{
             this.mot.drive.move(this.direction(this.getAnalogFromAllInputSources(gamepadNumber, Gamepad.Analog.LEFT_STICK_X), this.getAnalogFromAllInputSources(gamepadNumber, Gamepad.Analog.LEFT_STICK_Y)),

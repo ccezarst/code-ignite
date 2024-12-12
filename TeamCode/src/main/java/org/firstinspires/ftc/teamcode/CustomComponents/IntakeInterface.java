@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.CustomComponents;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.checkerframework.checker.units.qual.A;
@@ -12,6 +13,7 @@ import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Interfac
 import org.firstinspires.ftc.teamcode.Core.DefaultCore;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class IntakeInterface extends HardwareInterface {
     public IntakeInterface(String cName, Boolean active, DefaultCore core) {
@@ -25,9 +27,13 @@ public class IntakeInterface extends HardwareInterface {
     private int highLimit = 500;
 
     public void extend(double amount){
-        int finalAm = (int) Math.round((amount * highLimit) + lowLimmit);
+        int finalAm = (int) Math.round((amount * this.highLimit) + this.lowLimmit);
         this.rightMotor.setTargetPosition(finalAm);
+        this.rightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        this.rightMotor.setPower(1);
         this.leftMotor.setTargetPosition(finalAm);
+        this.leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        this.leftMotor.setPower(1);
     }
 
     @Override
@@ -48,14 +54,16 @@ public class IntakeInterface extends HardwareInterface {
     @Override
     public void update(DefaultCore core) {
         this.rightMotor = (DcMotor) this.getHwMap().hwMap.get("motorR");
-        this.rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        this.rightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        this.rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         this.rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        this.rightMotor.setPower(1);
+        this.rightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        this.rightMotor.setPower(0);
         this.leftMotor = (DcMotor) this.getHwMap().hwMap.get("motorL");
-        this.leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        this.leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        this.leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         this.leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        this.leftMotor.setPower(1);
+        this.leftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        this.leftMotor.setPower(0);
     }
 }

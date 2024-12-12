@@ -15,10 +15,10 @@ import org.firstinspires.ftc.teamcode.Core.DefaultComponents.StateMachine.StateM
 import org.firstinspires.ftc.teamcode.Core.ManualCore;
 import org.firstinspires.ftc.teamcode.CustomComponents.IdleState;
 import org.firstinspires.ftc.teamcode.CustomComponents.motorRunner;
+import org.firstinspires.ftc.teamcode.CustomComponents.motorRunnerOut;
+import org.firstinspires.ftc.teamcode.CustomComponents.motorRunnerTwo;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Timer;
 
 @TeleOp
 public class ManualCoreTest extends LinearOpMode {
@@ -48,6 +48,8 @@ public class ManualCoreTest extends LinearOpMode {
         core.addComponent(new ButtonOutput("ButtonOutGP1", true, core, telemetry));
         core.addComponent(new SW_Telemetry("TelemetryInterface", true, core, telemetry));
         core.addComponent(new motorRunner(core));
+        core.addComponent(new motorRunnerOut(core));
+        core.addComponent(new motorRunnerTwo(core));
         ArrayList<State> intakeStates = new ArrayList<State>();
         ArrayList<String> in = new ArrayList<>();
         in.add("IdleState");

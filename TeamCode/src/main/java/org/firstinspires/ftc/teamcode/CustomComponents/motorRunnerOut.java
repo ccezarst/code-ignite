@@ -17,16 +17,16 @@ import org.firstinspires.ftc.teamcode.Gamepad;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class motorRunner extends OneButtonMapper {
+public class motorRunnerOut extends OneButtonMapper {
 
     private DcMotor rightMotor;
     private DcMotor leftMotor;
 
     private int lowLimmit = 5;
-    private int highLimit = 500;
+    private int highLimit = 2600;
 
-    public motorRunner(DefaultCore core) {
-        super(Gamepad.Button.Y, true, 1, "caca", true, core);
+    public motorRunnerOut(DefaultCore core) {
+        super(Gamepad.Button.X, true, 1, "caca2", true, core);
     }
 
     public void extend(double amount){
@@ -37,7 +37,9 @@ public class motorRunner extends OneButtonMapper {
         this.leftMotor.setTargetPosition(finalAm);
         this.leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         this.leftMotor.setPower(1);
-        Objects.requireNonNull(this.getTelemetry()).telemetry.addLine(String.valueOf(finalAm));
+        Objects.requireNonNull(this.getTelemetry()).telemetry.addLine("Out: " + String.valueOf(finalAm));
+
+
     }
     private double currentPos = 0;
     @Override
@@ -47,7 +49,7 @@ public class motorRunner extends OneButtonMapper {
         if(this.currentPos >= 100){
             this.currentPos = 0;
         }
-        Objects.requireNonNull(this.getTelemetry()).telemetry.addLine(String.valueOf(this.currentPos));
+        Objects.requireNonNull(this.getTelemetry()).telemetry.addLine("Out: " + String.valueOf(this.currentPos));
     }
 
     private HW_HwMap getHwMap(){
@@ -72,17 +74,17 @@ public class motorRunner extends OneButtonMapper {
 
     @Override
     public void update(DefaultCore core) {
-        this.rightMotor = (DcMotor) this.getHwMap().hwMap.get("motorR");
+        this.rightMotor = (DcMotor) this.getHwMap().hwMap.get("motorRout");
         this.rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         this.rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         this.rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        this.rightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        this.rightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         this.rightMotor.setPower(0);
-        this.leftMotor = (DcMotor) this.getHwMap().hwMap.get("motorL");
+        this.leftMotor = (DcMotor) this.getHwMap().hwMap.get("motorLout");
         this.leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         this.leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         this.leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        this.leftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        this.leftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         this.leftMotor.setPower(0);
     }
 }
