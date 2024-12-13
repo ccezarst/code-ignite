@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.Core.DefaultComponents.InputMappers;
 
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.InputMappers.Template.ButtonMapper;
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.InputMappers.Template.ButtonMapperKeybindMap;
 import org.firstinspires.ftc.teamcode.Core.DefaultCore;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.StateMachine.StateMachine;
 import org.firstinspires.ftc.teamcode.Gamepad;

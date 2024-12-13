@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template;
 
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.SoftwareInterface;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.CoreComponent;
 import org.firstinspires.ftc.teamcode.Core.DefaultCore;
 
 import java.util.ArrayList;

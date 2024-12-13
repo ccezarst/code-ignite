@@ -1,12 +1,9 @@
 package org.firstinspires.ftc.teamcode.CustomComponents;
 
-import android.os.Build;
-
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.ComponentType;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.CoreComponent;
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.InputMappers.Template.OneButtonMapper;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.HW_HwMap;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.HardwareInterface;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.InterfaceType;
@@ -15,7 +12,6 @@ import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template
 import org.firstinspires.ftc.teamcode.Core.DefaultCore;
 import org.firstinspires.ftc.teamcode.Gamepad;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Objects;
 

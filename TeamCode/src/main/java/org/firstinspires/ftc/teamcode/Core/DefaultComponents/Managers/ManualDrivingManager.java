@@ -22,7 +22,7 @@ public class ManualDrivingManager extends CoreComponent {
     }
     /// The direction in which the robot is translating
     private double direction(double x, double y){
-        double nX = +x;  // -
+        double nX = x * -1;  // -
         double nY = +y; // +
 
         return Math.atan2(y, x) / Math.PI * 180.0 - 90.0;

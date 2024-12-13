@@ -15,7 +15,7 @@ public class UI_Manager extends CoreComponent {
         super(name, active, core, type);
     }
 
-    
+
 
     @Override
     public void step(DefaultCore core) {

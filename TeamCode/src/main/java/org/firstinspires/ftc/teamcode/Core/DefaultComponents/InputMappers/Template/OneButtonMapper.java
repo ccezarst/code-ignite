@@ -1,40 +1,46 @@
 package org.firstinspires.ftc.teamcode.Core.DefaultComponents.InputMappers.Template;
 
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Managers.Template.ButtonTypes;
 import org.firstinspires.ftc.teamcode.Core.DefaultCore;
-import org.firstinspires.ftc.teamcode.Gamepad;
 
-// maps a button to a callback
-public class OneButtonMapper extends ButtonMapper {
-    private Gamepad.Button btn;
-
-    private int gamepadNr;
-    private Boolean hold;
-    public OneButtonMapper(Gamepad.Button btn, Boolean hold, int gamepadNr, String name, Boolean active, DefaultCore core){
+public abstract class OneButtonMapper extends InputMapper{
+    private final ButtonTypes btn;
+    private final int inputSourceID;
+    private boolean pressed = false;
+    private boolean toggle = false;
+    public OneButtonMapper(String name, Boolean active, DefaultCore core, ButtonTypes button, int inputSourceID) {
         super(name, active, core);
-        this.btn = btn;
-        this.hold = hold;
-        this.gamepadNr = gamepadNr;
+        this.btn = button;
+        this.inputSourceID = inputSourceID;
     }
 
-    public void callback(){}
+    @Override
+    public abstract void step(DefaultCore core);
+
+    public abstract void buttonPressed();
+    public abstract void buttonDown();
+    public abstract void buttonUp();
+    public abstract void buttonToggle();
 
     @Override
-    public final void buttonHold(Gamepad gp, Gamepad.Button btn){
-        if(this.hold && gp.getNumber() == this.gamepadNr && btn == this.btn){
-            this.callback();
+    public final void statesUpdated() {
+        if(this.states.get(this.inputSourceID).getButtonState(this.btn)){
+            if(this.pressed){
+                this.buttonDown();
+            }else{
+                this.pressed = true;
+                this.buttonPressed();
+                this.buttonDown();
+                this.toggle = !this.toggle;
+                if(this.toggle){
+                    this.buttonToggle();
+                }
+            }
+        }else{
+            if(this.pressed){
+                this.pressed = false;
+                this.buttonUp();
+            }
         }
     }
-
-    @Override
-    public final void buttonToggle(Gamepad gp, Gamepad.Button btn){
-        if(!this.hold && gp.getNumber() == this.gamepadNr && btn == this.btn){
-            this.callback();
-        }
-    }
-
-    @Override
-    public void step(DefaultCore core) {}
-
-    @Override
-    public void update(DefaultCore core) {}
 }
