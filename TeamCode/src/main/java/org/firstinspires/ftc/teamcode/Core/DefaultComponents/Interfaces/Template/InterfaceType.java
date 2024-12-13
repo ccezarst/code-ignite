@@ -4,5 +4,6 @@ public enum InterfaceType {
     DRIVE_MOTORS,
     HARDWARE_MAP,
     TELEMETRY,
-    INTAKE
+    INTAKE,
+    USER_INTERFACE
 }

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Templat
 
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.ComponentType;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.CoreComponent;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.InterfaceType;
 import org.firstinspires.ftc.teamcode.Core.DefaultCore;
 
 public abstract class Interface extends CoreComponent {
