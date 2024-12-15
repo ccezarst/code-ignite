@@ -15,8 +15,8 @@ import java.util.Objects;
 public class HW_DriveMotors extends HardwareInterface {
 
     public DriveMotors drive;
-    public HW_DriveMotors(String name, Boolean active, DefaultCore core){
-        super(name, active, core, InterfaceType.DRIVE_MOTORS);
+    public HW_DriveMotors(Boolean active, DefaultCore core){
+        super("HW_DriveMotors", active, core, InterfaceType.DRIVE_MOTORS);
     }
 
     @Override

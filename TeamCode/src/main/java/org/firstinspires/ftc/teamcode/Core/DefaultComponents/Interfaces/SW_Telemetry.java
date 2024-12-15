@@ -3,9 +3,12 @@ package org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.ComponentType;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.CoreComponent;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.InputMappers.GeneralInputMapper;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.InputMappers.Template.InputMapper;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.InterfaceType;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.SW_UserInterface;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.SoftwareInterface;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Managers.Template.ButtonTypes;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Managers.Template.InputSource;
 import org.firstinspires.ftc.teamcode.Core.DefaultCore;
 import org.firstinspires.ftc.teamcode.Gamepad;
@@ -17,8 +20,8 @@ public class SW_Telemetry extends SW_UserInterface {
     public final Telemetry telemetry;
     private boolean busy = false;
 
-    public SW_Telemetry(String cName, Boolean active, DefaultCore core, Telemetry telem) {
-        super(cName, active, core);
+    public SW_Telemetry(Boolean active, DefaultCore core, Telemetry telem) {
+        super("SW_Telemetry", active, core);
         this.telemetry = telem;
     }
 
@@ -32,34 +35,26 @@ public class SW_Telemetry extends SW_UserInterface {
 
     }
 
-    private boolean checkButtonOnAllGamepads(InputSource sor, Gamepad.Button button){
-        for(int i = 0; i < sor.gps.length; i++){
-            if(sor.checkHold(sor.gps[i].getNumber(), button)){
-                return true;
-            }
-        }
-        return false;
+    private boolean checkButtonOnAllInputSources(ButtonTypes button){
+        GeneralInputMapper mapper = (GeneralInputMapper) this.core.getComponentFromName("GeneralInputMapper");
+        return mapper.checkButtonDownOnAll(button);
     }
 
     private int getAction(){
-        ArrayList<CoreComponent> inSources = this.core.getComponentsOfType(ComponentType.INPUT_SOURCE);
-        for(int i = 0; i < inSources.size(); i++){
-            InputSource cur = (InputSource) inSources.get(i);
-            if(checkButtonOnAllGamepads(cur, Gamepad.Button.DPAD_UP)){
-                return 1;
-            }else if(checkButtonOnAllGamepads(cur, Gamepad.Button.DPAD_DOWN)){
-                return 2;
-            }else if(checkButtonOnAllGamepads(cur, Gamepad.Button.A)){
-                return 3;
-            }else if(checkButtonOnAllGamepads(cur, Gamepad.Button.B)){
-                return 4;
-            }
+        if(checkButtonOnAllInputSources(ButtonTypes.DPAD_UP)){
+            return 1;
+        }else if(checkButtonOnAllInputSources(ButtonTypes.DPAD_DOWN)){
+            return 2;
+        }else if (checkButtonOnAllInputSources(ButtonTypes.A)){
+            return 3;
+        }else if(checkButtonOnAllInputSources(ButtonTypes.B)){
+            return 4;
         }
         return 0;
     }
 
     @Override
-    public int showMenu(ArrayList<String> options) {
+    public int showMenu(String title, ArrayList<String> options) {
         this.busy = true;
         int selection = 1;
         long startTime = System.currentTimeMillis();
@@ -68,9 +63,10 @@ public class SW_Telemetry extends SW_UserInterface {
             elapsedTime = System.currentTimeMillis() - startTime;
             if(elapsedTime > 300){
                 telemetry.addLine("Select an option using the DPAD, confirm pressing A, cancel pressing B");
+                telemetry.addLine(title + "\n");
                 for(int i = 0; i < options.size(); i++){
                     if(i == selection - 1){
-                        this.telemetry.addLine(options.get(i) + "<--");
+                        this.telemetry.addLine(options.get(i) + "  <--");
                     }else{
                         this.telemetry.addLine(options.get(i));
                     }
@@ -79,7 +75,7 @@ public class SW_Telemetry extends SW_UserInterface {
                 int act = this.getAction();
                 switch(act){
                     case 1:
-                        if(selection > 0){
+                        if(selection > 1){
                             selection -= 1;
                         }
                         break;

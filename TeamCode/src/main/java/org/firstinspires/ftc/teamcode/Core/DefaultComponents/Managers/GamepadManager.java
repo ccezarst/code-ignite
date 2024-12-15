@@ -8,8 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class
-GamepadManager extends InputSource {
+public class GamepadManager extends InputSource {
     private Map<Gamepad.Analog, Double> vals = new HashMap<>();
     public GamepadManager(String name, Boolean active, DefaultCore core,  Gamepad... gp){
         super(name, active, core, gp);
@@ -51,5 +50,10 @@ GamepadManager extends InputSource {
             }
         }
 
+    }
+
+    @Override
+    public ArrayList<String> getStatus() {
+        return null;
     }
 }

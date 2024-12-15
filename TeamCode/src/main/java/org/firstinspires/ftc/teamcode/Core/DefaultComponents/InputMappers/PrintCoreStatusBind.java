@@ -5,13 +5,14 @@ import org.firstinspires.ftc.teamcode.Core.DefaultComponents.InputMappers.Templa
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.InterfaceType;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.SW_UserInterface;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Managers.Template.ButtonTypes;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Managers.UI_Manager;
 import org.firstinspires.ftc.teamcode.Core.DefaultCore;
 import org.firstinspires.ftc.teamcode.Gamepad;
 
 public class PrintCoreStatusBind extends OneButtonMapper {
     private SW_UserInterface ui;
     public PrintCoreStatusBind(int inputSourceID, DefaultCore core, Telemetry telem){
-        super("Core status printer", true, core, ButtonTypes.START, inputSourceID);
+        super("PrintCoreStatusBind", true, core, ButtonTypes.START, inputSourceID);
         this.ui = (SW_UserInterface) (this.core.getInterfacesOfType(InterfaceType.USER_INTERFACE).get(0));
     }
 
@@ -37,6 +38,6 @@ public class PrintCoreStatusBind extends OneButtonMapper {
 
     @Override
     public void buttonToggle() {
-
+        ((UI_Manager)this.core.getComponentFromName("UI_Manager")).printWithPriority(this.core.getStatus());
     }
 }

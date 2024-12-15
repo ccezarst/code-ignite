@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.StateMachine.State;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.StateMachine.StateMachine;
 import org.firstinspires.ftc.teamcode.Core.ManualCore;
-import org.firstinspires.ftc.teamcode.CustomComponents.IdleState;
+import org.firstinspires.ftc.teamcode.CustomComponents.States.Idle;
 import org.firstinspires.ftc.teamcode.CustomComponents.motorRunnerTwo;
 
 import java.util.ArrayList;
@@ -53,7 +53,7 @@ public class ManualCoreTest extends LinearOpMode {
         in.add("IdleState");
         ArrayList<String> out = new ArrayList<>();
         out.add("IdleState");
-        intakeStates.add(new IdleState("IdleState", in, out));
+        intakeStates.add(new Idle("IdleState", in, out));
         StateMachine intakeStateMach = new StateMachine(tohwintf(core.getComponentsOfType(ComponentType.HARDARE_INTERFACE)), toswintf(core.getComponentsOfType(ComponentType.SOFTWARE_INTERFACE)), intakeStates, true, "IntakeStateMachine", core);
         core.init();
         intakeStateMach.changeState("IdleState");

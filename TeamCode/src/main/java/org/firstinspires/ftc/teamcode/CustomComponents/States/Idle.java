@@ -1,14 +1,15 @@
-package org.firstinspires.ftc.teamcode.CustomComponents;
+package org.firstinspires.ftc.teamcode.CustomComponents.States;
 
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.HardwareInterface;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.InterfaceType;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.SoftwareInterface;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.StateMachine.State;
+import org.firstinspires.ftc.teamcode.CustomComponents.IntakeInterface;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class IdleState extends State {
+public class Idle extends State {
     @Override
     public boolean checkRequirements(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf) {
         return true;
@@ -28,7 +29,7 @@ public class IdleState extends State {
         Objects.requireNonNull(this.getIntake(hwIntf)).extend(0);
     }
 
-    public IdleState(String name, ArrayList<String> inputs, ArrayList<String> outputs) {
+    public Idle(String name, ArrayList<String> inputs, ArrayList<String> outputs) {
         super(name, inputs, outputs);
     }
 }

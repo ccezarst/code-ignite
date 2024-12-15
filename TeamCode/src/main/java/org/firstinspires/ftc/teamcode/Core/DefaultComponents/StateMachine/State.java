@@ -71,6 +71,7 @@ public abstract class State {
     }
     // incase we need a special state that has special requirements(eg. robot is in position x)
     public abstract boolean checkRequirements(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf);
+    public abstract boolean isInState(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf);
     public abstract void call(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf);
     public State(String name, ArrayList<String> inputs, ArrayList<String> outputs){
         this.inputs = inputs;

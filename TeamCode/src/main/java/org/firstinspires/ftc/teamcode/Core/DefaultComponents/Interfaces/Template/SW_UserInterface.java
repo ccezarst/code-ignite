@@ -11,7 +11,7 @@ public abstract class SW_UserInterface extends SoftwareInterface {
         super(cName, active, core, InterfaceType.USER_INTERFACE);
     }
     // show a menu of options and return selection(0 -> cancel)
-    public abstract int showMenu(ArrayList<String> options);
+    public abstract int showMenu(String title, ArrayList<String> options);
 
     // print something, does not have newline at the end
     public abstract void print(String toPrint);

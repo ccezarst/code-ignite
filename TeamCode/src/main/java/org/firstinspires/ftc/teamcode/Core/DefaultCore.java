@@ -1,15 +1,27 @@
 package org.firstinspires.ftc.teamcode.Core;
 
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.ComponentType;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.CoreComponent;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.HW_HwMap;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.SW_Telemetry;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.Interface;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.InterfaceType;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Managers.UI_Manager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class DefaultCore {
     private ArrayList<CoreComponent> components = new ArrayList<CoreComponent>();
+
+    public DefaultCore(Telemetry telem, HardwareMap hwMap){
+        this.addComponent(new UI_Manager(true, this));
+        this.addComponent(new SW_Telemetry(true, this, telem));
+        this.addComponent(new HW_HwMap(true, this, hwMap));
+    }
 
     public final void addComponent(CoreComponent comp){
         if(this.getComponentFromName(comp.name) == null){

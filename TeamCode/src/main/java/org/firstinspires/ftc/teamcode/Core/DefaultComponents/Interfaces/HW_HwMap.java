@@ -8,8 +8,8 @@ import org.firstinspires.ftc.teamcode.Core.DefaultCore;
 
 public class HW_HwMap extends HardwareInterface {
     public final HardwareMap hwMap;
-    public HW_HwMap(String name, Boolean active, DefaultCore core, HardwareMap hwMap){
-        super(name, active, core, InterfaceType.HARDWARE_MAP);
+    public HW_HwMap(Boolean active, DefaultCore core, HardwareMap hwMap){
+        super("HW_HwMap", active, core, InterfaceType.HARDWARE_MAP);
         this.hwMap = hwMap;
     }
 

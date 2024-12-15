@@ -16,8 +16,8 @@ public class ManualDrivingManager extends CoreComponent {
     private double scale = 0.5;
     private ArrayList<InputSource> inSources = new ArrayList<InputSource>();
     private HW_DriveMotors mot;
-    public ManualDrivingManager(String name, Boolean active, int gamepadNumber, DefaultCore core){
-        super(name, active, core, ComponentType.DRIVING_MANAGER); // thmbstck mappr to recieve thumbstick values
+    public ManualDrivingManager(Boolean active, int gamepadNumber, DefaultCore core){
+        super("ManualDrivingManager", active, core, ComponentType.DRIVING_MANAGER); // thmbstck mappr to recieve thumbstick values
         this.gamepadNumber = gamepadNumber;
     }
     /// The direction in which the robot is translating

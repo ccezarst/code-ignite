@@ -81,10 +81,8 @@ public class StateMachine extends CoreComponent {
         return best;
     }
 
-    public StateMachine(ArrayList<HardwareInterface> hwInterfaces, ArrayList<SoftwareInterface> swInterfaces, ArrayList<State> states, Boolean active, String name, DefaultCore core) {
+    public StateMachine( ArrayList<State> states, Boolean active, String name, DefaultCore core) {
         super(name, active,core, ComponentType.STATE_MACHINE);
-        this.hwInterfaces = hwInterfaces;
-        this.swInterfaces = swInterfaces;
         this.states = states;
         this.stateQueue = new ArrayList<String>();
         //this.checkStatesConnections(this.states);
@@ -122,12 +120,14 @@ public class StateMachine extends CoreComponent {
     @Override
     public void step(DefaultCore core){
         if(this.active){
-            if(!this.stateQueue.isEmpty()) {
-                String newStateName = this.stateQueue.remove(0);
-                if (this.currentState.checkRequirements(hwInterfaces, swInterfaces) && this.currentState.name != newStateName) {
-                    State newState = lookupStateFromName(newStateName, this.states);
-                    newState.call(this.hwInterfaces, this.swInterfaces);
-                    this.currentState = newState;
+            if(this.currentState.isInState(this.hwInterfaces, this.swInterfaces)){
+                if(!this.stateQueue.isEmpty()) {
+                    String newStateName = this.stateQueue.remove(0);
+                    if (this.currentState.checkRequirements(hwInterfaces, swInterfaces) && this.currentState.name != newStateName) {
+                        State newState = lookupStateFromName(newStateName, this.states);
+                        newState.call(this.hwInterfaces, this.swInterfaces);
+                        this.currentState = newState;
+                    }
                 }
             }
         }
@@ -142,5 +142,17 @@ public class StateMachine extends CoreComponent {
     }
 
     @Override
-    public void update(DefaultCore core){}
+    public void update(DefaultCore core){
+        ArrayList<CoreComponent> caca = this.core.getComponentsOfType(ComponentType.HARDARE_INTERFACE);
+        this.hwInterfaces.clear();
+        for(int i = 0; i < caca.size(); i++){
+            this.hwInterfaces.add((HardwareInterface) caca.get(i));
+        }
+
+        ArrayList<CoreComponent> maca = this.core.getComponentsOfType(ComponentType.SOFTWARE_INTERFACE);
+        this.swInterfaces.clear();
+        for(int i = 0; i < maca.size(); i++){
+            this.swInterfaces.add((SoftwareInterface) maca.get(i));
+        }
+    }
 }

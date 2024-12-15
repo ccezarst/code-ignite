@@ -26,10 +26,10 @@ public abstract class MultipleButtonMapper extends InputMapper{
     @Override
     public abstract void step(DefaultCore core);
 
-    public abstract void buttonPressed(ButtonTypes... btns);
-    public abstract void buttonDown(ButtonTypes... btns);
-    public abstract void buttonUp(ButtonTypes... btns);
-    public abstract void buttonToggle(ButtonTypes... btns);
+    public abstract void buttonPressed(ArrayList<ButtonTypes> btns);
+    public abstract void buttonDown(ArrayList<ButtonTypes> btns);
+    public abstract void buttonUp(ArrayList<ButtonTypes> btns);
+    public abstract void buttonToggle(ArrayList<ButtonTypes> btns);
 
     @Override
     public final void statesUpdated() {
@@ -52,13 +52,13 @@ public abstract class MultipleButtonMapper extends InputMapper{
                     }
                 }
             }else{
-                if(this.pressed.get(this.btns[i]){
+                if(this.pressed.get(this.btns[i])){
                     this.pressed.remove(this.btns[i]);
                     this.pressed.put(this.btns[i], false);
                     up.add(this.btns[i]);
                 }
             }
-        this.buttonPressed(pressed.toArray());
+        this.buttonPressed(pressed);
         this.buttonDown(down);
         this.buttonUp(up);
         this.buttonToggle(toggle);

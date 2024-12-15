@@ -31,4 +31,11 @@ public final class InputSetStates {
     public final Double getAnalogValue(AnalogTypes an){
         return this.analogValues.get(an);
     }
+
+    public final Map<ButtonTypes, Boolean> getAllButtonStates(){
+        return this.buttonStates;
+    }
+    public final Map<AnalogTypes, Double> getAllAnalogValues(){
+        return this.analogValues;
+    }
 }
