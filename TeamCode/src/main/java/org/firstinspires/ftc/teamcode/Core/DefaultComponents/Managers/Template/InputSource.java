@@ -6,6 +6,7 @@ import org.firstinspires.ftc.teamcode.Core.DefaultComponents.InputMappers.Templa
 import org.firstinspires.ftc.teamcode.Core.DefaultCore;
 import org.firstinspires.ftc.teamcode.Gamepad;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,17 +14,14 @@ import java.util.Map;
 public abstract class InputSource extends CoreComponent {
 
     private ArrayList<InputMapper> mappers = new ArrayList< InputMapper >();
-    private ButtonTypes btnTypes;
-    private AnalogTypes anTypes;
 
     private InputSetStates states;
     public final int id;
 
-    public InputSource(String name, Boolean active, DefaultCore core, ButtonTypes btnTypes, AnalogTypes anTypes, int id){
+    public InputSource(String name, Boolean active, DefaultCore core,int id){
         super(name, active,  core, ComponentType.INPUT_SOURCE);
-        this.btnTypes = btnTypes;
-        this.anTypes = anTypes;
         this.id = id;
+        this.states = new InputSetStates();
     }
 
     @Override

@@ -7,13 +7,18 @@ import java.util.Map;
 // decided to use a class because we can pass it by refrence,
 // thus saving time and resources when sending it from inputSource to inputMapper
 public final class InputSetStates {
-    private Map<ButtonTypes, Boolean> buttonStates;
-    private Map<AnalogTypes, Double> analogValues;
+    private Map<ButtonTypes, Boolean> buttonStates = new HashMap<>();
+    private Map<AnalogTypes, Double> analogValues = new HashMap<>();
 
-    public InputSetStates(Map<ButtonTypes, Boolean> btn, Map<AnalogTypes, Double> an){
-        this.buttonStates = btn;
-        this.analogValues = an;
+    public InputSetStates (){
+        for(ButtonTypes type: ButtonTypes.values()){
+            this.buttonStates.put(type, false);
+        }
+        for(AnalogTypes type: AnalogTypes.values()){
+            this.analogValues.put(type, 0.0);
+        }
     }
+
     public final void updateButtonState(Boolean newS, ButtonTypes btn){
         this.buttonStates.remove(btn);
         this.buttonStates.put(btn, newS);

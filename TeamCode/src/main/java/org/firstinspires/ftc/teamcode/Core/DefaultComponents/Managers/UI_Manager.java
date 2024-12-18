@@ -21,7 +21,7 @@ public class UI_Manager extends CoreComponent {
 
     public void refresh(){
         for(Interface interf : interfs){
-            if(this.secondaryTextOutput != ""){
+            if(this.secondaryTextOutput == ""){
                 ((SW_UserInterface)interf).print(this.primaryTextOutput);
             }else{
                 ((SW_UserInterface)interf).print(this.secondaryTextOutput);
@@ -35,7 +35,7 @@ public class UI_Manager extends CoreComponent {
     }
 
     public int showMenu(String title, ArrayList<String> options){ // TODO: implement support for a menu on multiple SW_UserInterface's at the same time
-        return ((SW_UserInterface)interfs.get(0)).showMenu(options);
+        return ((SW_UserInterface)interfs.get(0)).showMenu(title, options);
     }
 
     public void print(String toPrint){
@@ -43,14 +43,6 @@ public class UI_Manager extends CoreComponent {
             this.primaryTextOutput += toPrint;
         }else{
             this.primaryTextOutput += toPrint + "\n";
-        }
-    }
-
-    public void printWithPriority(String toPrint){
-        if(toPrint.endsWith("\n")){
-            this.secondaryTextOutput += toPrint;
-        }else{
-            this.secondaryTextOutput += toPrint + "\n";
         }
     }
 

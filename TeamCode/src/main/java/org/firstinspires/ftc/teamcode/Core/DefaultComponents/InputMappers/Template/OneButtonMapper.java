@@ -3,6 +3,9 @@ package org.firstinspires.ftc.teamcode.Core.DefaultComponents.InputMappers.Templ
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Managers.Template.ButtonTypes;
 import org.firstinspires.ftc.teamcode.Core.DefaultCore;
 
+import java.util.ArrayList;
+import java.util.Objects;
+
 public abstract class OneButtonMapper extends InputMapper{
     private final ButtonTypes btn;
     private final int inputSourceID;
@@ -15,18 +18,28 @@ public abstract class OneButtonMapper extends InputMapper{
     }
 
     @Override
-    public abstract void step(DefaultCore core);
+    public void step(DefaultCore core){
+    };
 
     public abstract void buttonPressed();
     public abstract void buttonDown();
     public abstract void buttonUp();
     public abstract void buttonToggle();
-
+    @Override
+    public final ArrayList<String> getStatus(){
+        ArrayList<String> caca = new ArrayList<>();
+        caca.add("pressed:" + this.pressed);
+        caca.add("toggled:" + this.toggle);
+        return caca;
+    }
     @Override
     public final void statesUpdated() {
-        if(this.states.get(this.inputSourceID).getButtonState(this.btn)){
+        if(Objects.requireNonNull(this.states.get(this.inputSourceID)).getButtonState(this.btn)){
             if(this.pressed){
                 this.buttonDown();
+                if(this.toggle){
+                    this.buttonToggle();
+                }
             }else{
                 this.pressed = true;
                 this.buttonPressed();
@@ -40,6 +53,9 @@ public abstract class OneButtonMapper extends InputMapper{
             if(this.pressed){
                 this.pressed = false;
                 this.buttonUp();
+            }
+            if(this.toggle){
+                this.buttonToggle();
             }
         }
     }

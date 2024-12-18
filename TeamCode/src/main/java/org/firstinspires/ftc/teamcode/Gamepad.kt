@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.hardware.Gamepad
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Managers.Template.AnalogTypes
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Managers.Template.ButtonTypes
 
 class Gamepad(private val gp: Gamepad, var number: Int) {
     enum class Button {
@@ -65,33 +67,33 @@ class Gamepad(private val gp: Gamepad, var number: Int) {
     val dpad_left
         get() = gp.dpad_left
 
-    fun getAnalog(an: Analog): Float =
+    fun getAnalog(an: AnalogTypes): Float =
         when (an) {
-            Analog.LEFT_STICK_X -> gp.left_stick_x
-            Analog.LEFT_TRIGGER -> gp.left_trigger
-            Analog.RIGHT_TRIGGER -> gp.right_trigger
-            Analog.LEFT_STICK_Y -> gp.left_stick_y
-            Analog.RIGHT_STICK_X -> gp.right_stick_x
-            Analog.RIGHT_STICK_Y -> gp.right_stick_y
+            AnalogTypes.LEFT_STICK_X -> gp.left_stick_x
+            AnalogTypes.LEFT_TRIGGER -> gp.left_trigger
+            AnalogTypes.RIGHT_TRIGGER -> gp.right_trigger
+            AnalogTypes.LEFT_STICK_Y -> gp.left_stick_y
+            AnalogTypes.RIGHT_STICK_X -> gp.right_stick_x
+            AnalogTypes.RIGHT_STICK_Y -> gp.right_stick_y
         }
 
-    fun checkHold(button: Button): Boolean =
+    fun checkHold(button: ButtonTypes): Boolean =
             when (button) {
-                Button.A -> gp.a
-                Button.B -> gp.b
-                Button.X -> gp.x
-                Button.Y -> gp.y
-                Button.START -> gp.start
-                Button.LEFT_BUMPER -> gp.left_bumper
-                Button.RIGHT_BUMPER -> gp.right_bumper
-                Button.DPAD_UP -> gp.dpad_up
-                Button.DPAD_DOWN -> gp.dpad_down
-                Button.DPAD_RIGHT -> gp.dpad_right
-                Button.DPAD_LEFT -> gp.dpad_left
+                ButtonTypes.A -> gp.a
+                ButtonTypes.B -> gp.b
+                ButtonTypes.X -> gp.x
+                ButtonTypes.Y -> gp.y
+                ButtonTypes.START -> gp.start
+                ButtonTypes.LEFT_BUMPER -> gp.left_bumper
+                ButtonTypes.RIGHT_BUMPER -> gp.right_bumper
+                ButtonTypes.DPAD_UP -> gp.dpad_up
+                ButtonTypes.DPAD_DOWN -> gp.dpad_down
+                ButtonTypes.DPAD_RIGHT -> gp.dpad_right
+                ButtonTypes.DPAD_LEFT -> gp.dpad_left
             }
 
     fun checkToggle(button : Button): Boolean {
-        val pressed = checkHold(button)
+        val pressed = true;
         val ok = pressed && (lastStates[button] != pressed)
         lastStates[button] = pressed
         return ok

@@ -10,8 +10,17 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Idle extends State {
+    public Idle() {
+        super("Idle");
+    }
+
     @Override
     public boolean checkRequirements(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf) {
+        return true;
+    }
+
+    @Override
+    public boolean isInState(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf) {
         return true;
     }
 
@@ -26,10 +35,13 @@ public class Idle extends State {
 
     @Override
     public void call(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf) {
-        Objects.requireNonNull(this.getIntake(hwIntf)).extend(0);
+        IntakeInterface intf = Objects.requireNonNull(this.getIntake(hwIntf));
+        intf.extend(0);
+        intf.stopEating();
+        intf.rotateMouth(57);
     }
 
-    public Idle(String name, ArrayList<String> inputs, ArrayList<String> outputs) {
-        super(name, inputs, outputs);
+    public Idle(ArrayList<String> inputs, ArrayList<String> outputs) {
+        super("Idle", inputs, outputs);
     }
 }

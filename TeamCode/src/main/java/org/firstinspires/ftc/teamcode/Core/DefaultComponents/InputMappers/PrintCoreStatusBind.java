@@ -28,7 +28,6 @@ public class PrintCoreStatusBind extends OneButtonMapper {
 
     @Override
     public void buttonDown() {
-
     }
 
     @Override
@@ -38,6 +37,7 @@ public class PrintCoreStatusBind extends OneButtonMapper {
 
     @Override
     public void buttonToggle() {
-        ((UI_Manager)this.core.getComponentFromName("UI_Manager")).printWithPriority(this.core.getStatus());
+        ((UI_Manager)this.core.getComponentFromName("UI_Manager")).showWarning(this.core.getStatus());
+
     }
 }

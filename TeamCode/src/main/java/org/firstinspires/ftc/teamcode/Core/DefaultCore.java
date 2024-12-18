@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.ComponentType;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.CoreComponent;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.InputMappers.GeneralInputMapper;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.HW_HwMap;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.SW_Telemetry;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.Interface;
@@ -13,6 +14,7 @@ import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Managers.UI_Manager
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class DefaultCore {
     private ArrayList<CoreComponent> components = new ArrayList<CoreComponent>();
@@ -21,6 +23,11 @@ public class DefaultCore {
         this.addComponent(new UI_Manager(true, this));
         this.addComponent(new SW_Telemetry(true, this, telem));
         this.addComponent(new HW_HwMap(true, this, hwMap));
+        this.addComponent(new GeneralInputMapper("DefaultGeneralInputMapper", true, this));
+    }
+
+    public final void removeComponent(String name){
+        this.components.remove(this.getComponentFromName(name));
     }
 
     public final void addComponent(CoreComponent comp){
@@ -33,7 +40,7 @@ public class DefaultCore {
 
     public final CoreComponent getComponentFromName(String name){
         for(int i = 0; i < this.components.size(); i++){
-            if(this.components.get(i).name == name){
+            if(Objects.equals(this.components.get(i).name, name)){
                 return this.components.get(i);
             }
         }
@@ -88,16 +95,20 @@ public class DefaultCore {
             // that don't check if they should be active or not
             this.components.get(i).primitiveStep(this);
         }
+        ((UI_Manager)this.getComponentFromName("UI_Manager")).refresh();
     }
 
     public final String getStatus(){
         String toReturn = "";
         for(int i = 0; i < this.components.size(); i ++){
             ArrayList<String> status = this.components.get(i).getStatus();
-            String temp = "";
-            for(int b = 0; b < status.size(); b++) {
-                temp += Arrays.toString(this.components.get(i).types) + "-" + this.components.get(i).name + ": " + status.get(b) + "\n";
+            String temp = "-";
+            if(status != null){
+                for(int b = 0; b < status.size(); b++) {
+                    temp += Arrays.toString(this.components.get(i).types) + "-" + this.components.get(i).name + ": " + status.get(b) + "\n";
+                }
             }
+
             toReturn += temp;
         }
         return toReturn;

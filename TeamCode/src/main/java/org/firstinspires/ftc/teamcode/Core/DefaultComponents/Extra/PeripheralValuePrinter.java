@@ -33,8 +33,8 @@ public class PeripheralValuePrinter extends CoreComponent {
     public void step(DefaultCore core) {
         if(selection == 0){
             ArrayList<String> options = new ArrayList<>();
-            options.add("Servo");
             options.add("DcMotor");
+            options.add("Servo");
             options.add("AccelerationSensor");
             options.add("AnalogInput");
             options.add("ColorSensor");
@@ -44,10 +44,10 @@ public class PeripheralValuePrinter extends CoreComponent {
         }else{
             this.hwMap.forEach(a -> {
                 if (a instanceof DcMotor && this.selection == 1) {
-                    this.man.print(this.hwMap.getNamesOf(a) + "-" + ((DcMotor) a).getZeroPowerBehavior() + "-" + ((DcMotor) a).getDirection() + ": " + ((DcMotor) a).getCurrentPosition() + " . " + ((DcMotor)a).getTargetPosition());
+                    this.man.print(((DcMotor) a).getPortNumber() + " " +this.hwMap.getNamesOf(a) + "-" + ((DcMotor) a).getZeroPowerBehavior() + "-" + ((DcMotor) a).getDirection() + ": " + ((DcMotor) a).getCurrentPosition() + " . " + ((DcMotor)a).getTargetPosition());
                 }
                 if (a instanceof Servo && this.selection == 2) {
-                    this.man.print(this.hwMap.getNamesOf(a) + "-" + ((Servo) a).getDirection() + ": " + ((Servo) a).getPosition());
+                    this.man.print(((Servo) a).getPortNumber() + " " + this.hwMap.getNamesOf(a) + "-" + ((Servo) a).getDirection() + ": " + ((Servo) a).getPosition());
                 }
                 if (a instanceof AccelerationSensor && this.selection == 3) {
                     this.man.print(this.hwMap.getNamesOf(a) + ": " + ((AccelerationSensor) a).getAcceleration());
@@ -62,7 +62,7 @@ public class PeripheralValuePrinter extends CoreComponent {
                     this.man.print(this.hwMap.getNamesOf(a) + "-" + ((CompassSensor) a).calibrationFailed() +": " + ((CompassSensor) a).getDirection());
                 }
                 if (a instanceof CRServo && this.selection == 7) {
-                    this.man.print(this.hwMap.getNamesOf(a) + "-" + ((CRServo) a).getDirection() +": " + ((CRServo) a).getPower());
+                    this.man.print(((CRServo) a).getPortNumber() + " " +this.hwMap.getNamesOf(a) + "-" + ((CRServo) a).getDirection() +": " + ((CRServo) a).getPower());
                 }
             });
         }

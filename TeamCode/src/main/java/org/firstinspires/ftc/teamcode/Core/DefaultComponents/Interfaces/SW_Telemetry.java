@@ -36,7 +36,7 @@ public class SW_Telemetry extends SW_UserInterface {
     }
 
     private boolean checkButtonOnAllInputSources(ButtonTypes button){
-        GeneralInputMapper mapper = (GeneralInputMapper) this.core.getComponentFromName("GeneralInputMapper");
+        GeneralInputMapper mapper = (GeneralInputMapper) this.core.getComponentFromName("DefaultGeneralInputMapper");
         return mapper.checkButtonDownOnAll(button);
     }
 
@@ -53,46 +53,56 @@ public class SW_Telemetry extends SW_UserInterface {
         return 0;
     }
 
+    int selection = 0;
+    int privSelection = 0;
+    long startTime = System.currentTimeMillis();
+    long elapsedTime = 0L;
+
     @Override
     public int showMenu(String title, ArrayList<String> options) {
-        this.busy = true;
-        int selection = 1;
-        long startTime = System.currentTimeMillis();
-        long elapsedTime = 0L;
-        while(this.busy){
-            elapsedTime = System.currentTimeMillis() - startTime;
-            if(elapsedTime > 300){
-                telemetry.addLine("Select an option using the DPAD, confirm pressing A, cancel pressing B");
-                telemetry.addLine(title + "\n");
-                for(int i = 0; i < options.size(); i++){
-                    if(i == selection - 1){
-                        this.telemetry.addLine(options.get(i) + "  <--");
-                    }else{
-                        this.telemetry.addLine(options.get(i));
-                    }
-                }
-                this.telemetry.update();
-                int act = this.getAction();
-                switch(act){
-                    case 1:
-                        if(selection > 1){
-                            selection -= 1;
-                        }
-                        break;
-                    case 2:
-                        if(selection < options.size()){
-                            selection += 1;
-                        }
-                        break;
-                    case 3:
-                        this.busy = false;
-                        break;
-                    case 4:
-                        selection = 0;
-                        this.busy = false;
-                        break;
-                }
+        if(privSelection == 0){
+            selection = 0;
+            privSelection = 1;
+            startTime = System.currentTimeMillis();
+            elapsedTime = 0;
+        }
+        elapsedTime = System.currentTimeMillis() - startTime;
+        telemetry.addLine("Select an option using the DPAD, confirm pressing A, cancel pressing B");
+        telemetry.addLine(title + "\n");
+        for(int i = 0; i < options.size(); i++){
+            if(i == privSelection - 1){
+                this.telemetry.addLine(options.get(i) + "  <--");
+            }else{
+                this.telemetry.addLine(options.get(i));
+            }
+        }
+        this.telemetry.update();
+        if(elapsedTime > 300){
+            int act = this.getAction();
+            if(act != 0){
                 startTime = System.currentTimeMillis();
+
+            }
+            switch(act){
+                case 1:
+                    if(privSelection > 1){
+                        privSelection -= 1;
+                    }
+                    break;
+                case 2:
+                    if(privSelection < options.size()){
+                        privSelection += 1;
+                    }
+                    break;
+                case 3:
+                    this.busy = false;
+                    selection = privSelection;
+                    break;
+                case 4:
+                    privSelection = 0;
+                    selection = -1;
+                    this.busy = false;
+                    break;
             }
         }
         // get input sources, wait for user to press on any gamepad A to confirm

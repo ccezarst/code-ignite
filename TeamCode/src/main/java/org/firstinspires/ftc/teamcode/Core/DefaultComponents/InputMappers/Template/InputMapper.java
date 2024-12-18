@@ -13,8 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class InputMapper extends CoreComponent {
-    protected Map<Integer, InputSource> inSources = new HashMap<>();
-    protected Map<Integer, InputSetStates> states = new HashMap<>();
+    public Map<Integer, InputSource> inSources = new HashMap<>();
+    public Map<Integer, InputSetStates> states = new HashMap<>();
     public InputMapper(String name, Boolean active, DefaultCore core) {
         super(name, active, core, ComponentType.INPUT_MAPPER);
     }

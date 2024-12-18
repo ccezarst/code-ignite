@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.Core.DefaultCore;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public abstract class MultipleButtonMapper extends InputMapper{
     private final ButtonTypes[] btns;
@@ -38,7 +39,7 @@ public abstract class MultipleButtonMapper extends InputMapper{
         ArrayList<ButtonTypes> up = new ArrayList<>();
         ArrayList<ButtonTypes> toggle = new ArrayList<>();
         for(int i = 0; i < this.btns.length; i++){
-            if(this.states.get(this.inputSourceID).getButtonState(this.btns[i])){
+            if(Objects.requireNonNull(this.states.get(this.inputSourceID)).getButtonState(this.btns[i])){
                 if(this.pressed.get(this.btns[i])){
                     down.add(this.btns[i]);
                 }else{

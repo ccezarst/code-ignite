@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Core.DefaultComponents.StateMachine;
 
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.ComponentType;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.CoreComponent;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Managers.UI_Manager;
 import org.firstinspires.ftc.teamcode.Core.DefaultCore;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.HardwareInterface;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.SoftwareInterface;
@@ -12,8 +13,8 @@ import java.util.Map;
 import java.util.Objects;
 
 public class StateMachine extends CoreComponent {
-    private ArrayList<HardwareInterface> hwInterfaces;
-    private ArrayList<SoftwareInterface> swInterfaces;
+    private ArrayList<HardwareInterface> hwInterfaces = new ArrayList<HardwareInterface>();
+    private ArrayList<SoftwareInterface> swInterfaces = new ArrayList<SoftwareInterface>();
     private ArrayList<State> states;
     private State currentState;
     private ArrayList<String> stateQueue;
@@ -26,7 +27,9 @@ public class StateMachine extends CoreComponent {
                 ArrayList<String> currentStateOutputs = states.get(i).outputs;
                 for(int b = 0; b < currentStateOutputs.size(); b++){
                     if(pula.containsValue(currentStateOutputs.get(b))){
-                        pula.get(currentStateOutputs.get(b)).add(states.get(i).name);
+                        ArrayList<String> old = pula.get(currentStateOutputs.get(b));
+                        old.add(states.get(i).name);
+                        pula.replace(currentStateOutputs.get(b), old);
                     }else{
                         ArrayList<String> caca = new ArrayList<String>();
                         caca.add(states.get(i).name);
@@ -37,10 +40,18 @@ public class StateMachine extends CoreComponent {
             // now re-iterate over states but check if inputs are same as outputs
             for(int i =0; i < states.size(); i++){
                 // if the current state inputs contain all the outputs saved in the mapz
-                if(states.get(i).inputs.containsAll(Objects.requireNonNull(pula.get(states.get(i))))){
-                    // acc do nothing
-                }else{
-                    throw new IllegalArgumentException("State Machine configuration is not proper; " + states.get(i).name + "'s inputs do not math other states outputs; check connections");
+                try{
+                    if(states.get(i).inputs.containsAll(Objects.requireNonNull(pula.get(states.get(i).name)))){
+                        // acc do nothing
+                    }else{
+                        throw new IllegalArgumentException("State Machine configuration is not proper; " + states.get(i).name + "'s inputs do not math other states outputs; check connections");
+                    }
+                }catch(Exception exp){
+                    if(exp instanceof NullPointerException){
+                        throw new IllegalArgumentException("Failed to find state while checking inputs, maybe state is not connected to anything. State name: " + states.get(i).name);
+                    }else{
+                        throw exp;
+                    }
                 }
             }
     }
@@ -50,11 +61,13 @@ public class StateMachine extends CoreComponent {
                 return allStates.get(i);
             }
         }
-        throw new IllegalArgumentException("lookupStateFromName failed to find state, check allState argument");
+        throw new IllegalArgumentException("lookupStateFromName failed to find state, check allState argument " + name);
     }
     private ArrayList<ArrayList<State>> findPathes(State currentState, State targetState, ArrayList<State> currentPath, ArrayList<ArrayList<State>> allFoundPaths,ArrayList<State> allState){
         if(currentState.name == targetState.name){
-            allFoundPaths.add(currentPath);
+            ArrayList<State> caca = currentPath;
+            caca.add(currentState);
+            allFoundPaths.add(caca);
         }else if(!currentPath.isEmpty() && currentPath.indexOf(currentState) < currentPath.size() - 1){
             // normally the current state is the last in the path, so if it's not last we are circling
             // means we are circling, so abort
@@ -85,7 +98,7 @@ public class StateMachine extends CoreComponent {
         super(name, active,core, ComponentType.STATE_MACHINE);
         this.states = states;
         this.stateQueue = new ArrayList<String>();
-        //this.checkStatesConnections(this.states);
+        this.checkStatesConnections(this.states);
         // calculate best pathes for each state to others
         // iterate through all states
         for(int i = 0; i < this.states.size(); i++){
@@ -106,30 +119,55 @@ public class StateMachine extends CoreComponent {
         // check if we can change to that state from current state
         if(this.currentState != null){
             if(this.currentState.isConnectedToState(newStateName) && newStateName != null){
-                this.stateQueue.addAll(this.currentState.getPathToStateNames(newStateName));
-                this.step(null);
-                return true;
+                if( newStateName != this.currentState.name){
+                    this.stateQueue.addAll(this.currentState.getPathToStateNames(newStateName));
+                    this.step(null);
+                    ((UI_Manager)this.core.getComponentFromName("UI_Manager")).print(newStateName);
+                    return true;
+                }
             }else{
-                return false;
+                throw new IllegalArgumentException("Failed to change state, is connectedToCurrent: " + this.currentState.isConnectedToState(newStateName) + "; newStateName: " + newStateName);
             }
         }else{
             this.stateQueue.add(newStateName);
             return true;
         }
+        return false;
+    }
+
+    public boolean changeStateBasedOnCurrent(int child){
+        // check if we can change to that state from current state
+        if(this.currentState != null){
+            if(child < this.currentState.outputs.size()){
+                this.changeState(this.currentState.outputs.get(child));
+                return true;
+            }else{
+                return false;
+            }
+        }
+        return false;
     }
     @Override
     public void step(DefaultCore core){
+        ((UI_Manager)this.core.getComponentFromName("UI_Manager")).print(this.stateQueue.toString());
         if(this.active){
-            if(this.currentState.isInState(this.hwInterfaces, this.swInterfaces)){
+            if(this.currentState != null){
                 if(!this.stateQueue.isEmpty()) {
-                    String newStateName = this.stateQueue.remove(0);
-                    if (this.currentState.checkRequirements(hwInterfaces, swInterfaces) && this.currentState.name != newStateName) {
-                        State newState = lookupStateFromName(newStateName, this.states);
-                        newState.call(this.hwInterfaces, this.swInterfaces);
-                        this.currentState = newState;
+                    if(this.currentState.isInState(this.hwInterfaces, this.swInterfaces)){
+                        String newStateName = this.stateQueue.remove(0);
+                        if (newStateName != currentState.name && this.currentState.checkRequirements(hwInterfaces, swInterfaces) && this.currentState.name != newStateName) {
+                            State newState = lookupStateFromName(newStateName, this.states);
+                            newState.call(this.hwInterfaces, this.swInterfaces);
+                            this.currentState = newState;
+                        }
                     }
                 }
+            }else{
+                State newState = lookupStateFromName(this.stateQueue.remove(0), this.states);
+                newState.call(this.hwInterfaces, this.swInterfaces);
+                this.currentState = newState;
             }
+
         }
     }
     @Override
