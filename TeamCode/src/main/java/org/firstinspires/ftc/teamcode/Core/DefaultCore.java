@@ -113,4 +113,10 @@ public class DefaultCore {
         }
         return toReturn;
     }
+
+    public final void exit(){
+        for(CoreComponent comp : this.components){
+            comp.exit();
+        }
+    }
 }

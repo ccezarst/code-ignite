@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.Core.DefaultComponents.StateMachine;
 
-import org.checkerframework.checker.units.qual.A;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.HardwareInterface;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.SoftwareInterface;
 
@@ -13,6 +12,11 @@ public abstract class State {
     public final String name;
     public final void pushToPathToOtherStates(StateToStatePath path){
         this.pathsToOtherStates.add(path);
+    }
+
+
+    public final String getStatus(){
+        return this.name + ": " + this.inputs.toString() + "  -   " + this.outputs.toString();
     }
     public final boolean isConnectedToState(State st){
         if(st.name == this.name){return true;}
@@ -78,11 +82,10 @@ public abstract class State {
     public abstract boolean checkRequirements(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf);
     public abstract boolean isInState(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf);
     public abstract void call(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf);
+    public abstract void step(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf);
     public State(String name, ArrayList<String> inputs, ArrayList<String> outputs){
         this.inputs = inputs;
-        this.inputs.add(name);
         this.outputs = outputs;
-        this.outputs.add(name); // hotfix
         if(name.isEmpty()){
             throw new IllegalArgumentException("A empty name cannot be passed to a State constructor");
         }
@@ -90,9 +93,7 @@ public abstract class State {
     }
     public State(String name){
         this.inputs = new ArrayList<>();
-        this.inputs.add(name);
         this.outputs = new ArrayList<>();
-        this.outputs.add(name);
         if(name.isEmpty()){
             throw new IllegalArgumentException("A empty name cannot be passed to a State constructor");
         }

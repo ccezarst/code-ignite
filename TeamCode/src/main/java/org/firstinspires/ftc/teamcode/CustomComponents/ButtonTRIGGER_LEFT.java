@@ -16,8 +16,10 @@ public class ButtonTRIGGER_LEFT extends OneButtonMapper {
 
     @Override
     public void buttonPressed() {
-        ((UI_Manager)this.core.getComponentFromName("UI_Manager")).print("caca");
-        this.st.changeState("IntakeHIGH");
+        int res = this.st.changeState("IntakeHIGH");
+        if(res != 0){
+            ((UI_Manager)this.core.getComponentFromName("UI_Manager")).showWarning("ButtonTRIGGER_LEFT -> failed to change state to IntakeHIGH : " + res);
+        }
     }
 
     @Override

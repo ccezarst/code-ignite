@@ -5,29 +5,29 @@ import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.SoftwareInterface;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.StateMachine.State;
 import org.firstinspires.ftc.teamcode.CustomComponents.IntakeInterface;
+import org.firstinspires.ftc.teamcode.CustomComponents.OuttakeInterface;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
-public class Intake_HIGH extends State {
-    public Intake_HIGH(ArrayList<String> inputs, ArrayList<String> outputs) {
-        super("IntakeHIGH", inputs, outputs);
-    }
-
-    public Intake_HIGH() {
-        super("IntakeHIGH");
+public class Transfer extends State {
+    private long last = 0;
+    private long delayMS = 500;
+    public Transfer() {
+        super("Transfer");
     }
 
     @Override
     public boolean checkRequirements(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf) {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isInState(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf) {
-        return true;
+        if(System.currentTimeMillis() - last > delayMS){
+            return true;
+        }
+        return false;
     }
-
     private IntakeInterface getIntake(ArrayList<HardwareInterface> hwInterface){
         for(int i = 0; i < hwInterface.size(); i++){
             if(hwInterface.get(i).interfaceType == InterfaceType.INTAKE){
@@ -37,11 +37,30 @@ public class Intake_HIGH extends State {
         return null;
     }
 
-
+    private OuttakeInterface getOuttake(ArrayList<HardwareInterface> hwInterface){
+        for(int i = 0; i < hwInterface.size(); i++){
+            if(hwInterface.get(i).interfaceType == InterfaceType.OUTTAKE){
+                return (OuttakeInterface) hwInterface.get(i);
+            }
+        }
+        return null;
+    }
     @Override
     public void call(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf) {
-        Objects.requireNonNull(this.getIntake(hwIntf)).extend(100);
-        Objects.requireNonNull(this.getIntake(hwIntf)).rotateMouth(60);
+        this.last = System.currentTimeMillis();
+        IntakeInterface in =  this.getIntake(hwIntf);
+        OuttakeInterface out = this.getOuttake(hwIntf);
+        in.extend(8);
+        in.rotateMouth(57.5);
+        out.secondRotateBasket(6);
+        out.rotateAss(8);
+    }
 
+    @Override
+    public void step(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf) {
+        if (this.isInState(hwIntf, swIntf)) {
+            IntakeInterface in =  this.getIntake(hwIntf);
+            in.startPooping();
+        }
     }
 }

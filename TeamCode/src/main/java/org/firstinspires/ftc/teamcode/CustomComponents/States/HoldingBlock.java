@@ -8,11 +8,12 @@ import org.firstinspires.ftc.teamcode.CustomComponents.IntakeInterface;
 import org.firstinspires.ftc.teamcode.CustomComponents.OuttakeInterface;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
-public class Idle extends State {
-    public Idle() {
-        super("Idle");
+public class HoldingBlock extends State {
+    private long last = 0;
+    private final long delayMS = 500;
+    public HoldingBlock() {
+        super("HoldingBlock");
     }
 
     @Override
@@ -22,7 +23,10 @@ public class Idle extends State {
 
     @Override
     public boolean isInState(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf) {
-        return true;
+        if(System.currentTimeMillis() - last > delayMS){
+            return true;
+        }
+        return false;
     }
 
     private IntakeInterface getIntake(ArrayList<HardwareInterface> hwInterface){
@@ -43,26 +47,22 @@ public class Idle extends State {
         return null;
     }
 
-
     @Override
     public void call(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf) {
-        IntakeInterface intf = Objects.requireNonNull(this.getIntake(hwIntf));
-        intf.extend(0);
-        intf.stopEating();
-        intf.rotateMouth(57);
+        this.last = System.currentTimeMillis();
+        IntakeInterface in = this.getIntake(hwIntf);
+        in.rotateMouth(55);
+        in.extend(8, 0.5);
 
-        OuttakeInterface out = Objects.requireNonNull(this.getOuttake(hwIntf));
-        out.rotateAss(25);
-        out.extend(0);
-        out.secondRotateBasket(0);
+        this.getOuttake(hwIntf).rotateAss(8);
+        this.getOuttake(hwIntf).secondRotateBasket(6);
     }
 
     @Override
     public void step(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf) {
-
-    }
-
-    public Idle(ArrayList<String> inputs, ArrayList<String> outputs) {
-        super("Idle", inputs, outputs);
+        if(this.isInState(hwIntf, swIntf)){
+            // because it moves so fast we want to keep holding the block until we are in position
+            this.getIntake(hwIntf).stopEating();
+        }
     }
 }

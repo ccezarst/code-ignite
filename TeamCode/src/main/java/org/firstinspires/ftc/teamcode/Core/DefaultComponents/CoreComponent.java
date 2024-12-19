@@ -27,6 +27,8 @@ public abstract class CoreComponent {
         caca.add("active");
         return caca;
     }
+
+    public void exit(){}
     public final void primitiveStep(DefaultCore core){
         if(this.active){
             this.step(core);

@@ -5,5 +5,6 @@ public enum InterfaceType {
     HARDWARE_MAP,
     TELEMETRY,
     INTAKE,
+    OUTTAKE,
     USER_INTERFACE
 }

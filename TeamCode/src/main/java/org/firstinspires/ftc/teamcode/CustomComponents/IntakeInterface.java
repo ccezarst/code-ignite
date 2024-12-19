@@ -14,8 +14,8 @@ import org.firstinspires.ftc.teamcode.Core.DefaultCore;
 import java.util.ArrayList;
 
 public class IntakeInterface extends HardwareInterface {
-    public IntakeInterface(String cName, Boolean active, DefaultCore core) {
-        super(cName, active, core, InterfaceType.INTAKE);
+    public IntakeInterface(Boolean active, DefaultCore core) {
+        super("IntakeInterface", active, core, InterfaceType.INTAKE);
     }
 
     private DcMotor rightMotor;
@@ -26,11 +26,11 @@ public class IntakeInterface extends HardwareInterface {
 
     private Servo intakeServo;
 
-    private int lowLimmit = 5;
-    private int highLimit = 400;
+    private int lowLimmit = 10;
+    private int highLimit = 490;
 
     // 0 to 100
-    public void extend(int amount){
+    public void extend(double amount){
         int finalAm = (int) Math.round((((double) amount / 100) * this.highLimit) + this.lowLimmit);
         this.rightMotor.setTargetPosition(finalAm);
         this.rightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -38,6 +38,16 @@ public class IntakeInterface extends HardwareInterface {
         this.leftMotor.setTargetPosition(finalAm);
         this.leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         this.leftMotor.setPower(0.8);
+    }
+
+    public void extend(double amount, double power){
+        int finalAm = (int) Math.round((((double) amount / 100) * this.highLimit) + this.lowLimmit);
+        this.rightMotor.setPower(power);
+        this.leftMotor.setPower(power);
+        this.rightMotor.setTargetPosition(finalAm);
+        this.rightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        this.leftMotor.setTargetPosition(finalAm);
+        this.leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     @Override
@@ -61,9 +71,9 @@ public class IntakeInterface extends HardwareInterface {
         this.intakeServo.setPosition(0);
     }
     // 0 -> 100
-    public void rotateMouth(int pos){
-        this.leftRotate.setPosition((double) pos / 100);
-        this.rightRotate.setPosition((double) pos / 100);
+    public void rotateMouth(double pos){
+        this.leftRotate.setPosition(pos / 100);
+        this.rightRotate.setPosition(pos / 100);
     }
 
     @Override
@@ -88,5 +98,12 @@ public class IntakeInterface extends HardwareInterface {
         this.intakeServo = (Servo) this.getHwMap().hwMap.get("eatingMotor");
         this.intakeServo.setDirection(Servo.Direction.FORWARD);
         this.intakeServo.setPosition(0.5);
+    }
+
+    @Override
+    public void exit(){
+        this.extend(0);
+        this.rotateMouth(57);
+        this.stopEating();
     }
 }

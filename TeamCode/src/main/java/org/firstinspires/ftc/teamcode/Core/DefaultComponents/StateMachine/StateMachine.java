@@ -63,13 +63,24 @@ public class StateMachine extends CoreComponent {
         }
         throw new IllegalArgumentException("lookupStateFromName failed to find state, check allState argument " + name);
     }
+
+    private <T> int countOf(ArrayList<T> list, T elem){
+        int count = 0;
+        for(T curElem: list){
+            if(curElem == elem){
+                count += 1;
+            }
+        }
+        return count;
+    }
     private ArrayList<ArrayList<State>> findPathes(State currentState, State targetState, ArrayList<State> currentPath, ArrayList<ArrayList<State>> allFoundPaths,ArrayList<State> allState){
         if(currentState.name == targetState.name){
             ArrayList<State> caca = currentPath;
             caca.add(currentState);
             allFoundPaths.add(caca);
-        }else if(!currentPath.isEmpty() && currentPath.indexOf(currentState) < currentPath.size() - 1){
-            // normally the current state is the last in the path, so if it's not last we are circling
+            return null;
+        }else if(this.countOf(currentPath, currentState) > 1){
+            // if this state is more then once in the path it means we circled back, so we need to abort
             // means we are circling, so abort
             return null;
             // returning null because if we returned then atleast one state was parsed before we went back.
@@ -78,20 +89,23 @@ public class StateMachine extends CoreComponent {
         else{
             for(int i = 0; i < currentState.outputs.size(); i++){
                 currentPath.add(currentState);
-                findPathes(lookupStateFromName(currentState.outputs.get(i), allState), targetState, currentPath, allFoundPaths, allState);
+                findPathes(lookupStateFromName(currentState.outputs.get(i), allState), targetState, (ArrayList<State>) currentPath.clone(), allFoundPaths, allState);
             }
         }
         return allFoundPaths;
     }
 
     private ArrayList<State> getBestPath(ArrayList<ArrayList<State>> pathes){
-        ArrayList<State> best = pathes.get(0); // instead of empty it is first element(if it was empty it would always be the smallest)
-        for(int i = 0; i < pathes.size(); i++){
-            if(pathes.get(i).size() < best.size()){
-                best = pathes.get(i);
+        if(pathes.size() > 0){
+            ArrayList<State> best = pathes.get(0); // instead of empty it is first element(if it was empty it would always be the smallest)
+            for(int i = 0; i < pathes.size(); i++){
+                if(pathes.get(i).size() < best.size()){
+                    best = pathes.get(i);
+                }
             }
+            return best;
         }
-        return best;
+        return null;
     }
 
     public StateMachine( ArrayList<State> states, Boolean active, String name, DefaultCore core) {
@@ -108,50 +122,86 @@ public class StateMachine extends CoreComponent {
                 if(this.states.get(b).name != currentState.name) {
                     ArrayList<ArrayList<State>> pathes = findPathes(currentState, this.states.get(b), new ArrayList<State>(), new ArrayList<ArrayList<State>>(), this.states);
                     ArrayList<State> bestPath = getBestPath(pathes);
-                    StateToStatePath nPath = new StateToStatePath(bestPath, this.states.get(b).name);
-                    currentState.pushToPathToOtherStates(nPath);
+                    if(bestPath != null){
+                        StateToStatePath nPath = new StateToStatePath(bestPath, this.states.get(b).name);
+                        currentState.pushToPathToOtherStates(nPath);
+                    }
                 }
             }
         }
     }
 
-    public boolean changeState(String newStateName){
+    public int changeState(String newStateName){
         // check if we can change to that state from current state
         if(this.currentState != null){
             if(this.currentState.isConnectedToState(newStateName) && newStateName != null){
-                if( newStateName != this.currentState.name){
+                if(newStateName != this.currentState.name){
                     this.stateQueue.addAll(this.currentState.getPathToStateNames(newStateName));
                     this.step(null);
-                    ((UI_Manager)this.core.getComponentFromName("UI_Manager")).print(newStateName);
-                    return true;
+                    ((UI_Manager)this.core.getComponentFromName("UI_Manager")).showWarning(newStateName + ": " + this.currentState.getPathToStateNames(newStateName));
+                    return 0;
+                }else{
+                    return 1;
                 }
             }else{
                 throw new IllegalArgumentException("Failed to change state, is connectedToCurrent: " + this.currentState.isConnectedToState(newStateName) + "; newStateName: " + newStateName);
             }
         }else{
             this.stateQueue.add(newStateName);
-            return true;
+            return 0;
+        }
+    }
+
+    private Boolean contains(State cur, State[] ls){
+        if(ls != null){
+            for(State caca: ls){
+                if(caca.name == cur.name){
+                    return true;
+                }
+            }
         }
         return false;
     }
 
-    public boolean changeStateBasedOnCurrent(int child){
+    public int changeState(String newStateName, State... required){
+        // check if we can change to that state from current state
+        if(this.currentState != null){
+            if(this.currentState.isConnectedToState(newStateName) && newStateName != null && contains(this.currentState, required)){
+                if(newStateName != this.currentState.name){
+                    this.stateQueue.addAll(this.currentState.getPathToStateNames(newStateName));
+                    this.step(null);
+                    ((UI_Manager)this.core.getComponentFromName("UI_Manager")).showWarning(newStateName + ": " + this.currentState.getPathToStateNames(newStateName));
+                    return 0;
+                }else{
+                    return 1;
+                }
+            }else{
+                throw new IllegalArgumentException("Failed to change state, is connectedToCurrent: " + this.currentState.isConnectedToState(newStateName) + "; newStateName: " + newStateName);
+            }
+        }else{
+            this.stateQueue.add(newStateName);
+            return 0;
+        }
+    }
+
+    public int changeStateBasedOnCurrent(int child){
         // check if we can change to that state from current state
         if(this.currentState != null){
             if(child < this.currentState.outputs.size()){
-                this.changeState(this.currentState.outputs.get(child));
-                return true;
+                return this.changeState(this.currentState.outputs.get(child));
+
             }else{
-                return false;
+                return 2;
             }
         }
-        return false;
+        return 3;
     }
     @Override
     public void step(DefaultCore core){
         ((UI_Manager)this.core.getComponentFromName("UI_Manager")).print(this.stateQueue.toString());
         if(this.active){
             if(this.currentState != null){
+                this.currentState.step(this.hwInterfaces, this.swInterfaces);
                 if(!this.stateQueue.isEmpty()) {
                     if(this.currentState.isInState(this.hwInterfaces, this.swInterfaces)){
                         String newStateName = this.stateQueue.remove(0);
@@ -159,6 +209,9 @@ public class StateMachine extends CoreComponent {
                             State newState = lookupStateFromName(newStateName, this.states);
                             newState.call(this.hwInterfaces, this.swInterfaces);
                             this.currentState = newState;
+                        }else if(!this.currentState.checkRequirements(hwInterfaces, swInterfaces)){
+                            // if states not ready yet OR mistake in code
+                            this.stateQueue.add(0, newStateName);
                         }
                     }
                 }
@@ -174,8 +227,10 @@ public class StateMachine extends CoreComponent {
     public ArrayList<String> getStatus(){
         // send information about current state
         ArrayList<String> toReturn = new ArrayList<String>();
-        toReturn.add("States: " + this.states.toString());
         toReturn.add("Current state: " + this.currentState.name);
+        for(State st: this.states){
+            toReturn.add(st.getStatus());
+        }
         return toReturn;
     }
 

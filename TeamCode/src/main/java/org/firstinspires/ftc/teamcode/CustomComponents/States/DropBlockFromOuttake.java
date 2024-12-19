@@ -8,23 +8,32 @@ import org.firstinspires.ftc.teamcode.CustomComponents.IntakeInterface;
 import org.firstinspires.ftc.teamcode.CustomComponents.OuttakeInterface;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
-public class Idle extends State {
-    public Idle() {
-        super("Idle");
+public class DropBlockFromOuttake extends State {
+    private long last = 0;
+    private long delayMS = 300;
+    public DropBlockFromOuttake() {
+        super("DropBlockFromOuttake");
     }
 
     @Override
     public boolean checkRequirements(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf) {
-        return true;
+        return false;
     }
 
     @Override
     public boolean isInState(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf) {
-        return true;
+        if(System.currentTimeMillis() - last > delayMS){
+            return true;
+        }
+        return false;
     }
 
+    @Override
+    public void call(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf) {
+        this.getOuttake(hwIntf).rotateAss(50);
+        this.getOuttake(hwIntf).secondRotateBasket(25);
+    }
     private IntakeInterface getIntake(ArrayList<HardwareInterface> hwInterface){
         for(int i = 0; i < hwInterface.size(); i++){
             if(hwInterface.get(i).interfaceType == InterfaceType.INTAKE){
@@ -43,26 +52,8 @@ public class Idle extends State {
         return null;
     }
 
-
-    @Override
-    public void call(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf) {
-        IntakeInterface intf = Objects.requireNonNull(this.getIntake(hwIntf));
-        intf.extend(0);
-        intf.stopEating();
-        intf.rotateMouth(57);
-
-        OuttakeInterface out = Objects.requireNonNull(this.getOuttake(hwIntf));
-        out.rotateAss(25);
-        out.extend(0);
-        out.secondRotateBasket(0);
-    }
-
     @Override
     public void step(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf) {
 
-    }
-
-    public Idle(ArrayList<String> inputs, ArrayList<String> outputs) {
-        super("Idle", inputs, outputs);
     }
 }
