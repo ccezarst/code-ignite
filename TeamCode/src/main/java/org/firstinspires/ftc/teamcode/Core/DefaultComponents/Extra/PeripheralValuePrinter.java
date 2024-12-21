@@ -25,8 +25,8 @@ public class PeripheralValuePrinter extends CoreComponent {
     private UI_Manager man;
     private HardwareMap hwMap;
     int selection = 0;
-    public PeripheralValuePrinter(String name, Boolean active, DefaultCore core, ComponentType... type) {
-        super(name, active, core, type);
+    public PeripheralValuePrinter(Boolean active, DefaultCore core) {
+        super("PheripheralValuePrinter", active, core, ComponentType.OTHER);
     }
 
     @Override

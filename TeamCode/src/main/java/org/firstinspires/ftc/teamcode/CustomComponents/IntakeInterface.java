@@ -38,8 +38,8 @@ public class IntakeInterface extends HardwareInterface {
         this.leftMotor.setTargetPosition(finalAm);
         this.leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         this.leftMotor.setPower(0.8);
+        this.last = amount;
     }
-
     public void extend(double amount, double power){
         int finalAm = (int) Math.round((((double) amount / 100) * this.highLimit) + this.lowLimmit);
         this.rightMotor.setPower(power);
@@ -48,6 +48,15 @@ public class IntakeInterface extends HardwareInterface {
         this.rightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         this.leftMotor.setTargetPosition(finalAm);
         this.leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        this.last = amount;
+    }
+    private double last;
+    public void subtract(double am){
+        this.extend(last - am);
+    }
+
+    public void add(double am){
+        this.extend(last + am);
     }
 
     @Override

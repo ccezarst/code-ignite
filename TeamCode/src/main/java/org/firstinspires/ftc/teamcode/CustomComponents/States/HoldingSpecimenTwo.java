@@ -8,13 +8,13 @@ import org.firstinspires.ftc.teamcode.CustomComponents.IntakeInterface;
 import org.firstinspires.ftc.teamcode.CustomComponents.OuttakeInterface;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
-public class Idle extends State {
-    public Idle() {
-        super("Idle");
+public class HoldingSpecimenTwo extends State {
+    private long last = 0;
+    private long delayMS = 500;
+    public HoldingSpecimenTwo(){
+        super("HoldingSpecimenTwo");
     }
-
     @Override
     public boolean checkRequirements(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf) {
         return true;
@@ -22,7 +22,15 @@ public class Idle extends State {
 
     @Override
     public boolean isInState(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf) {
-        return true;
+        if(System.currentTimeMillis() - last > delayMS){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void call(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf) {
+        this.getOuttake(hwIntf).extend(50);
     }
 
     private IntakeInterface getIntake(ArrayList<HardwareInterface> hwInterface){
@@ -43,27 +51,8 @@ public class Idle extends State {
         return null;
     }
 
-
-    @Override
-    public void call(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf) {
-        IntakeInterface intf = Objects.requireNonNull(this.getIntake(hwIntf));
-        intf.extend(0);
-        intf.stopEating();
-        intf.rotateMouth(57);
-
-        OuttakeInterface out = Objects.requireNonNull(this.getOuttake(hwIntf));
-        out.rotateAss(25);
-        out.extend(0);
-        out.secondRotateBasket(0);
-        out.openClaw();
-    }
-
     @Override
     public void step(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf) {
 
-    }
-
-    public Idle(ArrayList<String> inputs, ArrayList<String> outputs) {
-        super("Idle", inputs, outputs);
     }
 }

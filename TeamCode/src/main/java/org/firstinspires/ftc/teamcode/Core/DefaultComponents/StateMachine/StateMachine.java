@@ -15,6 +15,7 @@ import java.util.Objects;
 public class StateMachine extends CoreComponent {
     private ArrayList<HardwareInterface> hwInterfaces = new ArrayList<HardwareInterface>();
     private ArrayList<SoftwareInterface> swInterfaces = new ArrayList<SoftwareInterface>();
+    private ArrayList<State> history = new ArrayList<>();
     private ArrayList<State> states;
     private State currentState;
     private ArrayList<String> stateQueue;
@@ -183,7 +184,25 @@ public class StateMachine extends CoreComponent {
             return 0;
         }
     }
-
+    public int forcedChangeState(String newStateName){
+        if(this.currentState != null){
+            if(newStateName != null){
+                if(newStateName != this.currentState.name){
+                    this.stateQueue.add(newStateName);
+                    this.step(null);
+                    ((UI_Manager)this.core.getComponentFromName("UI_Manager")).showWarning(newStateName + ": " + this.currentState.getPathToStateNames(newStateName));
+                    return 0;
+                }else{
+                    return 1;
+                }
+            }else{
+                throw new IllegalArgumentException("Failed to change state, is connectedToCurrent: " + this.currentState.isConnectedToState(newStateName) + "; newStateName: " + newStateName);
+            }
+        }else{
+            this.stateQueue.add(newStateName);
+            return 0;
+        }
+    }
     public int changeStateBasedOnCurrent(int child){
         // check if we can change to that state from current state
         if(this.currentState != null){
@@ -196,6 +215,14 @@ public class StateMachine extends CoreComponent {
         }
         return 3;
     }
+
+    public void undo(){
+        this.revert();
+    }
+    public void revert(){
+        this.forcedChangeState(this.history.remove(0).name);
+    }
+
     @Override
     public void step(DefaultCore core){
         ((UI_Manager)this.core.getComponentFromName("UI_Manager")).print(this.stateQueue.toString());
@@ -208,6 +235,7 @@ public class StateMachine extends CoreComponent {
                         if (newStateName != currentState.name && this.currentState.checkRequirements(hwInterfaces, swInterfaces) && this.currentState.name != newStateName) {
                             State newState = lookupStateFromName(newStateName, this.states);
                             newState.call(this.hwInterfaces, this.swInterfaces);
+                            this.history.add(this.currentState);
                             this.currentState = newState;
                         }else if(!this.currentState.checkRequirements(hwInterfaces, swInterfaces)){
                             // if states not ready yet OR mistake in code

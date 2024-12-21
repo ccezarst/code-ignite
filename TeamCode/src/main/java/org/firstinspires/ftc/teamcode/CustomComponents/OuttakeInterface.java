@@ -22,6 +22,8 @@ public class OuttakeInterface extends HardwareInterface {
 
     private Servo outtakeServo;
 
+    private Servo clawServo;
+
     private int lowLimmit = 5;
     private int highLimit = 2800;
 
@@ -34,8 +36,16 @@ public class OuttakeInterface extends HardwareInterface {
         this.leftMotor.setTargetPosition(finalAm);
         this.leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         this.leftMotor.setPower(1);
+        this.last = amount;
+    }
+    private double last;
+    public void subtract(double am){
+        this.extend(last - am);
     }
 
+    public void add(double am){
+        this.extend(last + am);
+    }
     @Override
     public void step(DefaultCore core) {
 
@@ -53,6 +63,14 @@ public class OuttakeInterface extends HardwareInterface {
     // 0 -> 100
     public void secondRotateBasket(double pos){
         this.outtakeServo.setPosition((double) pos / 100);
+    }
+
+    public void openClaw(){
+        this.clawServo.setPosition(1);
+    }
+
+    public void closeClaw(){
+        this.clawServo.setPosition(0);
     }
 
     @Override
@@ -77,5 +95,7 @@ public class OuttakeInterface extends HardwareInterface {
         this.outtakeServo = (Servo) this.getHwMap().hwMap.get("outtakeRotServo");
         this.outtakeServo.setDirection(Servo.Direction.FORWARD);
         this.outtakeServo.setPosition(0.5);
+        this.clawServo = (Servo) this.getHwMap().hwMap.get("clawServo");
+        this.clawServo.setDirection(Servo.Direction.REVERSE);
     }
 }

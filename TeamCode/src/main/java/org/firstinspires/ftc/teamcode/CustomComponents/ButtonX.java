@@ -7,23 +7,24 @@ import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Managers.UI_Manager
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.StateMachine.StateMachine;
 import org.firstinspires.ftc.teamcode.Core.DefaultCore;
 
-public class ButtonTRIGGER_LEFT extends OneButtonMapper {
+public class ButtonX extends OneButtonMapper {
     private StateMachine st;
-    public ButtonTRIGGER_LEFT(String name, Boolean active, DefaultCore core) {
-        super(name, active, core, ButtonTypes.LEFT_BUMPER, 2);
+    public ButtonX(String name, Boolean active, DefaultCore core) {
+        super(name, active, core, ButtonTypes.A, 2);
         this.st = (StateMachine) this.core.getComponentsOfType(ComponentType.STATE_MACHINE).get(0);
     }
 
     @Override
     public void buttonPressed() {
-        int res = this.st.changeState("IntakeHIGH");
+        int res = this.st.changeStateBasedOnCurrent(0);
         if(res != 0){
-            ((UI_Manager)this.core.getComponentFromName("UI_Manager")).showWarning("ButtonTRIGGER_LEFT -> failed to change state to IntakeHIGH : " + res);
+            ((UI_Manager)this.core.getComponentFromName("UI_Manager")).showWarning("ButtonX -> failed to change state to output 0 : " + res);
         }
     }
 
     @Override
     public void buttonDown() {
+
     }
 
     @Override

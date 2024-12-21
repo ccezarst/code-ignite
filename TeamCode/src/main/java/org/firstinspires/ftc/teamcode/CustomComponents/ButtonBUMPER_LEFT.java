@@ -7,24 +7,23 @@ import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Managers.UI_Manager
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.StateMachine.StateMachine;
 import org.firstinspires.ftc.teamcode.Core.DefaultCore;
 
-public class ButtonDPAD_DOWN extends OneButtonMapper {
+public class ButtonBUMPER_LEFT extends OneButtonMapper {
     private StateMachine st;
-    public ButtonDPAD_DOWN(String name, Boolean active, DefaultCore core) {
-        super(name, active, core, ButtonTypes.DPAD_DOWN, 2);
+    public ButtonBUMPER_LEFT(String name, Boolean active, DefaultCore core) {
+        super(name, active, core, ButtonTypes.LEFT_BUMPER, 2);
         this.st = (StateMachine) this.core.getComponentsOfType(ComponentType.STATE_MACHINE).get(0);
     }
 
     @Override
     public void buttonPressed() {
-        int res = this.st.changeState("Idle");
+        int res = this.st.changeState("IntakeHIGH");
         if(res != 0){
-            ((UI_Manager)this.core.getComponentFromName("UI_Manager")).showWarning("ButtonDPAD_DOWN -> failed to change state to Idle : " + res);
+            ((UI_Manager)this.core.getComponentFromName("UI_Manager")).showWarning("ButtonBUMPER_LEFT -> failed to change state to IntakeHIGH : " + res);
         }
     }
 
     @Override
     public void buttonDown() {
-
     }
 
     @Override
@@ -34,5 +33,6 @@ public class ButtonDPAD_DOWN extends OneButtonMapper {
 
     @Override
     public void buttonToggle() {
+
     }
 }
