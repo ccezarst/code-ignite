@@ -12,9 +12,6 @@ import java.util.Objects;
 public class IntakeHIGH extends State {
     private long last = 0;
     private long delayMS = 500;
-    public IntakeHIGH(ArrayList<String> inputs, ArrayList<String> outputs) {
-        super("IntakeHIGH", inputs, outputs);
-    }
 
     public IntakeHIGH() {
         super("IntakeHIGH");

@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.Core.DefaultCore;
 public class ButtonA extends OneButtonMapper {
     private StateMachine st;
     public ButtonA(String name, Boolean active, DefaultCore core) {
-        super(name, active, core, ButtonTypes.Y, 2);
+        super(name, active, core, ButtonTypes.A, 2);
         this.st = (StateMachine) this.core.getComponentsOfType(ComponentType.STATE_MACHINE).get(0);
     }
 
@@ -18,7 +18,7 @@ public class ButtonA extends OneButtonMapper {
     public void buttonPressed() {
         int res = this.st.changeState("Idle");
         if(res != 0){
-            ((UI_Manager)this.core.getComponentFromName("UI_Manager")).showWarning("ButtonY -> failed to change state to Idle : " + res);
+            ((UI_Manager)this.core.getComponentFromName("UI_Manager")).showWarning("ButtonA -> failed to change state to idle : " + res);
         }
     }
 
@@ -34,5 +34,6 @@ public class ButtonA extends OneButtonMapper {
 
     @Override
     public void buttonToggle() {
+
     }
 }

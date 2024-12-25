@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.Core.DefaultCore;
 public class ButtonX extends OneButtonMapper {
     private StateMachine st;
     public ButtonX(String name, Boolean active, DefaultCore core) {
-        super(name, active, core, ButtonTypes.A, 2);
+        super(name, active, core, ButtonTypes.X, 2);
         this.st = (StateMachine) this.core.getComponentsOfType(ComponentType.STATE_MACHINE).get(0);
     }
 

@@ -50,7 +50,7 @@ public class WaitingForSpecimen extends State {
     @Override
     public void call(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf) {
         this.last = System.currentTimeMillis();
-        this.getOuttake(hwIntf).extend(20);
+        this.getOuttake(hwIntf).extend(20, .5);
         this.getOuttake(hwIntf).openClaw();
     }
 

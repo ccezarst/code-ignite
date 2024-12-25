@@ -52,7 +52,7 @@ public class Idle extends State {
         intf.rotateMouth(57);
 
         OuttakeInterface out = Objects.requireNonNull(this.getOuttake(hwIntf));
-        out.rotateAss(25);
+        out.rotateAss(15);
         out.extend(0);
         out.secondRotateBasket(0);
         out.openClaw();

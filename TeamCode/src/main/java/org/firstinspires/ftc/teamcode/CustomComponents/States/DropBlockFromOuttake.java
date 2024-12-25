@@ -18,7 +18,7 @@ public class DropBlockFromOuttake extends State {
 
     @Override
     public boolean checkRequirements(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf) {
-        return false;
+        return true;
     }
 
     @Override
@@ -31,7 +31,7 @@ public class DropBlockFromOuttake extends State {
 
     @Override
     public void call(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf) {
-        this.getOuttake(hwIntf).rotateAss(50);
+        this.getOuttake(hwIntf).rotateAss(0);
         this.getOuttake(hwIntf).secondRotateBasket(25);
     }
     private IntakeInterface getIntake(ArrayList<HardwareInterface> hwInterface){

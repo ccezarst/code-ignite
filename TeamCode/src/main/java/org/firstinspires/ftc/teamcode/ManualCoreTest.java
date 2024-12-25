@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.CoreComponent;
+import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Extra.PeripheralValuePrinter;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.InputMappers.PrintCoreStatusBind;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.HardwareInterface;
 import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.SoftwareInterface;
@@ -13,9 +14,9 @@ import org.firstinspires.ftc.teamcode.Core.ManualCore;
 import org.firstinspires.ftc.teamcode.CustomComponents.ButtonBUMPER_RIGHT;
 import org.firstinspires.ftc.teamcode.CustomComponents.ButtonX;
 import org.firstinspires.ftc.teamcode.CustomComponents.ButtonB;
-import org.firstinspires.ftc.teamcode.CustomComponents.ButtonA;
-import org.firstinspires.ftc.teamcode.CustomComponents.ButtonBUMPER_LEFT;
 import org.firstinspires.ftc.teamcode.CustomComponents.ButtonY;
+import org.firstinspires.ftc.teamcode.CustomComponents.ButtonBUMPER_LEFT;
+import org.firstinspires.ftc.teamcode.CustomComponents.ButtonA;
 import org.firstinspires.ftc.teamcode.CustomComponents.IntakeInterface;
 import org.firstinspires.ftc.teamcode.CustomComponents.OuttakeInterface;
 import org.firstinspires.ftc.teamcode.CustomComponents.States.DropBlockFromIntake;
@@ -62,7 +63,7 @@ public class ManualCoreTest extends LinearOpMode {
         core.addComponent(new PrintCoreStatusBind(1, core, telemetry));
         core.addComponent(new IntakeInterface(true, core));
         core.addComponent(new OuttakeInterface(true, core));
-        //core.addComponent(new PeripheralValuePrinter("perif", true, core));
+        //core.addComponent(new PeripheralValuePrinter(true, core));
 
         //core.addComponent(new ButtonOutput("ButtonOutGP1", true, core, telemetry));
         //core.addComponent(new PeripheralValuePrinter("PeripheralValuePrinter", true, core));
@@ -101,17 +102,23 @@ public class ManualCoreTest extends LinearOpMode {
         states.add(Transfer);
         HoldingBlockInOuttake HoldingBlockInOuttake = new HoldingBlockInOuttake();
         HoldingBlockInOuttake.inputs.add("Transfer");
+        HoldingBlockInOuttake.outputs.add("Outtake_FirstBasket");
         HoldingBlockInOuttake.outputs.add("Outtake_SecondBasket");
         states.add(HoldingBlockInOuttake);
         Outtake_FirstBasket Outtake_FirstBasket = new Outtake_FirstBasket();
         Outtake_FirstBasket.inputs.add("HoldingBlockInOuttake");
+        Outtake_FirstBasket.inputs.add("Outtake_SecondBasket");
         Outtake_FirstBasket.outputs.add("DropBlockFromOuttake");
+        Outtake_FirstBasket.outputs.add("Outtake_SecondBasket");
         states.add(Outtake_FirstBasket);
         Outtake_SecondBasket Outtake_SecondBasket = new Outtake_SecondBasket();
         Outtake_SecondBasket.inputs.add("HoldingBlockInOuttake");
+        Outtake_SecondBasket.inputs.add("Outtake_FirstBasket");
         Outtake_SecondBasket.outputs.add("DropBlockFromOuttake");
+        Outtake_SecondBasket.outputs.add("Outtake_FirstBasket");
         states.add(Outtake_SecondBasket);
         DropBlockFromOuttake DropBlockFromOuttake = new DropBlockFromOuttake();
+        DropBlockFromOuttake.inputs.add("Outtake_FirstBasket");
         DropBlockFromOuttake.inputs.add("Outtake_SecondBasket");
         DropBlockFromOuttake.outputs.add("Idle");
         states.add(DropBlockFromOuttake);
@@ -138,10 +145,12 @@ public class ManualCoreTest extends LinearOpMode {
         core.addComponent(stateMachine);
         core.addComponent(new ButtonX("stbtnMap", true, core));
         core.addComponent(new ButtonB("stbtnMap1", true, core));
-        core.addComponent(new ButtonA("stbtnMap2", true, core));
+        core.addComponent(new ButtonY("stbtnMap2", true, core));
         core.addComponent(new ButtonBUMPER_LEFT("stbtnMap3", true, core));
         core.addComponent(new ButtonBUMPER_RIGHT("stbtnMap4", true, core));
-        core.addComponent(new ButtonY("stbtnMap4", true, core));
+        core.addComponent(new ButtonA("stbtnMap5", true, core));
+
+        //core.addComponent(new MotorPositioner(true, core));
 
 
         //core.removeComponent("ManualDrivingManager");

@@ -44,18 +44,36 @@ public class StateMachine extends CoreComponent {
                 try{
                     if(states.get(i).inputs.containsAll(Objects.requireNonNull(pula.get(states.get(i).name)))){
                         // acc do nothing
+
                     }else{
-                        throw new IllegalArgumentException("State Machine configuration is not proper; " + states.get(i).name + "'s inputs do not math other states outputs; check connections");
+                        throw new IllegalArgumentException("State Machine configuration is not proper; " + states.get(i).name + "'s inputs do not math other states outputs; check connections of " + subtractLists(this.states.get(i).inputs, Objects.requireNonNull(pula.get(states.get(i).name))));
                     }
                 }catch(Exception exp){
                     if(exp instanceof NullPointerException){
-                        throw new IllegalArgumentException("Failed to find state while checking inputs, maybe state is not connected to anything. State name: " + states.get(i).name);
+                        throw new IllegalArgumentException("Failed to find state while checking inputs, maybe state is not connected to anything. State name: " + states.get(i).name + " \n" + exp);
+                        //throw exp;
                     }else{
                         throw exp;
                     }
                 }
             }
     }
+
+    private ArrayList<String> subtractLists(ArrayList<String> caca, ArrayList<String> piss){
+        ArrayList<String> rez = new ArrayList<>();
+        for(String copiluLuMata: piss){
+            if(!caca.contains(copiluLuMata) && !rez.contains(copiluLuMata)){
+                rez.add(copiluLuMata);
+            }
+        }
+        for(String mata: caca){
+            if(!rez.contains(mata) && !piss.contains(mata)){
+                rez.add(mata);
+            }
+        }
+        return rez;
+    }
+
     private State lookupStateFromName(String name, ArrayList<State> allStates){
         for(int i = 0; i < allStates.size(); i++){
             if(allStates.get(i).name == name){
@@ -78,6 +96,7 @@ public class StateMachine extends CoreComponent {
         if(currentState.name == targetState.name){
             ArrayList<State> caca = currentPath;
             caca.add(currentState);
+            caca.remove(0);
             allFoundPaths.add(caca);
             return null;
         }else if(this.countOf(currentPath, currentState) > 1){
@@ -142,6 +161,7 @@ public class StateMachine extends CoreComponent {
                     ((UI_Manager)this.core.getComponentFromName("UI_Manager")).showWarning(newStateName + ": " + this.currentState.getPathToStateNames(newStateName));
                     return 0;
                 }else{
+                    //throw new IllegalArgumentException("Failed to change state, is currentState: " + this.currentState + "; newStateName: " + newStateName +"; " + this.history);
                     return 1;
                 }
             }else{
@@ -185,23 +205,10 @@ public class StateMachine extends CoreComponent {
         }
     }
     public int forcedChangeState(String newStateName){
-        if(this.currentState != null){
-            if(newStateName != null){
-                if(newStateName != this.currentState.name){
-                    this.stateQueue.add(newStateName);
-                    this.step(null);
-                    ((UI_Manager)this.core.getComponentFromName("UI_Manager")).showWarning(newStateName + ": " + this.currentState.getPathToStateNames(newStateName));
-                    return 0;
-                }else{
-                    return 1;
-                }
-            }else{
-                throw new IllegalArgumentException("Failed to change state, is connectedToCurrent: " + this.currentState.isConnectedToState(newStateName) + "; newStateName: " + newStateName);
-            }
-        }else{
-            this.stateQueue.add(newStateName);
-            return 0;
-        }
+        this.stateQueue.add(newStateName);
+        this.step(null);
+        ((UI_Manager)this.core.getComponentFromName("UI_Manager")).showWarning(newStateName + ": " + this.currentState.getPathToStateNames(newStateName));
+        return 0;
     }
     public int changeStateBasedOnCurrent(int child){
         // check if we can change to that state from current state
@@ -223,16 +230,26 @@ public class StateMachine extends CoreComponent {
         this.forcedChangeState(this.history.remove(0).name);
     }
 
+    private ArrayList<String> getClassNames(ArrayList<State> caca){
+        ArrayList<String> mata = new ArrayList<>();
+        for(State pula: caca){
+            mata.add(pula.getClass().getName() + " -> " + pula.name);
+        }
+        return mata;
+    }
+
     @Override
     public void step(DefaultCore core){
-        ((UI_Manager)this.core.getComponentFromName("UI_Manager")).print(this.stateQueue.toString());
         if(this.active){
             if(this.currentState != null){
+                ((UI_Manager)this.core.getComponentFromName("UI_Manager")).print(this.currentState.toString());
+                ((UI_Manager)this.core.getComponentFromName("UI_Manager")).print(this.stateQueue.toString());
+                ((UI_Manager)this.core.getComponentFromName("UI_Manager")).print(this.getClassNames(this.history).toString());
                 this.currentState.step(this.hwInterfaces, this.swInterfaces);
                 if(!this.stateQueue.isEmpty()) {
                     if(this.currentState.isInState(this.hwInterfaces, this.swInterfaces)){
                         String newStateName = this.stateQueue.remove(0);
-                        if (newStateName != currentState.name && this.currentState.checkRequirements(hwInterfaces, swInterfaces) && this.currentState.name != newStateName) {
+                        if (newStateName != currentState.name && this.currentState.checkRequirements(hwInterfaces, swInterfaces)) {
                             State newState = lookupStateFromName(newStateName, this.states);
                             newState.call(this.hwInterfaces, this.swInterfaces);
                             this.history.add(this.currentState);
@@ -247,6 +264,7 @@ public class StateMachine extends CoreComponent {
                 State newState = lookupStateFromName(this.stateQueue.remove(0), this.states);
                 newState.call(this.hwInterfaces, this.swInterfaces);
                 this.currentState = newState;
+                this.history.add(this.currentState);
             }
 
         }

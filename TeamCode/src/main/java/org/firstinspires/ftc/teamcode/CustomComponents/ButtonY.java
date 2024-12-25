@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.Core.DefaultCore;
 public class ButtonY extends OneButtonMapper {
     private StateMachine st;
     public ButtonY(String name, Boolean active, DefaultCore core) {
-        super(name, active, core, ButtonTypes.A, 2);
+        super(name, active, core, ButtonTypes.Y, 2);
         this.st = (StateMachine) this.core.getComponentsOfType(ComponentType.STATE_MACHINE).get(0);
     }
 
@@ -18,7 +18,7 @@ public class ButtonY extends OneButtonMapper {
     public void buttonPressed() {
         int res = this.st.changeStateBasedOnCurrent(1);
         if(res != 0){
-            ((UI_Manager)this.core.getComponentFromName("UI_Manager")).showWarning("ButtonY -> failed to change state to output 1 : " + res);
+            ((UI_Manager)this.core.getComponentFromName("UI_Manager")).showWarning("ButtonY -> failed to change state to child 1 : " + res);
         }
     }
 
@@ -34,6 +34,5 @@ public class ButtonY extends OneButtonMapper {
 
     @Override
     public void buttonToggle() {
-
     }
 }

@@ -25,7 +25,7 @@ public class OuttakeInterface extends HardwareInterface {
     private Servo clawServo;
 
     private int lowLimmit = 5;
-    private int highLimit = 2800;
+    private int highLimit = 3150;
 
     // 0 to 100
     public void extend(double amount){
@@ -36,6 +36,18 @@ public class OuttakeInterface extends HardwareInterface {
         this.leftMotor.setTargetPosition(finalAm);
         this.leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         this.leftMotor.setPower(1);
+        this.last = amount;
+    }
+
+    // 0 to 100
+    public void extend(double amount, double power){
+        int finalAm = (int) Math.round((((double) amount / 100) * this.highLimit) + this.lowLimmit);
+        this.rightMotor.setPower(power);
+        this.leftMotor.setPower(power);
+        this.rightMotor.setTargetPosition(finalAm);
+        this.rightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        this.leftMotor.setTargetPosition(finalAm);
+        this.leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         this.last = amount;
     }
     private double last;

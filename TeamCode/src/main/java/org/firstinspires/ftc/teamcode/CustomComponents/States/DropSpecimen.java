@@ -13,7 +13,7 @@ public class DropSpecimen extends State {
     private long last = 0;
     private long delayMS = 500;
     public DropSpecimen(){
-        super("HoldingSpecimenTwo");
+        super("DropSpecimen");
     }
     @Override
     public boolean checkRequirements(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf) {
