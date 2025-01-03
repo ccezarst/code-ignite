@@ -1,13 +1,12 @@
 package org.firstinspires.ftc.teamcode.CustomComponents.States;
 
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.HardwareInterface;
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.InterfaceType;
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.SoftwareInterface;
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.StateMachine.State;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Interfaces.Template.HardwareInterface;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Interfaces.Template.InterfaceType;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Interfaces.Template.SoftwareInterface;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.StateMachine.State;
 import org.firstinspires.ftc.teamcode.CustomComponents.IntakeInterface;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class IntakeHIGH extends State {
     private long last = 0;

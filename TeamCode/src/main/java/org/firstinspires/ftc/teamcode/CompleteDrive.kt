@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.util.ElapsedTime
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Managers.Template.CustomGamepad
 import org.firstinspires.ftc.teamcode.HardwareComponents.Hardware
 import java.lang.Math.atan2
 
@@ -45,8 +46,8 @@ class CompleteDrive: OpMode() {
 
     override fun Hardware.run() {
 
-        val gp1 = Gamepad(gamepad1, 1)
-        val gp2 = Gamepad(gamepad2, 2)
+        val gp1 = CustomGamepad(gamepad1, 1)
+        val gp2 = CustomGamepad(gamepad2, 2)
 
 
         var leftTriggerIsPressed = false
@@ -92,26 +93,26 @@ class CompleteDrive: OpMode() {
 
 
 
-            if(gp2.checkToggle(Gamepad.Button.Y))
+            if(gp2.checkToggle(CustomGamepad.Button.Y))
                 outtake.toggleOuttakePixel()
 
-            if(gp2.checkToggle(Gamepad.Button.DPAD_UP))
+            if(gp2.checkToggle(CustomGamepad.Button.DPAD_UP))
                 intake.toggleIntakeSample()
 
-            if(gp2.checkToggle(Gamepad.Button.X)) {
+            if(gp2.checkToggle(CustomGamepad.Button.X)) {
                 outtake.pozTranzitie()
                 intake.pozTranzitie()
             }
-            if(gp2.checkToggle(Gamepad.Button.DPAD_LEFT))
+            if(gp2.checkToggle(CustomGamepad.Button.DPAD_LEFT))
                 intake.pozTranzitie()
 
-            if(gp2.checkToggle(Gamepad.Button.B))
+            if(gp2.checkToggle(CustomGamepad.Button.B))
                 outtake.pozPus()
 
-            if(gp2.checkToggle(Gamepad.Button.DPAD_RIGHT))
+            if(gp2.checkToggle(CustomGamepad.Button.DPAD_RIGHT))
                 intake.toggleSample()
 
-            if (gp2.checkToggle(Gamepad.Button.A))
+            if (gp2.checkToggle(CustomGamepad.Button.A))
                 outtake.takeSpecimen()
 
             intake.showPositions(telemetry)
@@ -121,7 +122,7 @@ class CompleteDrive: OpMode() {
 
                 LiftState.Intake.LIFT_START -> {
 
-                    if (gp1.checkToggle(Gamepad.Button.RIGHT_BUMPER)) {
+                    if (gp1.checkToggle(CustomGamepad.Button.RIGHT_BUMPER)) {
                         intake.lowSlider()
                         liftStateIntake = LiftState.Intake.LIFT_LOW
                     }
@@ -129,19 +130,19 @@ class CompleteDrive: OpMode() {
 
                 LiftState.Intake.LIFT_LOW -> {
 
-                    if (gp1.checkToggle(Gamepad.Button.RIGHT_BUMPER)) {
+                    if (gp1.checkToggle(CustomGamepad.Button.RIGHT_BUMPER)) {
                         intake.midSlider()
                         liftStateIntake = LiftState.Intake.LIFT_MEDIUM
 
                     }
-                    if (gp1.checkToggle(Gamepad.Button.LEFT_BUMPER)) {
+                    if (gp1.checkToggle(CustomGamepad.Button.LEFT_BUMPER)) {
                         intake.closeSlider()
                         liftStateIntake = LiftState.Intake.LIFT_START
                         intake.pozTranzitie()
                         outtake.pozTranzitie()
 
                     }
-                    if (gp1.checkToggle(Gamepad.Button.DPAD_DOWN)) {
+                    if (gp1.checkToggle(CustomGamepad.Button.DPAD_DOWN)) {
                         intake.closeSlider()
                         liftStateIntake = LiftState.Intake.LIFT_START
                         intake.pozTranzitie()
@@ -151,19 +152,19 @@ class CompleteDrive: OpMode() {
                 }
 
                 LiftState.Intake.LIFT_MEDIUM -> {
-                    if (gp1.checkToggle(Gamepad.Button.RIGHT_BUMPER)) {
+                    if (gp1.checkToggle(CustomGamepad.Button.RIGHT_BUMPER)) {
                         intake.openSlider()
                         liftStateIntake = LiftState.Intake.LIFT_UP
 
                     }
-                    if (gp1.checkToggle(Gamepad.Button.DPAD_DOWN)) {
+                    if (gp1.checkToggle(CustomGamepad.Button.DPAD_DOWN)) {
                         intake.closeSlider()
                         liftStateIntake = LiftState.Intake.LIFT_START
                         intake.pozTranzitie()
                         outtake.pozTranzitie()
 
                     }
-                    if (gp1.checkToggle(Gamepad.Button.LEFT_BUMPER)) {
+                    if (gp1.checkToggle(CustomGamepad.Button.LEFT_BUMPER)) {
                         intake.lowSlider()
                         liftStateIntake = LiftState.Intake.LIFT_LOW
                     }
@@ -171,14 +172,14 @@ class CompleteDrive: OpMode() {
 
                 LiftState.Intake.LIFT_UP -> {
 
-                    if (gp1.checkToggle(Gamepad.Button.DPAD_DOWN)) {
+                    if (gp1.checkToggle(CustomGamepad.Button.DPAD_DOWN)) {
                         intake.closeSlider()
                         liftStateIntake = LiftState.Intake.LIFT_START
                         intake.pozTranzitie()
                         outtake.pozTranzitie()
 
                     }
-                    if (gp1.checkToggle(Gamepad.Button.LEFT_BUMPER)) {
+                    if (gp1.checkToggle(CustomGamepad.Button.LEFT_BUMPER)) {
                         intake.midSlider()
                         liftStateIntake = LiftState.Intake.LIFT_MEDIUM
 
@@ -192,7 +193,7 @@ class CompleteDrive: OpMode() {
 
                 LiftState.Outtake.LIFT_START -> {
 
-                    if (gp2.checkToggle(Gamepad.Button.RIGHT_BUMPER)) {
+                    if (gp2.checkToggle(CustomGamepad.Button.RIGHT_BUMPER)) {
                         outtake.lowSlider()
                         liftStateOuttake = LiftState.Outtake.LIFT_LOW
                         intake.toggleIntakeSample()
@@ -201,17 +202,17 @@ class CompleteDrive: OpMode() {
 
                 LiftState.Outtake.LIFT_LOW -> {
 
-                    if (gp2.checkToggle(Gamepad.Button.RIGHT_BUMPER)) {
+                    if (gp2.checkToggle(CustomGamepad.Button.RIGHT_BUMPER)) {
                         outtake.midSlider()
                         liftStateOuttake = LiftState.Outtake.LIFT_MEDIUM
 
                     }
-                    if (gp2.checkToggle(Gamepad.Button.LEFT_BUMPER)) {
+                    if (gp2.checkToggle(CustomGamepad.Button.LEFT_BUMPER)) {
                         outtake.closeSlider()
                         liftStateOuttake = LiftState.Outtake.LIFT_START
 
                     }
-                    if (gp2.checkToggle(Gamepad.Button.DPAD_DOWN)) {
+                    if (gp2.checkToggle(CustomGamepad.Button.DPAD_DOWN)) {
                         outtake.closeSlider()
                         liftStateOuttake = LiftState.Outtake.LIFT_START
 
@@ -220,17 +221,17 @@ class CompleteDrive: OpMode() {
                 }
 
                 LiftState.Outtake.LIFT_MEDIUM -> {
-                    if (gp2.checkToggle(Gamepad.Button.RIGHT_BUMPER)) {
+                    if (gp2.checkToggle(CustomGamepad.Button.RIGHT_BUMPER)) {
                         outtake.openSlider()
                         liftStateOuttake = LiftState.Outtake.LIFT_UP
 
                     }
-                    if (gp2.checkToggle(Gamepad.Button.DPAD_DOWN)) {
+                    if (gp2.checkToggle(CustomGamepad.Button.DPAD_DOWN)) {
                         outtake.closeSlider()
                         liftStateOuttake = LiftState.Outtake.LIFT_START
 
                     }
-                    if (gp2.checkToggle(Gamepad.Button.LEFT_BUMPER)) {
+                    if (gp2.checkToggle(CustomGamepad.Button.LEFT_BUMPER)) {
                         outtake.lowSlider()
                         liftStateOuttake = LiftState.Outtake.LIFT_LOW
 
@@ -239,12 +240,12 @@ class CompleteDrive: OpMode() {
 
                 LiftState.Outtake.LIFT_UP -> {
 
-                    if (gp2.checkToggle(Gamepad.Button.DPAD_DOWN)) {
+                    if (gp2.checkToggle(CustomGamepad.Button.DPAD_DOWN)) {
                         outtake.closeSlider()
                         liftStateOuttake = LiftState.Outtake.LIFT_START
 
                     }
-                    if (gp2.checkToggle(Gamepad.Button.LEFT_BUMPER)) {
+                    if (gp2.checkToggle(CustomGamepad.Button.LEFT_BUMPER)) {
                         outtake.midSlider()
                         liftStateOuttake = LiftState.Outtake.LIFT_MEDIUM
 

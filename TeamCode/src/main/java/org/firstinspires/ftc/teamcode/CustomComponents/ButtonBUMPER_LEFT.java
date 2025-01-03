@@ -1,17 +1,23 @@
 package org.firstinspires.ftc.teamcode.CustomComponents;
 
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.ComponentType;
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.InputMappers.Template.OneButtonMapper;
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Managers.Template.ButtonTypes;
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Managers.UI_Manager;
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.StateMachine.StateMachine;
-import org.firstinspires.ftc.teamcode.Core.DefaultCore;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.ComponentType;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.InputMappers.Template.OneButtonMapper;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Managers.Template.ButtonTypes;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Managers.UI_Manager;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.StateMachine.StateMachine;
+import org.firstinspires.ftc.teamcode.TeamCore.TeamCore;
+import org.firstinspires.ftc.teamcode.TeamCore.TestingEnviromentCore;
 
 public class ButtonBUMPER_LEFT extends OneButtonMapper {
     private StateMachine st;
-    public ButtonBUMPER_LEFT(String name, Boolean active, DefaultCore core) {
+    public ButtonBUMPER_LEFT(String name, Boolean active, TeamCore core) {
         super(name, active, core, ButtonTypes.LEFT_BUMPER, 2);
         this.st = (StateMachine) this.core.getComponentsOfType(ComponentType.STATE_MACHINE).get(0);
+    }
+
+    @Override
+    public void customUpdate(TeamCore core) {
+
     }
 
     @Override
@@ -34,5 +40,10 @@ public class ButtonBUMPER_LEFT extends OneButtonMapper {
     @Override
     public void buttonToggle() {
 
+    }
+
+    @Override
+    public int test(TestingEnviromentCore core) {
+        return 0;
     }
 }

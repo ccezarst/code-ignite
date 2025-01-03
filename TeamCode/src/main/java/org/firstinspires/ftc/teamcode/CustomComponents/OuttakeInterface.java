@@ -2,15 +2,16 @@ package org.firstinspires.ftc.teamcode.CustomComponents;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.HW_HwMap;
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.HardwareInterface;
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.InterfaceType;
-import org.firstinspires.ftc.teamcode.Core.DefaultCore;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Interfaces.Template.HardwareInterface;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Interfaces.Template.InterfaceType;
+import org.firstinspires.ftc.teamcode.TeamCore.TeamCore;
+import org.firstinspires.ftc.teamcode.TeamCore.TestingEnviromentCore;
 
 public class OuttakeInterface extends HardwareInterface {
-    public OuttakeInterface(Boolean active, DefaultCore core) {
+    public OuttakeInterface(Boolean active, TeamCore core) {
         super("OuttakeInterface", active, core, InterfaceType.OUTTAKE);
     }
 
@@ -59,13 +60,10 @@ public class OuttakeInterface extends HardwareInterface {
         this.extend(last + am);
     }
     @Override
-    public void step(DefaultCore core) {
+    public void step(TeamCore core) {
 
     }
 
-    private HW_HwMap getHwMap(){
-        return ((HW_HwMap) this.core.getInterfacesOfType(InterfaceType.HARDWARE_MAP).get(0));
-    }
 
     // 0 -> 100
     public void rotateAss(double pos){
@@ -86,28 +84,33 @@ public class OuttakeInterface extends HardwareInterface {
     }
 
     @Override
-    public void update(DefaultCore core) {
-        this.rightMotor = (DcMotor) this.getHwMap().hwMap.get("OUTmotorR");
+    public void update(TeamCore core) {
+        this.rightMotor = (DcMotor) this.core.getGlobalVariable("HardwareMap", HardwareMap.class).get("OUTmotorR");
         this.rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         this.rightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         this.rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         this.rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         this.rightMotor.setPower(0);
-        this.leftMotor = (DcMotor) this.getHwMap().hwMap.get("OUTmotorL");
+        this.leftMotor = (DcMotor) this.core.getGlobalVariable("HardwareMap", HardwareMap.class).get("OUTmotorL");
         this.leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         this.leftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         this.leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         this.leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         this.leftMotor.setPower(0);
 
-        this.leftRotate = (Servo) this.getHwMap().hwMap.get("outtakeServoL");
+        this.leftRotate = (Servo) this.core.getGlobalVariable("HardwareMap", HardwareMap.class).get("outtakeServoL");
         this.leftRotate.setDirection(Servo.Direction.REVERSE);
-        this.rightRotate = (Servo) this.getHwMap().hwMap.get("outtakeServoR");
+        this.rightRotate = (Servo) this.core.getGlobalVariable("HardwareMap", HardwareMap.class).get("outtakeServoR");
         this.rightRotate.setDirection(Servo.Direction.FORWARD);
-        this.outtakeServo = (Servo) this.getHwMap().hwMap.get("outtakeRotServo");
+        this.outtakeServo = (Servo) this.core.getGlobalVariable("HardwareMap", HardwareMap.class).get("outtakeRotServo");
         this.outtakeServo.setDirection(Servo.Direction.FORWARD);
         this.outtakeServo.setPosition(0.5);
-        this.clawServo = (Servo) this.getHwMap().hwMap.get("clawServo");
+        this.clawServo = (Servo) this.core.getGlobalVariable("HardwareMap", HardwareMap.class).get("clawServo");
         this.clawServo.setDirection(Servo.Direction.REVERSE);
+    }
+
+    @Override
+    public int test(TestingEnviromentCore core) {
+        return 0;
     }
 }

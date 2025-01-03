@@ -3,14 +3,14 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.CoreComponent;
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Extra.PeripheralValuePrinter;
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.InputMappers.PrintCoreStatusBind;
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.HardwareInterface;
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.Interfaces.Template.SoftwareInterface;
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.StateMachine.State;
-import org.firstinspires.ftc.teamcode.Core.DefaultComponents.StateMachine.StateMachine;
-import org.firstinspires.ftc.teamcode.Core.ManualCore;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.CoreComponent;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Extra.PrintCoreStatusBind;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Interfaces.Template.HardwareInterface;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Interfaces.Template.SoftwareInterface;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Managers.Template.CustomGamepad;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.StateMachine.State;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.StateMachine.StateMachine;
+import org.firstinspires.ftc.teamcode.TeamCore.ManualCore;
 import org.firstinspires.ftc.teamcode.CustomComponents.ButtonBUMPER_RIGHT;
 import org.firstinspires.ftc.teamcode.CustomComponents.ButtonX;
 import org.firstinspires.ftc.teamcode.CustomComponents.ButtonB;
@@ -57,8 +57,8 @@ public class ManualCoreTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        Gamepad gp1 = new Gamepad(gamepad1, 1);
-        Gamepad gp2 = new Gamepad(gamepad2, 2);
+        CustomGamepad gp1 = new CustomGamepad(gamepad1, 1);
+        CustomGamepad gp2 = new CustomGamepad(gamepad2, 2);
         ManualCore core = new ManualCore(telemetry, hardwareMap, 1, gp1, gp2);
         core.addComponent(new PrintCoreStatusBind(1, core, telemetry));
         core.addComponent(new IntakeInterface(true, core));
