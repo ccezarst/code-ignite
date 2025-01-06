@@ -30,6 +30,7 @@ public class HoldingSpecimenTwo extends State {
 
     @Override
     public void call(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf) {
+        this.getOuttake(hwIntf).closeClaw();
         this.getOuttake(hwIntf).extend(50);
     }
 
