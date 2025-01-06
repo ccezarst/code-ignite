@@ -255,7 +255,7 @@ public class StateMachine extends CoreComponent {
                             if (this.currentState.checkRequirements(hwInterfaces, swInterfaces)) {
                                 State newState = lookupStateFromName(newStateName, this.states);
                                 newState.call(this.hwInterfaces, this.swInterfaces);
-                                this.history.add(this.currentState);
+                                this.history.add(0, this.currentState);
                                 this.currentState = newState;
                             }else if(!this.currentState.checkRequirements(hwInterfaces, swInterfaces)){
                                 // if states not ready yet OR mistake in code
