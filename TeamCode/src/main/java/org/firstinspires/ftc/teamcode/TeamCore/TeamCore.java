@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.ComponentType;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.CoreComponent;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.GlobalVariableContainer;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.InputMappers.GeneralInputMapper;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Interfaces.SW_Telemetry;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Interfaces.Template.Interface;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Interfaces.Template.InterfaceType;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Managers.UI_Manager;
@@ -31,8 +32,10 @@ public class TeamCore {
     }
 
     public final void superSecretFunc(Telemetry telem, HardwareMap hwMap){
+        this.globalVariables = new HashMap<>();
         // didn't know what to name it to not have it confused
         this.addComponent(new UI_Manager(true, this));
+        this.addComponent(new SW_Telemetry(true, this));
         if(telem != null){
             //this.addComponent(new SW_Telemetry(true, this, telem));
             this.setGlobalVariable("Telemetry", telem);
@@ -56,6 +59,7 @@ public class TeamCore {
         if(this.globalVariables.containsKey(name)){
             return caster.cast(Objects.requireNonNull(this.globalVariables.get(name)).value);
         }else{
+            //throw new RuntimeException("Failed to find variable");
             return null;
         }
     }
@@ -161,6 +165,10 @@ public class TeamCore {
         return this.components;
     }
 
+    public final void wipeComponents(){
+        this.components.clear();
+    }
+
     private final boolean containsCompType(ComponentType[] list, ComponentType type){
         for(int i = 0; i < list.length; i++){
             if(list[i].name().equals(type.name())){
@@ -232,7 +240,6 @@ public class TeamCore {
         if(this.logInteractions){
             this.logInteraction("Core updated");
         }
-        this.globalVariables = new HashMap<>();
         for(int i = 0; i < this.components.size(); i++){
             this.components.get(i).update(this);
         }

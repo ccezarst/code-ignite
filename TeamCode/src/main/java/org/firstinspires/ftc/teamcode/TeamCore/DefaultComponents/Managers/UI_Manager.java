@@ -22,25 +22,20 @@ public class UI_Manager extends CoreComponent {
         super("UI_Manager", active, core, ComponentType.UI_MANAGER);
     }
 
-    private boolean speak = false;
 
     public void refresh(){
         for(Interface interf : interfs){
             if(this.secondaryTextOutput == ""){
                 ((SW_UserInterface)interf).print(this.primaryTextOutput, false);
             }else{
-                ((SW_UserInterface)interf).print(this.secondaryTextOutput, speak);
-                if(speak){
-                    speak = false;
-                }
+                ((SW_UserInterface)interf).print(this.secondaryTextOutput, true);
             }
             ((SW_UserInterface)interf).updatePrint();
             if(System.currentTimeMillis() - this.lastTime > this.warningLastTime){
                 this.secondaryTextOutput = "";
-                if(this.warningQueue.get(0) != null){
+                if(!this.warningQueue.isEmpty()){
                     this.secondaryTextOutput = this.warningQueue.remove(0);
                     this.lastTime = System.currentTimeMillis();
-                    this.speak = true;
                 }
             }
             this.changed = true;
@@ -63,7 +58,7 @@ public class UI_Manager extends CoreComponent {
             this.primaryTextOutput += toPrint + "\n";
         }
     }
-    private ArrayList<String> warningQueue = new ArrayList<>();
+    private final ArrayList<String> warningQueue = new ArrayList<>();
     public void showWarning(String warning){
         if(!warningQueue.contains(warning)){ // prevent spamming from step functions
             warningQueue.add(warning);

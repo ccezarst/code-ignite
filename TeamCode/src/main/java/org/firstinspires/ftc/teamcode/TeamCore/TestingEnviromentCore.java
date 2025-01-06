@@ -27,11 +27,9 @@ public final class TestingEnviromentCore extends TeamCore {
         this.disableInteractionLogging();
         HardwareMap hwMap = this.getGlobalVariable("HardwareMap", HardwareMap.class);
         // weird ass workaround
-        for(CoreComponent comp : this.getAllComponents()){
-            this.removeComponent(comp.name);
-        }
-        this.update();
+        this.wipeComponents();
         this.superSecretFunc(null, hwMap);
+        this.update();
         this.activateInteractionLogging();
         }
 }

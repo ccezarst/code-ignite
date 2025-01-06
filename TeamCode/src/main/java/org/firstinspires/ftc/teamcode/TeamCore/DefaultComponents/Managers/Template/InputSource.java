@@ -3,13 +3,14 @@ package org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Managers.Templ
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.ComponentType;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.CoreComponent;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.InputMappers.Template.InputMapper;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.InputMappers.Template.InputMapperDefinitions;
 import org.firstinspires.ftc.teamcode.TeamCore.TeamCore;
 
 import java.util.ArrayList;
 
 public abstract class InputSource extends CoreComponent {
 
-    private ArrayList<InputMapper> mappers = new ArrayList< InputMapper >();
+    private ArrayList<InputMapperDefinitions> mappers = new ArrayList< InputMapperDefinitions >();
 
     private InputSetStates states;
     public final int id;
@@ -25,8 +26,8 @@ public abstract class InputSource extends CoreComponent {
         ArrayList<CoreComponent> list = core.getComponentsOfType(ComponentType.INPUT_MAPPER);
         this.mappers.clear();
         for(int i = 0; i < list.size(); i++){
-            ((InputMapper)list.get(i)).updateRefrenceToStates(this.id, this.states);
-            this.mappers.add((InputMapper) list.get(i));
+            ((InputMapperDefinitions)list.get(i)).updateRefrenceToStates(this.id, this.states);
+            this.mappers.add((InputMapperDefinitions) list.get(i));
         }
     }
 

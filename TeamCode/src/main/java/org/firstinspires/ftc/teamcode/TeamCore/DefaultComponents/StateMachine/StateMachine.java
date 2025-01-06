@@ -98,13 +98,13 @@ public class StateMachine extends CoreComponent {
         return count;
     }
     private ArrayList<ArrayList<State>> findPathes(State currentState, State targetState, ArrayList<State> currentPath, ArrayList<ArrayList<State>> allFoundPaths,ArrayList<State> allState){
+        ArrayList<State> caca = currentPath;
+        caca.add(currentState);
         if(currentState.name == targetState.name){
-            ArrayList<State> caca = currentPath;
-            caca.add(currentState);
-            caca.remove(0);
+            caca.remove(0); // remove first as it is the starting state
             allFoundPaths.add(caca);
             return null;
-        }else if(this.countOf(currentPath, currentState) > 1){
+        }else if(this.countOf(caca, currentState) > 1){
             // if this state is more then once in the path it means we circled back, so we need to abort
             // means we are circling, so abort
             return null;
@@ -113,8 +113,7 @@ public class StateMachine extends CoreComponent {
         }
         else{
             for(int i = 0; i < currentState.outputs.size(); i++){
-                currentPath.add(currentState);
-                findPathes(lookupStateFromName(currentState.outputs.get(i), allState), targetState, (ArrayList<State>) currentPath.clone(), allFoundPaths, allState);
+                findPathes(lookupStateFromName(currentState.outputs.get(i), allState), targetState, caca, allFoundPaths, allState);
             }
         }
         return allFoundPaths;
@@ -162,12 +161,11 @@ public class StateMachine extends CoreComponent {
             if(this.currentState.isConnectedToState(newStateName) && newStateName != null){
                 if(newStateName != this.currentState.name){
                     this.stateQueue.addAll(this.currentState.getPathToStateNames(newStateName));
-                    this.step(null);
-                    ((UI_Manager)this.core.getComponentFromName("UI_Manager")).showWarning(newStateName + ": " + this.currentState.getPathToStateNames(newStateName));
+                    ((UI_Manager)this.core.getComponentFromName("UI_Manager")).print(newStateName + ": " + this.currentState.getPathToStateNames(newStateName));
                     return 0;
                 }else{
-                    //throw new IllegalArgumentException("Failed to change state, is currentState: " + this.currentState + "; newStateName: " + newStateName +"; " + this.history);
-                    return 1;
+                    throw new IllegalArgumentException("Failed to change state, is currentState: " + this.currentState + "; newStateName: " + newStateName +"; " + this.history);
+                    //return 1;
                 }
             }else{
                 throw new IllegalArgumentException("Failed to change state, is connectedToCurrent: " + this.currentState.isConnectedToState(newStateName) + "; newStateName: " + newStateName);
@@ -211,7 +209,6 @@ public class StateMachine extends CoreComponent {
     }
     public int forcedChangeState(String newStateName){
         this.stateQueue.add(newStateName);
-        this.step(null);
         ((UI_Manager)this.core.getComponentFromName("UI_Manager")).showWarning(newStateName + ": " + this.currentState.getPathToStateNames(newStateName));
         return 0;
     }
@@ -254,14 +251,16 @@ public class StateMachine extends CoreComponent {
                 if(!this.stateQueue.isEmpty()) {
                     if(this.currentState.isInState(this.hwInterfaces, this.swInterfaces)){
                         String newStateName = this.stateQueue.remove(0);
-                        if (newStateName != currentState.name && this.currentState.checkRequirements(hwInterfaces, swInterfaces)) {
-                            State newState = lookupStateFromName(newStateName, this.states);
-                            newState.call(this.hwInterfaces, this.swInterfaces);
-                            this.history.add(this.currentState);
-                            this.currentState = newState;
-                        }else if(!this.currentState.checkRequirements(hwInterfaces, swInterfaces)){
-                            // if states not ready yet OR mistake in code
-                            this.stateQueue.add(0, newStateName);
+                        if(newStateName != currentState.name){
+                            if (this.currentState.checkRequirements(hwInterfaces, swInterfaces)) {
+                                State newState = lookupStateFromName(newStateName, this.states);
+                                newState.call(this.hwInterfaces, this.swInterfaces);
+                                this.history.add(this.currentState);
+                                this.currentState = newState;
+                            }else if(!this.currentState.checkRequirements(hwInterfaces, swInterfaces)){
+                                // if states not ready yet OR mistake in code
+                                this.stateQueue.add(0, newStateName);
+                            }
                         }
                     }
                 }
@@ -313,7 +312,18 @@ public class StateMachine extends CoreComponent {
         }
         return 0;
     }
-
+    private int stateQueueTesting(){
+        int res = 0;
+        for(String caca: this.stateQueue){
+            if(res == 0){
+                res = this.getNumberFromLetter(caca);
+            }else{
+                res = res * 10;
+                res += this.getNumberFromLetter(caca);
+            }
+        }
+        return res;
+    }
     @Override
     public int test(TestingEnviromentCore core) {
         // test this component
@@ -336,6 +346,7 @@ public class StateMachine extends CoreComponent {
         B.inputs.add("A");
         B.inputs.add("C");
         B.outputs.add("D");
+        B.outputs.add("A");
         B.outputs.add("C");
         StateC C = new StateC();
         C.inputs.add("B");
@@ -366,71 +377,71 @@ public class StateMachine extends CoreComponent {
         /// #2 -- attempt basic state changes(A-B, B-A)
         st.changeState("B");
         core.step();
-        if(this.currentState.name != "B"){
+        if(st.currentState.name != "B"){
             return 21* 1000 + this.getNumberFromLetter(st.currentState.name);
         }
 
         st.changeState("A");
         core.step();
-        if(this.currentState.name != "A"){
+        if(st.currentState.name != "A"){
             return 22* 1000 + this.getNumberFromLetter(st.currentState.name);
         }
         /// #3 -- attempt longer state change(A-B-C, C-B,A)
         st.changeState("C");
         core.step();
-        if(this.currentState.name != "B"){
-            return 31* 1000 + this.getNumberFromLetter(st.currentState.name);
+        if(st.currentState.name != "B"){
+            return 31* 1000 + this.getNumberFromLetter(st.currentState.name) + 100000 * this.stateQueueTesting();
         }
         core.step();
-        if(this.currentState.name != "C"){
+        if(st.currentState.name != "C"){
             return 32* 1000 + this.getNumberFromLetter(st.currentState.name);
         }
 
         st.changeState("A");
         core.step();
-        if(this.currentState.name != "B"){
+        if(st.currentState.name != "B"){
             return 33* 1000 + this.getNumberFromLetter(st.currentState.name);
         }
         core.step();
-        if(this.currentState.name != "A"){
+        if(st.currentState.name != "A"){
             return 34* 1000 + this.getNumberFromLetter(st.currentState.name);
         }
 
         /// #4 -- attempt complicated state change ( A-B-D, D-C-B-A )
         st.changeState("D");
         core.step();
-        if(this.currentState.name != "B"){
+        if(st.currentState.name != "B"){
             return 41* 1000 + this.getNumberFromLetter(st.currentState.name);
         }
         core.step();
-        if(this.currentState.name != "D"){
+        if(st.currentState.name != "D"){
             return 42* 1000 + this.getNumberFromLetter(st.currentState.name);
         }
 
         st.changeState("A");
         core.step();
-        if(this.currentState.name != "C"){
+        if(st.currentState.name != "C"){
             return 43* 1000 + this.getNumberFromLetter(st.currentState.name);
         }
         core.step();
-        if(this.currentState.name != "B"){
+        if(st.currentState.name != "B"){
             return 44* 1000 + this.getNumberFromLetter(st.currentState.name);
         }
         core.step();
-        if(this.currentState.name != "A"){
+        if(st.currentState.name != "A"){
             return 45* 1000 + this.getNumberFromLetter(st.currentState.name);
         }
 
         /// #5 -- test state change based on current and revert func
         st.changeStateBasedOnCurrent(1);
         core.step();
-        if(this.currentState.name != "B"){
+        if(st.currentState.name != "B"){
             return 51 * 1000 + this.getNumberFromLetter(st.currentState.name);
         }
 
         st.revert();
         core.step();
-        if(this.currentState.name != "A"){
+        if(st.currentState.name != "A"){
             return 52 * 1000 + this.getNumberFromLetter(st.currentState.name);
         }
 

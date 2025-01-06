@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.CoreComponent;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Extra.CoreComponentTester;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Extra.PrintCoreStatusBind;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Interfaces.Template.HardwareInterface;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Interfaces.Template.SoftwareInterface;
@@ -141,7 +142,7 @@ public class ManualCoreTest extends LinearOpMode {
         DropSpecimen.inputs.add("HoldingSpecimenTwo");
         DropSpecimen.outputs.add("Idle");
         states.add(DropSpecimen);
-        StateMachine stateMachine = new StateMachine(states, true, "IntakeStateMachine", core);
+        StateMachine stateMachine = new StateMachine(states, true, "StateMachine", core);
         core.addComponent(stateMachine);
         core.addComponent(new ButtonX("stbtnMap", true, core));
         core.addComponent(new ButtonB("stbtnMap1", true, core));
@@ -150,7 +151,7 @@ public class ManualCoreTest extends LinearOpMode {
         core.addComponent(new ButtonBUMPER_RIGHT("stbtnMap4", true, core));
         core.addComponent(new ButtonA("stbtnMap5", true, core));
 
-        //core.addComponent(new MotorPositioner(true, core));
+        core.addComponent(new CoreComponentTester(true, core));
 
 
         //core.removeComponent("ManualDrivingManager");

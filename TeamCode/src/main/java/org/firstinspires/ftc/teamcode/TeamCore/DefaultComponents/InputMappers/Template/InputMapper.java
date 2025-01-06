@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class InputMapper extends CoreComponent {
+public abstract class InputMapper extends CoreComponent implements InputMapperDefinitions{
     public Map<Integer, InputSource> inSources = new HashMap<>();
     public Map<Integer, InputSetStates> states = new HashMap<>();
     public InputMapper(String name, Boolean active, TeamCore core) {

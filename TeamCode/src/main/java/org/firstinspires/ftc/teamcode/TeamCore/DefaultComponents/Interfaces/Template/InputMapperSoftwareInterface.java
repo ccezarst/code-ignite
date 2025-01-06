@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Interfaces.Tem
 
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.ComponentType;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.CoreComponent;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.InputMappers.Template.InputMapperDefinitions;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Managers.Template.InputSetStates;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Managers.Template.InputSource;
 import org.firstinspires.ftc.teamcode.TeamCore.TeamCore;
@@ -10,12 +11,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class InputMapperSoftwareInterface extends Interface {
+public abstract class InputMapperSoftwareInterface extends SoftwareInterface implements InputMapperDefinitions {
     public Map<Integer, InputSource> inSources = new HashMap<>();
     public Map<Integer, InputSetStates> states = new HashMap<>();
 
     public InputMapperSoftwareInterface(String name, Boolean active, TeamCore core, InterfaceType interfType) {
-        super(name, active, core, interfType, ComponentType.SOFTWARE_INTERFACE, ComponentType.INPUT_MAPPER);
+        super(name, active, core, interfType, true);
     }
 
     @Override
