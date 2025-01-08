@@ -49,7 +49,7 @@ public class Idle extends State {
         IntakeInterface intf = Objects.requireNonNull(this.getIntake(hwIntf));
         intf.extend(0);
         intf.stopEating();
-        intf.rotateMouth(57);
+        intf.rotateMouth(66);
 
         OuttakeInterface out = Objects.requireNonNull(this.getOuttake(hwIntf));
         out.rotateAss(15);

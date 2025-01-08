@@ -98,7 +98,7 @@ public class StateMachine extends CoreComponent {
         return count;
     }
     private ArrayList<ArrayList<State>> findPathes(State currentState, State targetState, ArrayList<State> currentPath, ArrayList<ArrayList<State>> allFoundPaths,ArrayList<State> allState){
-        ArrayList<State> caca = currentPath;
+        ArrayList<State> caca = (ArrayList<State>) currentPath.clone();
         caca.add(currentState);
         if(currentState.name == targetState.name){
             caca.remove(0); // remove first as it is the starting state
@@ -217,7 +217,6 @@ public class StateMachine extends CoreComponent {
         if(this.currentState != null){
             if(child < this.currentState.outputs.size()){
                 return this.changeState(this.currentState.outputs.get(child));
-
             }else{
                 return 2;
             }
@@ -433,7 +432,7 @@ public class StateMachine extends CoreComponent {
         }
 
         /// #5 -- test state change based on current and revert func
-        st.changeStateBasedOnCurrent(1);
+        st.changeStateBasedOnCurrent(0);
         core.step();
         if(st.currentState.name != "B"){
             return 51 * 1000 + this.getNumberFromLetter(st.currentState.name);

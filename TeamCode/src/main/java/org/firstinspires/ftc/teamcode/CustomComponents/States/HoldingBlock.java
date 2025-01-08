@@ -51,7 +51,7 @@ public class HoldingBlock extends State {
     public void call(ArrayList<HardwareInterface> hwIntf, ArrayList<SoftwareInterface> swIntf) {
         this.last = System.currentTimeMillis();
         IntakeInterface in = this.getIntake(hwIntf);
-        in.rotateMouth(55);
+        in.rotateMouth(70);
         in.extend(8, 0.5);
 
         this.getOuttake(hwIntf).rotateAss(8);

@@ -24,45 +24,31 @@ public class PeripheralValuePrinter extends CoreComponent {
     public PeripheralValuePrinter(Boolean active, TeamCore core) {
         super("PheripheralValuePrinter", active, core, ComponentType.OTHER);
     }
-    private boolean show = true;
     @Override
     public void step(TeamCore core) {
-
-        if(show == false){
-            ArrayList<String> options = new ArrayList<>();
-            options.add("DcMotor");
-            options.add("Servo");
-            options.add("AccelerationSensor");
-            options.add("AnalogInput");
-            options.add("ColorSensor");
-            options.add("CompassSensor");
-            options.add("CRServo");
-            this.man.showMenu("Select peripheral type", options, selection ->{
-                this.hwMap.forEach(a -> {
-                    if (a instanceof DcMotor && selection == 1) {
-                        this.man.print(((DcMotor) a).getPortNumber() + " " +this.hwMap.getNamesOf(a) + "-" + ((DcMotor) a).getMode() + "-" + ((DcMotor) a).getZeroPowerBehavior() + "-" + ((DcMotor) a).getDirection() + ": " + ((DcMotor) a).getCurrentPosition() + " . " + ((DcMotor)a).getTargetPosition());
-                    }
-                    if (a instanceof Servo && selection == 2) {
-                        this.man.print(((Servo) a).getPortNumber() + " " + this.hwMap.getNamesOf(a) + "-" + ((Servo) a).getDirection() + ": " + ((Servo) a).getPosition());
-                    }
-                    if (a instanceof AccelerationSensor && selection == 3) {
-                        this.man.print(this.hwMap.getNamesOf(a) + ": " + ((AccelerationSensor) a).getAcceleration());
-                    }
-                    if (a instanceof AnalogInput && selection == 4) {
-                        this.man.print(this.hwMap.getNamesOf(a) + ": " + ((AnalogInput) a).getVoltage() + " . " + ((AnalogInput) a).getMaxVoltage());
-                    }
-                    if (a instanceof ColorSensor && selection == 5) {
-                        this.man.print(this.hwMap.getNamesOf(a) + "-" + ((ColorSensor) a).getI2cAddress() + ": " + ((ColorSensor) a).red() + " . " + ((ColorSensor) a).green() + " . " + ((ColorSensor) a).blue() + " . " + ((ColorSensor) a).alpha());
-                    }
-                    if (a instanceof CompassSensor && selection == 6) {
-                        this.man.print(this.hwMap.getNamesOf(a) + "-" + ((CompassSensor) a).calibrationFailed() +": " + ((CompassSensor) a).getDirection());
-                    }
-                    if (a instanceof CRServo && selection == 7) {
-                        this.man.print(((CRServo) a).getPortNumber() + " " +this.hwMap.getNamesOf(a) + "-" + ((CRServo) a).getDirection() +": " + ((CRServo) a).getPower());
-                    }
-                });
-            });
-        }
+        this.hwMap.forEach(a -> {
+            if (a instanceof DcMotor  ) {
+                this.man.print(((DcMotor) a).getPortNumber() + " " +this.hwMap.getNamesOf(a) + "-" + ((DcMotor) a).getMode() + "-" + ((DcMotor) a).getZeroPowerBehavior() + "-" + ((DcMotor) a).getDirection() + ": " + ((DcMotor) a).getCurrentPosition() + " . " + ((DcMotor)a).getTargetPosition());
+            }
+            if (a instanceof Servo  ) {
+                this.man.print(((Servo) a).getPortNumber() + " " + this.hwMap.getNamesOf(a) + "-" + ((Servo) a).getDirection() + ": " + ((Servo) a).getPosition());
+            }
+            if (a instanceof AccelerationSensor  ) {
+                this.man.print(this.hwMap.getNamesOf(a) + ": " + ((AccelerationSensor) a).getAcceleration());
+            }
+            if (a instanceof AnalogInput  ) {
+                this.man.print(this.hwMap.getNamesOf(a) + ": " + ((AnalogInput) a).getVoltage() + " . " + ((AnalogInput) a).getMaxVoltage());
+            }
+            if (a instanceof ColorSensor  ) {
+                this.man.print(this.hwMap.getNamesOf(a) + "-" + ((ColorSensor) a).getI2cAddress() + ": " + ((ColorSensor) a).red() + " . " + ((ColorSensor) a).green() + " . " + ((ColorSensor) a).blue() + " . " + ((ColorSensor) a).alpha());
+            }
+            if (a instanceof CompassSensor  ) {
+                this.man.print(this.hwMap.getNamesOf(a) + "-" + ((CompassSensor) a).calibrationFailed() +": " + ((CompassSensor) a).getDirection());
+            }
+            if (a instanceof CRServo  ) {
+                this.man.print(((CRServo) a).getPortNumber() + " " +this.hwMap.getNamesOf(a) + "-" + ((CRServo) a).getDirection() +": " + ((CRServo) a).getPower());
+            }
+        });
     }
 
     @Override

@@ -51,7 +51,7 @@ public class Transfer extends State {
         IntakeInterface in =  this.getIntake(hwIntf);
         OuttakeInterface out = this.getOuttake(hwIntf);
         in.extend(8);
-        in.rotateMouth(57.25);
+        in.rotateMouth(52.25);
         out.secondRotateBasket(5);
         out.rotateAss(0);
     }

@@ -28,9 +28,9 @@ public class SW_Telemetry extends SW_UserInterface {
 
 
     @Override
-    public void print(String toPrint, boolean pl) {if(this.telemetry != null){this.telemetry.addLine(toPrint);}}
+    public void print(String toPrint, boolean pl) {if(this.telemetry != null && !this.busy){this.telemetry.addLine(toPrint);}}
     @Override
-    public void printLine(String toPrint, boolean pl) {if(this.telemetry != null) {this.telemetry.addLine(toPrint + "\n");}}
+    public void printLine(String toPrint, boolean pl) {if(this.telemetry != null && !this.busy) {this.telemetry.addLine(toPrint + "\n");}}
     private String menuTitle = "";
     private ArrayList<String> menuOptions = new ArrayList<>();
     private Consumer<Integer> menuCallback;
@@ -76,27 +76,55 @@ public class SW_Telemetry extends SW_UserInterface {
     public void customUpdate(TeamCore core) {
         this.telemetry = this.core.getGlobalVariable("Telemetry", Telemetry.class);
     }
-
+    private boolean pressed = false;
     @Override
     public void statesUpdated() {
         if(this.busy){
-            if(this.states.get(1).getButtonState(ButtonTypes.DPAD_UP)){
-                if(this.selection < this.menuOptions.size() - 1){
-                    this.selection += 1;
-                }
-            }
+            int caca = 0;
             if(this.states.get(1).getButtonState(ButtonTypes.DPAD_DOWN)){
-                if(this.selection > 0){
-                    this.selection -= 1;
+                if(!this.pressed){
+                    if(this.selection < this.menuOptions.size() - 1){
+                        this.selection += 1;
+                    }
+                    this.pressed = true;
                 }
+            }else{
+                caca += 1;
+            }
+            if(this.states.get(1).getButtonState(ButtonTypes.DPAD_UP)){
+                if(!this.pressed){
+                    if(this.selection > 0){
+                        this.selection -= 1;
+                    }
+                    this.pressed = true;
+
+                }
+                
+            }else{
+                caca += 1;
             }
             if(this.states.get(1).getButtonState(ButtonTypes.A)){
-                this.busy = false;
-                this.menuCallback.accept(this.selection);
+                if(!this.pressed){
+                    this.busy = false;
+                    this.menuCallback.accept(this.selection);
+                    this.pressed = true;
+                }
+                
+            }else{
+                caca += 1;
             }
             if(this.states.get(1).getButtonState(ButtonTypes.B)){
-                this.busy = false;
-                this.menuCallback.accept(-1);
+                if(!this.pressed){
+                    this.busy = false;
+                    this.menuCallback.accept(-1);
+                    this.pressed = true;
+                }
+                
+            }else{
+                caca += 1;
+            }
+            if(caca == 4){
+                this.pressed = false;
             }
         }
     }

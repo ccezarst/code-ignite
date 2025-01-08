@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.CoreComponent;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Extra.CoreComponentTester;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Extra.PeripheralValuePrinter;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Extra.PrintCoreStatusBind;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Interfaces.Template.HardwareInterface;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Interfaces.Template.SoftwareInterface;
@@ -64,7 +65,6 @@ public class ManualCoreTest extends LinearOpMode {
         core.addComponent(new PrintCoreStatusBind(1, core, telemetry));
         core.addComponent(new IntakeInterface(true, core));
         core.addComponent(new OuttakeInterface(true, core));
-        //core.addComponent(new PeripheralValuePrinter(true, core));
 
         //core.addComponent(new ButtonOutput("ButtonOutGP1", true, core, telemetry));
         //core.addComponent(new PeripheralValuePrinter("PeripheralValuePrinter", true, core));
