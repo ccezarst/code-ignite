@@ -19,11 +19,14 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 public class TeamCore {
     private ArrayList<CoreComponent> components = new ArrayList<CoreComponent>();
 
     private Map<String, GlobalVariableContainer> globalVariables;
+
+    private ArrayList<Action> actions;
 
     private boolean logInteractions = false;
 
@@ -45,6 +48,38 @@ public class TeamCore {
             this.setGlobalVariable("HardwareMap", hwMap);
         }
         this.addComponent(new GeneralInputMapper("DefaultGeneralInputMapper", true, this));
+    }
+
+    public final <T> void addAction(String actionName, T actionDataType, Consumer<ActionDataContainer>... defaultCallbacks){
+        this.actions.add(new Action<T>(actionName, actionDataType, defaultCallbacks));
+    }
+    public final Action getActionFromName(String name){
+        for(Action pl: this.actions){
+            if(pl.name == name){
+                return pl;
+            }
+        }
+        return null;
+    }
+    public final void subscribeToAction(String actionName, Consumer<ActionDataContainer> callback){
+        Action res = this.getActionFromName(actionName);
+        if(res != null){
+            res.subscribe(callback);
+        }
+    }
+
+    public final void connectActions(String actionA, String actionB){
+        Action firstAction = this.getActionFromName(actionA);
+        Action secondAction = this.getActionFromName(actionB);
+        if(firstAction.getContainer().getValue().getClass() == secondAction.getContainer().getValue().getClass()){
+            firstAction.subscribe((ActionDataContainer) -> {
+                secondAction.trigger((org.firstinspires.ftc.teamcode.TeamCore.ActionDataContainer) ActionDataContainer);
+            });
+        }else{
+            firstAction.subscribe((ActionDataContainer) -> {
+                secondAction.trigger();
+            });
+        }
     }
 
     public final <T> void setGlobalVariable(String name, T instance){
