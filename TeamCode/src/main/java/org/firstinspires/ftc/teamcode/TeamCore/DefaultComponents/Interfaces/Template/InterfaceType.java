@@ -5,5 +5,6 @@ public enum InterfaceType {
     CONFIGS,
     INTAKE,
     OUTTAKE,
+    DRIVE_BASE,
     USER_INTERFACE
 }
