@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.CoreComponent;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Extra.CoreComponentTester;
-import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Extra.PeripheralValuePrinter;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Extra.PrintCoreStatusBind;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Interfaces.Template.HardwareInterface;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Interfaces.Template.SoftwareInterface;
@@ -13,12 +12,6 @@ import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Managers.Templa
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.StateMachine.State;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.StateMachine.StateMachine;
 import org.firstinspires.ftc.teamcode.TeamCore.ManualCore;
-import org.firstinspires.ftc.teamcode.CustomComponents.ButtonBUMPER_RIGHT;
-import org.firstinspires.ftc.teamcode.CustomComponents.ButtonX;
-import org.firstinspires.ftc.teamcode.CustomComponents.ButtonB;
-import org.firstinspires.ftc.teamcode.CustomComponents.ButtonY;
-import org.firstinspires.ftc.teamcode.CustomComponents.ButtonBUMPER_LEFT;
-import org.firstinspires.ftc.teamcode.CustomComponents.ButtonA;
 import org.firstinspires.ftc.teamcode.CustomComponents.IntakeInterface;
 import org.firstinspires.ftc.teamcode.CustomComponents.OuttakeInterface;
 import org.firstinspires.ftc.teamcode.CustomComponents.States.DropBlockFromIntake;

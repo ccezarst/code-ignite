@@ -5,6 +5,8 @@ import androidx.annotation.Nullable;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.TeamCore.Actions.Action;
+import org.firstinspires.ftc.teamcode.TeamCore.Actions.ActionDataContainer;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.ComponentType;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.CoreComponent;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.GlobalVariableContainer;
@@ -73,7 +75,7 @@ public class TeamCore {
         Action secondAction = this.getActionFromName(actionB);
         if(firstAction.getContainer().getValue().getClass() == secondAction.getContainer().getValue().getClass()){
             firstAction.subscribe((ActionDataContainer) -> {
-                secondAction.trigger((org.firstinspires.ftc.teamcode.TeamCore.ActionDataContainer) ActionDataContainer);
+                secondAction.trigger((org.firstinspires.ftc.teamcode.TeamCore.Actions.ActionDataContainer) ActionDataContainer);
             });
         }else{
             firstAction.subscribe((ActionDataContainer) -> {

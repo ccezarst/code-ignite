@@ -3,9 +3,6 @@ package org.firstinspires.ftc.teamcode.TeamCore;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Interfaces.HW_DriveMotors;
-import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Managers.GamepadManager;
-import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Managers.ManualDrivingManager;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.StateMachine.StateMachine;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Managers.Template.CustomGamepad;
 
