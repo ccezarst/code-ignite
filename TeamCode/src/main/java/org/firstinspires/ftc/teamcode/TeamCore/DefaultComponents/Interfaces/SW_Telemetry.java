@@ -1,15 +1,8 @@
 package org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Interfaces;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.ComponentType;
-import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.CoreComponent;
-import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.InputMappers.GeneralInputMapper;
-import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.InputMappers.Template.InputMapper;
-import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Interfaces.Template.InterfaceType;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Interfaces.Template.SW_UserInterface;
-import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Interfaces.Template.SoftwareInterface;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Managers.Template.ButtonTypes;
-import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Managers.Template.InputSource;
 import org.firstinspires.ftc.teamcode.TeamCore.TeamCore;
 import org.firstinspires.ftc.teamcode.TeamCore.TestingEnviromentCore;
 

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Managers.Template;
+package org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Input.Template;
 
 import java.util.HashMap;
 import java.util.Map;

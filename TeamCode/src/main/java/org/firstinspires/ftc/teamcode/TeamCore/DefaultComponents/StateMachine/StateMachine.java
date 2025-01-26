@@ -156,24 +156,27 @@ public class StateMachine extends CoreComponent {
     }
 
     public int changeState(String newStateName){
-        // check if we can change to that state from current state
-        if(this.currentState != null){
-            if(this.currentState.isConnectedToState(newStateName) && newStateName != null){
-                if(newStateName != this.currentState.name){
-                    this.stateQueue.addAll(this.currentState.getPathToStateNames(newStateName));
-                    ((UI_Manager)this.core.getComponentFromName("UI_Manager")).print(newStateName + ": " + this.currentState.getPathToStateNames(newStateName));
-                    return 0;
+        if(this.active){
+            // check if we can change to that state from current state
+            if(this.currentState != null){
+                if(this.currentState.isConnectedToState(newStateName) && newStateName != null){
+                    if(newStateName != this.currentState.name){
+                        this.stateQueue.addAll(this.currentState.getPathToStateNames(newStateName));
+                        ((UI_Manager)this.core.getComponentFromName("UI_Manager")).print(newStateName + ": " + this.currentState.getPathToStateNames(newStateName));
+                        return 0;
+                    }else{
+                        throw new IllegalArgumentException("Failed to change state, is currentState: " + this.currentState + "; newStateName: " + newStateName +"; " + this.history);
+                        //return 1;
+                    }
                 }else{
-                    throw new IllegalArgumentException("Failed to change state, is currentState: " + this.currentState + "; newStateName: " + newStateName +"; " + this.history);
-                    //return 1;
+                    throw new IllegalArgumentException("Failed to change state, is connectedToCurrent: " + this.currentState.isConnectedToState(newStateName) + "; newStateName: " + newStateName);
                 }
             }else{
-                throw new IllegalArgumentException("Failed to change state, is connectedToCurrent: " + this.currentState.isConnectedToState(newStateName) + "; newStateName: " + newStateName);
+                this.stateQueue.add(newStateName);
+                return 0;
             }
-        }else{
-            this.stateQueue.add(newStateName);
-            return 0;
         }
+        return 0;
     }
 
     private Boolean contains(State cur, State[] ls){
@@ -188,47 +191,56 @@ public class StateMachine extends CoreComponent {
     }
 
     public int changeState(String newStateName, State... required){
-        // check if we can change to that state from current state
-        if(this.currentState != null){
-            if(this.currentState.isConnectedToState(newStateName) && newStateName != null && contains(this.currentState, required)){
-                if(newStateName != this.currentState.name){
-                    this.stateQueue.addAll(this.currentState.getPathToStateNames(newStateName));
-                    this.step(null);
-                    ((UI_Manager)this.core.getComponentFromName("UI_Manager")).showWarning(newStateName + ": " + this.currentState.getPathToStateNames(newStateName));
-                    return 0;
+        if(this.active){
+            // check if we can change to that state from current state
+            if(this.currentState != null){
+                if(this.currentState.isConnectedToState(newStateName) && newStateName != null && contains(this.currentState, required)){
+                    if(newStateName != this.currentState.name){
+                        this.stateQueue.addAll(this.currentState.getPathToStateNames(newStateName));
+                        this.step(null);
+                        ((UI_Manager)this.core.getComponentFromName("UI_Manager")).showWarning(newStateName + ": " + this.currentState.getPathToStateNames(newStateName));
+                        return 0;
+                    }else{
+                        return 1;
+                    }
                 }else{
-                    return 1;
+                    throw new IllegalArgumentException("Failed to change state, is connectedToCurrent: " + this.currentState.isConnectedToState(newStateName) + "; newStateName: " + newStateName);
                 }
             }else{
-                throw new IllegalArgumentException("Failed to change state, is connectedToCurrent: " + this.currentState.isConnectedToState(newStateName) + "; newStateName: " + newStateName);
+                this.stateQueue.add(newStateName);
+                return 0;
             }
-        }else{
-            this.stateQueue.add(newStateName);
-            return 0;
         }
+        return 0;
     }
     public int forcedChangeState(String newStateName){
-        this.stateQueue.add(newStateName);
-        ((UI_Manager)this.core.getComponentFromName("UI_Manager")).showWarning(newStateName + ": " + this.currentState.getPathToStateNames(newStateName));
+        if(this.active){
+            this.stateQueue.add(newStateName);
+            ((UI_Manager)this.core.getComponentFromName("UI_Manager")).showWarning(newStateName + ": " + this.currentState.getPathToStateNames(newStateName));
+
+        }
         return 0;
     }
     public int changeStateBasedOnCurrent(int child){
-        // check if we can change to that state from current state
-        if(this.currentState != null){
-            if(child < this.currentState.outputs.size()){
-                return this.changeState(this.currentState.outputs.get(child));
-            }else{
-                return 2;
+        if(this.active){
+            // check if we can change to that state from current state
+            if(this.currentState != null){
+                if(child < this.currentState.outputs.size()){
+                    return this.changeState(this.currentState.outputs.get(child));
+                }else{
+                    return 2;
+                }
             }
+            return 3;
         }
-        return 3;
+        return 0;
     }
 
     public void undo(){
-        this.revert();
+        if(this.active){this.revert();}
     }
     public void revert(){
-        this.forcedChangeState(this.history.remove(0).name);
+        if(this.active){this.forcedChangeState(this.history.remove(0).name);}
     }
 
     private ArrayList<String> getClassNames(ArrayList<State> caca){
@@ -274,13 +286,19 @@ public class StateMachine extends CoreComponent {
     }
     @Override
     public ArrayList<String> getStatus(){
-        // send information about current state
-        ArrayList<String> toReturn = new ArrayList<String>();
-        toReturn.add("Current state: " + this.currentState.name);
-        for(State st: this.states){
-            toReturn.add(st.getStatus());
+        if(this.active){
+            // send information about current state
+            ArrayList<String> toReturn = new ArrayList<String>();
+            toReturn.add("Current state: " + this.currentState.name);
+            for(State st: this.states){
+                toReturn.add(st.getStatus());
+            }
+            return toReturn;
+        }else{
+            ArrayList<String> toReturn = new ArrayList<String>();
+            toReturn.add("Component not active");
+            return toReturn;
         }
-        return toReturn;
     }
 
     @Override
@@ -325,6 +343,7 @@ public class StateMachine extends CoreComponent {
     }
     @Override
     public int test(TestingEnviromentCore core) {
+
         // test this component
 
         // 1. make test states

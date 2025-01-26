@@ -16,7 +16,7 @@ public abstract class InputMapperHardwareInterface extends HardwareInterface imp
     public Map<Integer, InputSetStates> states = new HashMap<>();
 
     public InputMapperHardwareInterface(String name, Boolean active, TeamCore core, InterfaceType interfType) {
-        super(name, active, core, interfType, true);
+        super(name, active, core, interfType, ComponentType.INPUT_MAPPER);
     }
 
     @Override
