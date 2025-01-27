@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Managers.Template
 
 import com.qualcomm.robotcore.hardware.Gamepad
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Input.Template.AnalogTypes
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Input.Template.ButtonTypes
 
 class CustomGamepad(private val gp: Gamepad, var number: Int) {
     enum class Button {
