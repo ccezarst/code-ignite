@@ -19,7 +19,8 @@ public abstract class CoreComponent {
     public CoreComponent(String name, Boolean active, TeamCore core, ArrayList<ComponentType> dependencies,ComponentType... type){
         if(name != null && !name.isEmpty()){
             this.name = name;
-            this.active = true; // dumb feature, don't use
+            this.active = active; // dumb feature, don't use
+            /// is fixed now :)
             this.types = type;
             this.core = core;
             this.settings = new ArrayList<CoreComponentSettings>();

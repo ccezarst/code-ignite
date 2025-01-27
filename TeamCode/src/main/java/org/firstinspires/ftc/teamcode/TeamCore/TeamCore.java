@@ -49,11 +49,12 @@ public class TeamCore {
             //this.addComponent(new HW_HwMap(true, this, hwMap));
             this.setGlobalVariable("HardwareMap", hwMap);
         }
-        this.addComponent(new GeneralInputMapper("DefaultGeneralInputMapper", true, this));
     }
 
     public final <T> void addAction(String actionName, T actionDataType, Consumer<ActionDataContainer>... defaultCallbacks){
-        this.actions.add(new Action<T>(actionName, actionDataType, defaultCallbacks));
+        if(this.getActionFromName(actionName) == null){
+            this.actions.add(new Action<T>(actionName, actionDataType, defaultCallbacks));
+        }
     }
     public final Action getActionFromName(String name){
         for(Action pl: this.actions){
