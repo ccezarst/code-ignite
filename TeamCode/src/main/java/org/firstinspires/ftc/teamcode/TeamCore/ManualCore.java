@@ -4,12 +4,12 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.StateMachine.StateMachine;
-import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Managers.Template.CustomGamepad;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Managers.Template.OldCustomGamepad;
 
 public class ManualCore extends TeamCore {
-    public ManualCore(Telemetry telem, HardwareMap hwMap, int drivingGamepadNumber, CustomGamepad... gps){
+    public ManualCore(Telemetry telem, HardwareMap hwMap, int drivingGamepadNumber, OldCustomGamepad... gps){
         super(telem, hwMap);
-        for(CustomGamepad caca : gps){
+        for(OldCustomGamepad caca : gps){
             this.addComponent(new GamepadManager("Gamepad Manager: " + caca.getNumber(), true, this, caca));
         }
         this.addComponent(new HW_DriveMotors(true, this));

@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Extra.CoreCompo
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Extra.PrintCoreStatusBind;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Interfaces.Template.HardwareInterface;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Interfaces.Template.SoftwareInterface;
-import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Managers.Template.CustomGamepad;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Managers.Template.OldCustomGamepad;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.StateMachine.State;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.StateMachine.StateMachine;
 import org.firstinspires.ftc.teamcode.TeamCore.ManualCore;
@@ -52,8 +52,8 @@ public class ManualCoreTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        CustomGamepad gp1 = new CustomGamepad(gamepad1, 1);
-        CustomGamepad gp2 = new CustomGamepad(gamepad2, 2);
+        OldCustomGamepad gp1 = new OldCustomGamepad(gamepad1, 1);
+        OldCustomGamepad gp2 = new OldCustomGamepad(gamepad2, 2);
         ManualCore core = new ManualCore(telemetry, hardwareMap, 1, gp1, gp2);
         core.addComponent(new PrintCoreStatusBind(1, core, telemetry));
         core.addComponent(new IntakeInterface(true, core));

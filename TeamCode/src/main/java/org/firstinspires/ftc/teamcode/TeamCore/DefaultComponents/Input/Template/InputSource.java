@@ -2,9 +2,7 @@ package org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Input.Template
 
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.ComponentType;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.CoreComponent;
-import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Input.Template.ButtonTypes;
 import org.firstinspires.ftc.teamcode.TeamCore.TeamCore;
-import org.firstinspires.ftc.teamcode.TeamCore.TestingEnviromentCore;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +11,10 @@ public abstract class InputSource extends CoreComponent {
     private int inputSourceID;
     public InputSource(String name, Boolean active, TeamCore core, int inputSourceID) {
         super(name, active, core, ComponentType.INPUT_SOURCE);
+        this.setup();
+    }
+
+    protected final void setup(){
         this.inputSourceID = inputSourceID;
         this.buttonStates = new HashMap<>();
         this.buttonStatesLast = new HashMap<>();
@@ -61,7 +63,7 @@ public abstract class InputSource extends CoreComponent {
     private Map<AnalogTypes, Double> analogStatesLast;
 
     // calls actions and updates global variables
-    protected final void updateAllStates(){
+    protected final void sendInputs(){
         for(ButtonTypes btn: this.buttonStates.keySet()){
             this.core.setGlobalVariable(this.inputSourceID + btn.name(), this.buttonStates.get(btn));
         }
