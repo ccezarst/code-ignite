@@ -4,10 +4,8 @@ import com.qualcomm.robotcore.hardware.Gamepad
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Input.Template.AnalogTypes
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Input.Template.ButtonTypes
 
-class OldCustomGamepad(private val gp: Gamepad, var number: Int) {
+class OldCustomGamepad(public val gp: Gamepad, var number: Int) {
 
-
-    private var lastStates = Button.values().map { it to false }.toMap().toMutableMap()
 
     val left_trigger
         get() = gp.left_trigger
@@ -71,10 +69,4 @@ class OldCustomGamepad(private val gp: Gamepad, var number: Int) {
                 ButtonTypes.BACK -> gp.back
             }
 
-    fun checkToggle(button : ButtonTypes): Boolean {
-        val pressed = true;
-        val ok = pressed && (lastStates[button] != pressed)
-        lastStates[button] = pressed
-        return ok
-    }
 }

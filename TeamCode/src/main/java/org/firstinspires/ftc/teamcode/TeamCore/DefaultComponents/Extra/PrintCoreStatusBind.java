@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Extra;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.InputMappers.Template.OneButtonMapper;
-import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Managers.Template.ButtonTypes;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Input.Template.ButtonTypes;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Input.Template.OneButtonMapper;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Managers.UI_Manager;
 import org.firstinspires.ftc.teamcode.TeamCore.TeamCore;
 import org.firstinspires.ftc.teamcode.TeamCore.TestingEnviromentCore;

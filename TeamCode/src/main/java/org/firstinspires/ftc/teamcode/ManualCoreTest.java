@@ -137,12 +137,12 @@ public class ManualCoreTest extends LinearOpMode {
         states.add(DropSpecimen);
         StateMachine stateMachine = new StateMachine(states, true, "StateMachine", core);
         core.addComponent(stateMachine);
-        core.addComponent(new ButtonX("stbtnMap", true, core));
-        core.addComponent(new ButtonB("stbtnMap1", true, core));
-        core.addComponent(new ButtonY("stbtnMap2", true, core));
-        core.addComponent(new ButtonBUMPER_LEFT("stbtnMap3", true, core));
-        core.addComponent(new ButtonBUMPER_RIGHT("stbtnMap4", true, core));
-        core.addComponent(new ButtonA("stbtnMap5", true, core));
+        //core.addComponent(new ButtonX("stbtnMap", true, core));
+        //core.addComponent(new ButtonB("stbtnMap1", true, core));
+        //core.addComponent(new ButtonY("stbtnMap2", true, core));
+        //core.addComponent(new ButtonBUMPER_LEFT("stbtnMap3", true, core));
+        //core.addComponent(new ButtonBUMPER_RIGHT("stbtnMap4", true, core));
+        //core.addComponent(new ButtonA("stbtnMap5", true, core));
 
         core.addComponent(new CoreComponentTester(true, core));
 

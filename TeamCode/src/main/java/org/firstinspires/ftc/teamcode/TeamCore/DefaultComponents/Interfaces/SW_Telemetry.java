@@ -1,8 +1,9 @@
 package org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Interfaces;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.TeamCore.Actions.ActionDataContainer;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Input.Template.ButtonTypes;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Interfaces.Template.SW_UserInterface;
-import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Managers.Template.ButtonTypes;
 import org.firstinspires.ftc.teamcode.TeamCore.TeamCore;
 import org.firstinspires.ftc.teamcode.TeamCore.TestingEnviromentCore;
 
@@ -66,62 +67,31 @@ public class SW_Telemetry extends SW_UserInterface {
     }
 
     @Override
-    public void customUpdate(TeamCore core) {
+    protected void update(TeamCore core) {
         this.telemetry = this.core.getGlobalVariable("Telemetry", Telemetry.class);
+        this.core.subscribeToAction("1" + ButtonTypes.DPAD_DOWN.name() + "_PRESSED", (ActionDataContainer data) ->{this.dpadDown_pressed();});
+        this.core.subscribeToAction("1" + ButtonTypes.DPAD_UP.name() + "_PRESSED", (ActionDataContainer data) ->{this.dpadUp_pressed();});
+        this.core.subscribeToAction("1" + ButtonTypes.A.name() + "_PRESSED", (ActionDataContainer data) ->{this.a_pressed();});
+        this.core.subscribeToAction("1" + ButtonTypes.B.name() + "_PRESSED", (ActionDataContainer data) ->{this.b_pressed();});
     }
-    private boolean pressed = false;
-    @Override
-    public void statesUpdated() {
-        if(this.busy){
-            int caca = 0;
-            if(this.states.get(1).getButtonState(ButtonTypes.DPAD_DOWN)){
-                if(!this.pressed){
-                    if(this.selection < this.menuOptions.size() - 1){
-                        this.selection += 1;
-                    }
-                    this.pressed = true;
-                }
-            }else{
-                caca += 1;
-            }
-            if(this.states.get(1).getButtonState(ButtonTypes.DPAD_UP)){
-                if(!this.pressed){
-                    if(this.selection > 0){
-                        this.selection -= 1;
-                    }
-                    this.pressed = true;
-
-                }
-                
-            }else{
-                caca += 1;
-            }
-            if(this.states.get(1).getButtonState(ButtonTypes.A)){
-                if(!this.pressed){
-                    this.busy = false;
-                    this.menuCallback.accept(this.selection);
-                    this.pressed = true;
-                }
-                
-            }else{
-                caca += 1;
-            }
-            if(this.states.get(1).getButtonState(ButtonTypes.B)){
-                if(!this.pressed){
-                    this.busy = false;
-                    this.menuCallback.accept(-1);
-                    this.pressed = true;
-                }
-                
-            }else{
-                caca += 1;
-            }
-            if(caca == 4){
-                this.pressed = false;
-            }
+    public void dpadDown_pressed(){
+        if(this.selection < this.menuOptions.size() - 1){
+            this.selection += 1;
         }
     }
-
+    private void dpadUp_pressed(){
+        if(this.selection > 0){
+            this.selection -= 1;
+        }
+    }
+    private void a_pressed(){
+        this.busy = false;
+        this.menuCallback.accept(this.selection);
+    }
+    private void b_pressed(){
+        this.busy = false;
+        this.menuCallback.accept(-1);
+    }
 
     @Override
     public int test(TestingEnviromentCore core) {
