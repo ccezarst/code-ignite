@@ -24,44 +24,54 @@ public class UI_Manager extends CoreComponent {
 
 
     public void refresh(){
-        for(Interface interf : interfs){
-            if(this.secondaryTextOutput == ""){
-                ((SW_UserInterface)interf).print(this.primaryTextOutput, false);
-            }else{
-                ((SW_UserInterface)interf).print(this.secondaryTextOutput, true);
-            }
-            ((SW_UserInterface)interf).updatePrint();
-            if(System.currentTimeMillis() - this.lastTime > this.warningLastTime){
-                this.secondaryTextOutput = "";
-                if(!this.warningQueue.isEmpty()){
-                    this.secondaryTextOutput = this.warningQueue.remove(0);
-                    this.lastTime = System.currentTimeMillis();
+        if(this.active){
+            for(Interface interf : interfs){
+                if(this.secondaryTextOutput == ""){
+                    ((SW_UserInterface)interf).print(this.primaryTextOutput, false);
+                }else{
+                    ((SW_UserInterface)interf).print(this.secondaryTextOutput, true);
                 }
+                ((SW_UserInterface)interf).updatePrint();
+                if(System.currentTimeMillis() - this.lastTime > this.warningLastTime){
+                    this.secondaryTextOutput = "";
+                    if(!this.warningQueue.isEmpty()){
+                        this.secondaryTextOutput = this.warningQueue.remove(0);
+                        this.lastTime = System.currentTimeMillis();
+                    }
+                }
+                this.changed = true;
             }
-            this.changed = true;
         }
+
     }
 
     public void showMenu(String title, ArrayList<String> options, Consumer<Integer> callback){ // TODO: implement support for a menu on multiple SW_UserInterface's at the same time
-        ((SW_UserInterface)interfs.get(0)).showMenu(title, options, callback);
+        if(this.active){
+            ((SW_UserInterface)interfs.get(0)).showMenu(title, options, callback);
+        }
     }
 
     public void print(String toPrint){
-        if(this.changed){
-            // print the same text regardless of refreshes until a new print is called
-            this.primaryTextOutput = "";
-            this.changed = false;
+        if(this.active){
+            if(this.changed){
+                // print the same text regardless of refreshes until a new print is called
+                this.primaryTextOutput = "";
+                this.changed = false;
+            }
+            if(toPrint.endsWith("\n")){
+                this.primaryTextOutput += toPrint;
+            }else{
+                this.primaryTextOutput += toPrint + "\n";
+            }
         }
-        if(toPrint.endsWith("\n")){
-            this.primaryTextOutput += toPrint;
-        }else{
-            this.primaryTextOutput += toPrint + "\n";
-        }
+
     }
     private final ArrayList<String> warningQueue = new ArrayList<>();
     public void showWarning(String warning){
-        if(!warningQueue.contains(warning)){ // prevent spamming from step functions
-            warningQueue.add(warning);
+        if(this.active){
+            if(!warningQueue.contains(warning)){ // prevent spamming from step functions
+                warningQueue.add(warning);
+            }
         }
     }
 

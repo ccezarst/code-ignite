@@ -29,15 +29,17 @@ public class JSONConfigManager extends SoftwareInterface implements ConfigsInter
 
     @Override
     public String loadValue(String valueName) {
-        File myFileName = AppUtil.getInstance().getSettingsFile(configFileName);
-        if(ReadWriteFile.readFile(myFileName).trim() != ""){
-            try {
-                JSONObject  obj = new JSONObject(ReadWriteFile.readFile(myFileName));
-                if(obj.has(valueName)){
-                    return (String) obj.get(valueName);
+        if(this.active){
+            File myFileName = AppUtil.getInstance().getSettingsFile(configFileName);
+            if(ReadWriteFile.readFile(myFileName).trim() != ""){
+                try {
+                    JSONObject  obj = new JSONObject(ReadWriteFile.readFile(myFileName));
+                    if(obj.has(valueName)){
+                        return (String) obj.get(valueName);
+                    }
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
                 }
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
             }
         }
         return "";
@@ -45,8 +47,10 @@ public class JSONConfigManager extends SoftwareInterface implements ConfigsInter
 
     @Override
     public void saveValue(String valueName, String value) {
-        // queue to batch up fileWrite requets and process them at the end
-        configQueue.add(new String[]{valueName, value});
+        if(this.active){
+            // queue to batch up fileWrite requets and process them at the end
+            configQueue.add(new String[]{valueName, value});
+        }
     }
 
     @Override

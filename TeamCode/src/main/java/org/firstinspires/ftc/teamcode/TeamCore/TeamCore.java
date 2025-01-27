@@ -10,7 +10,6 @@ import org.firstinspires.ftc.teamcode.TeamCore.Actions.ActionDataContainer;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.ComponentType;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.CoreComponent;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.GlobalVariableContainer;
-import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.InputMappers.GeneralInputMapper;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Interfaces.SW_Telemetry;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Interfaces.Template.Interface;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Interfaces.Template.InterfaceType;
@@ -279,7 +278,7 @@ public class TeamCore {
             this.logInteraction("Core updated");
         }
         for(int i = 0; i < this.components.size(); i++){
-            this.components.get(i).update(this);
+            this.components.get(i).primitiveUpdate(this);
         }
         this.reorderComponents(); // just to be safe
     }
@@ -302,7 +301,7 @@ public class TeamCore {
             this.logInteraction("Core status requested");
         }
         for(int i = 0; i < this.components.size(); i ++){
-            ArrayList<String> status = this.components.get(i).getStatus();
+            ArrayList<String> status = this.components.get(i).primitiveGetStatus();
             String temp = "-";
             if(status != null){
                 for(int b = 0; b < status.size(); b++) {
@@ -317,7 +316,7 @@ public class TeamCore {
 
     public void exit(){
         for(CoreComponent comp : this.components){
-            comp.exit();
+            comp.primitiveExit();
         }
     }
 
@@ -327,7 +326,7 @@ public class TeamCore {
         env.init();
         for(CoreComponent comp : this.components){
             env.setCurrentComponentName(comp.name);
-            env.logInteraction("Component returned: " + comp.test(env));
+            env.logInteraction("Component returned: " + comp.primitiveTest(env));
             env.reset();
         }
         return env.logs;

@@ -30,7 +30,7 @@ public abstract class CoreComponent {
         }
     }
 
-    public ArrayList<String> getAllSettings(){
+    public final ArrayList<String> getAllSettings(){
         ArrayList<String> res = new ArrayList<>();
         for(CoreComponentSettings caca : this.settings){
             for(String setting : caca.getSettings()){
@@ -41,7 +41,7 @@ public abstract class CoreComponent {
         }
         return res;
     }
-    public ArrayList<String> getSettingOptions(String settingName){
+    public final ArrayList<String> getSettingOptions(String settingName){
         for(CoreComponentSettings caca: this.settings){
             if(caca.getSettings().contains(settingName)){
                 return caca.getSettingOptions(settingName);
@@ -50,29 +50,57 @@ public abstract class CoreComponent {
         return new ArrayList<>();
     }
 
-    public void changeSetting(String settingName, String option){
+    public final void changeSetting(String settingName, String option){
         for(CoreComponentSettings caca: this.settings){
             if(caca.getSettings().contains(settingName)){
                 caca.changeSetting(settingName, option);
             }
         }
     }
-
-    public ArrayList<String> getStatus(){
+    public final ArrayList<String> primitiveGetStatus(){
+        if(this.active){
+            return this.getStatus();
+        }else{
+            ArrayList<String> toReturn = new ArrayList<String>();
+            toReturn.add("Component not active");
+            return toReturn;
+        }
+    }
+    protected ArrayList<String> getStatus(){
         ArrayList<String> caca = new ArrayList<>();
         caca.add("active");
         return caca;
     }
 
-    public void exit(){}
     public final void primitiveStep(TeamCore core){
         if(this.active){
             this.step(core);
         }
     }
 
-    public abstract void step(TeamCore core);
-    public abstract void update(TeamCore core); // update function should contain all init code
+    protected abstract void step(TeamCore core);
+
+    public final void primitiveUpdate(TeamCore core){
+        if(this.active){
+            this.update(core);
+        }
+    }
+    protected abstract void update(TeamCore core); // update function should contain all init code
     // to allow real-time updating of components and hot testing of components
-    public abstract int test(TestingEnviromentCore core);
+
+    public final int primitiveTest(TestingEnviromentCore core){
+        if(this.active){
+            return this.test(core);
+        }else{
+            return -404; // hopefully users remember this means component not active
+        }
+    }
+    protected abstract int test(TestingEnviromentCore core);
+
+    public final void primitiveExit(){
+        if(this.active){
+            this.exit();
+        }
+    }
+    protected void exit(){}
 }
