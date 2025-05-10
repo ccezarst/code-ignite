@@ -2,17 +2,35 @@ package org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Pathing;
 
 public class Point{
 
-    public final double pi = 3.14159;
+    public static final double pi = 3.14159;
 
     public double cartesianX = 0; // in cm
     public double cartesianY = 0;
     public Point(double carthesianX, double carthesianY){
         this.cartesianX = carthesianX;
         this.cartesianY = carthesianY;
-
-
     }
 
+    public final static Point fromPolar(double radius, double angle){
+        Point res = new Point(0, 0);
+        res.setCoordinatesFromPolar(radius, angle);
+        return res;
+    }
+    public final static Point getPointWithReference(double x, double y, double rX, double rY){
+        // basically shift the point by it's refrence position( so the refrence position becomes 0,0)
+        double newX = rX - x;
+        double newY = rY - y;
+        Point npoint = new Point(newX, newY);
+        return npoint;
+    }
+
+    public final static Point removeRefrenceFromPoint(double x, double y, double rX, double rY){
+        return new Point(rX + x, rY + y);
+    }
+    public void setCoordinatesFromPolar(double radius, double angle){
+        this.cartesianY = Math.sin(angle) * radius;
+        this.cartesianX = Math.cos(angle) * radius;
+    }
 
     public double getPolarRadius(){ // radians
         return Math.sqrt(this.cartesianX * this.cartesianX + this.cartesianY * this.cartesianY);

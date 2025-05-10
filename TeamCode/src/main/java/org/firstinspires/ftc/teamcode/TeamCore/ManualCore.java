@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.TeamCore;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Drive.ManualDriving;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Input.CustomGamepad;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.StateMachine.StateMachine;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Managers.Template.OldCustomGamepad;
@@ -14,6 +15,7 @@ public class ManualCore extends TeamCore {
 
             this.addComponent(new CustomGamepad("Gamepad Manager: " + caca.getNumber(), true, this, caca.getNumber(), caca.getGp()));
         }
+        this.addComponent(new ManualDriving(true, this));
 
     }
     // inits a new state machine and maps keybinds to states

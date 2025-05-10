@@ -9,6 +9,8 @@ import org.firstinspires.ftc.teamcode.TeamCore.Actions.Action;
 import org.firstinspires.ftc.teamcode.TeamCore.Actions.ActionDataContainer;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.ComponentType;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.CoreComponent;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Drive.DrivingManager;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.GameMap.GameMap;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.GlobalVariableContainer;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Interfaces.SW_Telemetry;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Interfaces.Template.Interface;
@@ -40,6 +42,8 @@ public class TeamCore {
         // didn't know what to name it to not have it confused
         this.addComponent(new UI_Manager(true, this));
         this.addComponent(new SW_Telemetry(true, this));
+        this.addComponent(new GameMap(true, this));
+        this.addComponent(new DrivingManager(true, this));
         if(telem != null){
             //this.addComponent(new SW_Telemetry(true, this, telem));
             this.setGlobalVariable("Telemetry", telem);

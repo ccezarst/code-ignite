@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.CoreComponent;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Drive.Implementation.MecanumPedroDriveBase;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Extra.CoreComponentTester;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Extra.PeripheralValuePrinter;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Extra.PrintCoreStatusBind;
@@ -42,7 +43,8 @@ public class testTeleop extends LinearOpMode {
         OldCustomGamepad gp2 = new OldCustomGamepad(gamepad2, 2);
         ManualCore core = new ManualCore(telemetry, hardwareMap, gp1, gp2);
         core.addComponent(new PrintCoreStatusBind(1, core, telemetry));
-        core.addComponent(new PeripheralValuePrinter(true, core));
+        //core.addComponent(new PeripheralValuePrinter(true, core));
+        core.addComponent(new MecanumPedroDriveBase(true, core));
         core.init();
         telemetry.addLine("Waiting for start..");
         telemetry.update();
