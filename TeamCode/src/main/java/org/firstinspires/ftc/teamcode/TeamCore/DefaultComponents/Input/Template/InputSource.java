@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Input.Template;
 
+import org.firstinspires.ftc.teamcode.TeamCore.Actions.Action;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.ComponentType;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.CoreComponent;
 import org.firstinspires.ftc.teamcode.TeamCore.TeamCore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,9 +25,12 @@ public abstract class InputSource extends CoreComponent {
         for(ButtonTypes btn: ButtonTypes.values()){
             this.core.setGlobalVariable(this.inputSourceID + btn.name(), false);
             this.buttonToggleStates.put(btn, false);
+            this.buttonStates.put(btn, false);
+            this.buttonStatesLast.put(btn, false);
         }
         for(AnalogTypes an: AnalogTypes.values()){
             this.core.setGlobalVariable(this.inputSourceID + an.name(), 0);
+            this.analogStates.put(an, 0.0);
         }
     }
 

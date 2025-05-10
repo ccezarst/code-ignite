@@ -27,7 +27,7 @@ public class TeamCore {
 
     private Map<String, GlobalVariableContainer> globalVariables;
 
-    private ArrayList<Action> actions;
+    private ArrayList<Action> actions = new ArrayList<>();
 
     private boolean logInteractions = false;
 
@@ -50,6 +50,10 @@ public class TeamCore {
         }
     }
 
+    public final ArrayList<Action> getAllActions(){
+        return this.actions;
+    }
+
     public final <T> void addAction(String actionName, T actionDataType, Consumer<ActionDataContainer>... defaultCallbacks){
         if(this.getActionFromName(actionName) == null){
             this.actions.add(new Action<T>(actionName, actionDataType, defaultCallbacks));
@@ -57,16 +61,24 @@ public class TeamCore {
     }
     public final Action getActionFromName(String name){
         for(Action pl: this.actions){
-            if(pl.name == name){
+            if(Objects.equals(pl.name, name)){
                 return pl;
             }
         }
         return null;
     }
+
+    private ArrayList<String> actionWaitingList = new ArrayList<>();
+    private ArrayList<Consumer<ActionDataContainer>> callbackWaitingList = new ArrayList<>();
+
     public final void subscribeToAction(String actionName, Consumer<ActionDataContainer> callback){
         Action res = this.getActionFromName(actionName);
         if(res != null){
             res.subscribe(callback);
+        }else{
+            // action might have not been created yet
+            this.actionWaitingList.add(actionName);
+            this.callbackWaitingList.add(callback);
         }
     }
 
@@ -297,6 +309,9 @@ public class TeamCore {
             this.components.get(i).primitiveStep(this);
         }
         ((UI_Manager)this.getComponentFromName("UI_Manager")).refresh();
+        if(!this.actionWaitingList.isEmpty()){
+            this.subscribeToAction(this.actionWaitingList.remove(0), this.callbackWaitingList.remove(0));
+        }
     }
 
     public String getStatus(){

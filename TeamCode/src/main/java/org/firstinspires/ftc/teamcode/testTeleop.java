@@ -44,7 +44,6 @@ public class testTeleop extends LinearOpMode {
         core.addComponent(new PrintCoreStatusBind(1, core, telemetry));
         core.addComponent(new PeripheralValuePrinter(true, core));
         core.init();
-        core.step();
         telemetry.addLine("Waiting for start..");
         telemetry.update();
         this.waitForStart();
