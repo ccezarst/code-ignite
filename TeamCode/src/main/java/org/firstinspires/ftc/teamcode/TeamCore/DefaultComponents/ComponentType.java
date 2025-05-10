@@ -9,6 +9,7 @@ public enum ComponentType {
     UI_MANAGER,
     STATE_MACHINE,
     DRIVING_MANAGER,
+    LOCALIZATION_MANAGER,
     OTHER
 
 
