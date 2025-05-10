@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents;
 
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
 import org.checkerframework.checker.units.qual.A;
 import org.firstinspires.ftc.teamcode.TeamCore.TeamCore;
 import org.firstinspires.ftc.teamcode.TeamCore.TestingEnviromentCore;
@@ -28,6 +30,10 @@ public abstract class CoreComponent {
         }else{
             throw new IllegalArgumentException("Name cannot be empty (CoreComponent constructor)");
         }
+    }
+
+    public final HardwareMap getHwMap(){
+        return this.core.getHwMap();
     }
 
     public final ArrayList<String> getAllSettings(){

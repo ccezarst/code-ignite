@@ -54,7 +54,7 @@ public class ManualCoreTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         OldCustomGamepad gp1 = new OldCustomGamepad(gamepad1, 1);
         OldCustomGamepad gp2 = new OldCustomGamepad(gamepad2, 2);
-        ManualCore core = new ManualCore(telemetry, hardwareMap, 1, gp1, gp2);
+        ManualCore core = new ManualCore(telemetry, hardwareMap, gp1, gp2);
         core.addComponent(new PrintCoreStatusBind(1, core, telemetry));
         core.addComponent(new IntakeInterface(true, core));
         core.addComponent(new OuttakeInterface(true, core));

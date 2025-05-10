@@ -105,6 +105,10 @@ public class TeamCore {
         this.logInteractions = true;
     }
 
+    public HardwareMap getHwMap(){
+        return this.getGlobalVariable("HardwareMap", HardwareMap.class);
+    }
+
     public final void disableInteractionLogging(){
         this.logInteractions = false;
     }

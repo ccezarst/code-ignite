@@ -11,15 +11,14 @@ public abstract class InputSource extends CoreComponent {
     private int inputSourceID;
     public InputSource(String name, Boolean active, TeamCore core, int inputSourceID) {
         super(name, active, core, ComponentType.INPUT_SOURCE);
+        this.inputSourceID = inputSourceID;
         this.setup();
     }
 
     protected final void setup(){
-        this.inputSourceID = inputSourceID;
         this.buttonStates = new HashMap<>();
         this.buttonStatesLast = new HashMap<>();
         this.analogStates = new HashMap<>();
-        this.analogStatesLast = new HashMap<>();
         this.buttonToggleStates = new HashMap<>();
         for(ButtonTypes btn: ButtonTypes.values()){
             this.core.setGlobalVariable(this.inputSourceID + btn.name(), false);
@@ -60,7 +59,6 @@ public abstract class InputSource extends CoreComponent {
     private Map<ButtonTypes, Boolean> buttonToggleStates;
 
     protected Map<AnalogTypes, Double> analogStates;
-    private Map<AnalogTypes, Double> analogStatesLast;
 
     // calls actions and updates global variables
     protected final void sendInputs(){
@@ -85,9 +83,6 @@ public abstract class InputSource extends CoreComponent {
         }
         for(ButtonTypes btn: this.buttonStates.keySet()){
             this.buttonStatesLast.put(btn, this.buttonStates.get(btn));
-        }
-        for(AnalogTypes an: this.analogStates.keySet()){
-            this.analogStatesLast.put(an, this.analogStates.get(an));
         }
     }
 }

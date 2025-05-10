@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.StateMachine.St
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Managers.Template.OldCustomGamepad;
 
 public class ManualCore extends TeamCore {
-    public ManualCore(Telemetry telem, HardwareMap hwMap, int drivingGamepadNumber, OldCustomGamepad... gps){
+    public ManualCore(Telemetry telem, HardwareMap hwMap, OldCustomGamepad... gps){
         super(telem, hwMap);
         for(OldCustomGamepad caca : gps){
             this.addComponent(new CustomGamepad("Gamepad Manager: " + caca.getNumber(), true, this, caca.getNumber(), caca.getGp()));
