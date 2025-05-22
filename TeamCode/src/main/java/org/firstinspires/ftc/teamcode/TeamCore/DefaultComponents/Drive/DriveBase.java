@@ -10,8 +10,9 @@ import org.firstinspires.ftc.teamcode.TeamCore.TeamCore;
 public abstract class DriveBase extends CoreComponent {
     public DriveBase(Boolean active, TeamCore core) {
         super("DriveBase", active, core, ComponentType.DRIVE_BASE);
-    }
 
+    }
+    public abstract void rotateRobotCentric(double angle);
     public abstract void moveRobotCentricPolar(double radius, double angle); // move the robot in respect to it's current position radius cm in angle radians direction counteclockwise to the X axis
     public final void moveRobotCentricCartesian(double x, double y){
         this.moveFieldCentricPoint(Point.removeRefrenceFromPoint(x, y, this.getSelf().center.cartesianX, this.getSelf().center.cartesianY));
@@ -37,6 +38,13 @@ public abstract class DriveBase extends CoreComponent {
         }
         this.moveRobotCentricPolar(radius, angle);
     };
+    public final void rotateFieldCentric(double angle){
+        if(angle > this.getSelf().center.orientation){
+            this.rotateRobotCentric(angle-this.getSelf().center.orientation);
+        }else{
+            this.rotateRobotCentric(this.getSelf().center.orientation - angle);
+        }
+    }
     public final void moveFieldCentricPolar(double  radius, double angle){
         this.moveFieldCentricPoint(Point.fromPolar(radius, angle));
     };

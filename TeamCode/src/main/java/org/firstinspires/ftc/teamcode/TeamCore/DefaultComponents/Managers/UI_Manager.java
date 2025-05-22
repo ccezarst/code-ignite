@@ -49,6 +49,8 @@ public class UI_Manager extends CoreComponent {
         if(this.active){
             ((SW_UserInterface)interfs.get(0)).showMenu(title, options, callback);
         }
+        // >=0 selected option
+        // -1 cancelled
     }
 
     public void print(String toPrint){
