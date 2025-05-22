@@ -64,7 +64,51 @@ public class CoreOptionsMenu extends CoreComponent {
                 }
             });
         }else if(opts == 4){
-            // IMPLEMENT SETTINGS :)
+            ArrayList<String> comps = new ArrayList<>();
+            for(CoreComponent comp : this.core.getAllComponents()){
+                comps.add(comp.name);
+            }
+            this.core.getComponentFromName("UI_Manager", UI_Manager.class).showMenu("Pick a component",comps , (Integer o)->{this.settingsMenuCallbackA(o);});
+        }
+    }
+    String selectedComponent = "";
+    public void settingsMenuCallbackA(int opts){
+        if(opts != -1){
+            int i = 0;
+            for(CoreComponent comp : this.core.getAllComponents()){
+                if(i == opts){
+                    selectedComponent = comp.name;
+                    break;
+                }
+                i += 1;
+            }
+        }
+        this.core.getComponentFromName("UI_Manager", UI_Manager.class).showMenu("Pick a setting",this.core.getComponentFromName(selectedComponent).getAllSettings() , (Integer o)->{this.settingsMenuCallbackB(o);});
+    }
+    String selectedSetting = "";
+    public void settingsMenuCallbackB(int opts){
+        if(opts != -1){
+            int i = 0;
+            for(String set : this.core.getComponentFromName(selectedComponent).getAllSettings()){
+                if(i == opts){
+                    selectedSetting = set;
+                    break;
+                }
+                i += 1;
+            }
+        }
+        this.core.getComponentFromName("UI_Manager", UI_Manager.class).showMenu(selectedSetting,this.core.getComponentFromName(selectedComponent).getSettingOptions(selectedSetting) , (Integer o)->{this.settingsMenuCallbackC(o);});
+    }
+    public void settingsMenuCallbackC(int opts){
+        if(opts != -1){
+            int i = 0;
+            for(String opt : this.core.getComponentFromName(selectedComponent).getSettingOptions(selectedSetting)){
+                if(i == opts){
+                    this.core.getComponentFromName(selectedComponent).changeSetting(selectedSetting, opt);
+                    break;
+                }
+                i += 1;
+            }
         }
     }
 
