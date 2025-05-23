@@ -2,11 +2,11 @@ package org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.checkerframework.checker.units.qual.A;
 import org.firstinspires.ftc.teamcode.TeamCore.TeamCore;
 import org.firstinspires.ftc.teamcode.TeamCore.TestingEnviromentCore;
 
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 public abstract class CoreComponent {
     public boolean active = false;
@@ -15,18 +15,50 @@ public abstract class CoreComponent {
     public final TeamCore core;
     public final ArrayList<CoreComponentSettings> settings;
     public final ArrayList<ComponentType> dependencies;
+
+    protected CoreComponentBackingThread runningThread;
+
+    private static class CoreComponentBackingThread extends Thread{
+
+        public Consumer<Integer> stepFunc;
+        public CoreComponentBackingThread(Consumer<Integer> callback){
+            this.stepFunc = callback;
+        }
+
+        public void startRunning(){
+            this.run = true;
+            this.stoppedRunning = false;
+            this.start();
+        }
+        private Boolean run = false;
+        private Boolean stoppedRunning = true;
+        public void run(){
+            if(run){
+                this.stepFunc.accept(0);
+            }else{
+                this.stoppedRunning = true;
+            }
+        }
+
+        public void stopRunning(){
+            this.run = false;
+            while(this.stoppedRunning != true){} // COULD END REALLY BADLY IF THIS RUNS forever...
+        }
+    }
+
     public CoreComponent(String name, Boolean active, TeamCore core, ComponentType... type){
         this(name, active, core, new ArrayList<>(), type);
     }
     public CoreComponent(String name, Boolean active, TeamCore core, ArrayList<ComponentType> dependencies,ComponentType... type){
         if(name != null && !name.isEmpty()){
             this.name = name;
-            this.active = active; // dumb feature, don't use
+            this.active = active;
             /// is fixed now :)
             this.types = type;
             this.core = core;
             this.settings = new ArrayList<CoreComponentSettings>();
             this.dependencies = dependencies;
+            this.runningThread = new CoreComponentBackingThread((Integer x) -> {this.step(this.core);});
         }else{
             throw new IllegalArgumentException("Name cannot be empty (CoreComponent constructor)");
         }
@@ -57,9 +89,11 @@ public abstract class CoreComponent {
     }
 
     public final void changeSetting(String settingName, String option){
-        for(CoreComponentSettings caca: this.settings){
-            if(caca.getSettings().contains(settingName)){
-                caca.changeSetting(settingName, option);
+        synchronized (this.settings){
+            for(CoreComponentSettings caca: this.settings){
+                if(caca.getSettings().contains(settingName)){
+                    caca.changeSetting(settingName, option);
+                }
             }
         }
     }
@@ -87,8 +121,10 @@ public abstract class CoreComponent {
     protected abstract void step(TeamCore core);
 
     public final void primitiveUpdate(TeamCore core){
+        this.runningThread.stopRunning();
         if(this.active){
             this.update(core);
+            this.runningThread.startRunning();
         }
     }
     protected abstract void update(TeamCore core); // update function should contain all init code

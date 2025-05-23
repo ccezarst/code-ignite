@@ -30,15 +30,23 @@ public class MecanumPedroDriveBase extends DriveBase {
     public void moveRobotCentricPolar(double radius, double angle) {
         double FRBL = Math.sin(angle - 1/4* Point.pi) * radius*magnitudeModifier;
         double FLBR = Math.sin(angle + 1/4* Point.pi) * radius*magnitudeModifier;
-        FR.setTargetPosition((int) (FR.getCurrentPosition() + FRBL));
-        BL.setTargetPosition((int) (BL.getCurrentPosition() + FRBL));
-        FL.setTargetPosition((int) (FL.getCurrentPosition() + FLBR));
-        BR.setTargetPosition((int) (BR.getCurrentPosition() + FLBR));
+        synchronized (this.FR){
+            synchronized (this.BL){
+                synchronized (this.FL){
+                    synchronized (this.BR){
+                        FR.setTargetPosition((int) (FR.getCurrentPosition() + FRBL));
+                        BL.setTargetPosition((int) (BL.getCurrentPosition() + FRBL));
+                        FL.setTargetPosition((int) (FL.getCurrentPosition() + FLBR));
+                        BR.setTargetPosition((int) (BR.getCurrentPosition() + FLBR));
 
-        FR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        BL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        FL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        BR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        FR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        BL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        FL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        BR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -48,30 +56,37 @@ public class MecanumPedroDriveBase extends DriveBase {
 
     @Override
     protected void update(TeamCore core) {
-        FR.setDirection(DcMotorSimple.Direction.FORWARD);
-        FR.setPower(1);
-        FR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        FR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        FR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        synchronized (this.FR){
+            synchronized (this.FL){
+                synchronized (this.BR){
+                    synchronized (this.BL){
+                        FR.setDirection(DcMotorSimple.Direction.FORWARD);
+                        FR.setPower(1);
+                        FR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                        FR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                        FR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        FL.setDirection(DcMotorSimple.Direction.REVERSE);
-        FL.setPower(1);
-        FL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        FL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        FL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                        FL.setDirection(DcMotorSimple.Direction.REVERSE);
+                        FL.setPower(1);
+                        FL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                        FL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                        FL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        BR.setDirection(DcMotorSimple.Direction.FORWARD);
-        BR.setPower(1);
-        BR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        BR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        BR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                        BR.setDirection(DcMotorSimple.Direction.FORWARD);
+                        BR.setPower(1);
+                        BR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                        BR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                        BR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        BL.setDirection(DcMotorSimple.Direction.REVERSE);
-        BL.setPower(1);
-        BL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        BL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        BL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
+                        BL.setDirection(DcMotorSimple.Direction.REVERSE);
+                        BL.setPower(1);
+                        BL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                        BL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                        BL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    }
+                }
+            }
+        }
     }
 
     @Override

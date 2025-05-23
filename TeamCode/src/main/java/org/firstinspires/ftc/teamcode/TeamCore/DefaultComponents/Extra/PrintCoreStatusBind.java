@@ -25,7 +25,9 @@ public class PrintCoreStatusBind extends OneButtonMapper {
 
     @Override
     public void customUpdate(TeamCore core) {
-        this.man = (UI_Manager) this.core.getComponentFromName("UI_Manager");
+        synchronized (this.man){
+            this.man = (UI_Manager) this.core.getComponentFromName("UI_Manager");
+        }
     }
 
     @Override

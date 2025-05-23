@@ -18,19 +18,28 @@ public abstract class InputSource extends CoreComponent {
     }
 
     protected final void setup(){
-        this.buttonStates = new HashMap<>();
-        this.buttonStatesLast = new HashMap<>();
-        this.analogStates = new HashMap<>();
-        this.buttonToggleStates = new HashMap<>();
-        for(ButtonTypes btn: ButtonTypes.values()){
-            this.core.setGlobalVariable(this.inputSourceID + btn.name(), false);
-            this.buttonToggleStates.put(btn, false);
-            this.buttonStates.put(btn, false);
-            this.buttonStatesLast.put(btn, false);
-        }
-        for(AnalogTypes an: AnalogTypes.values()){
-            this.core.setGlobalVariable(this.inputSourceID + an.name(), 0);
-            this.analogStates.put(an, 0.0);
+        synchronized (this.buttonStates){
+            synchronized (this.buttonToggleStates){
+                synchronized (this.buttonStatesLast){
+
+                    synchronized (this.analogStates){
+                        this.buttonStates = new HashMap<>();
+                        this.buttonStatesLast = new HashMap<>();
+                        this.analogStates = new HashMap<>();
+                        this.buttonToggleStates = new HashMap<>();
+                        for(ButtonTypes btn: ButtonTypes.values()){
+                            this.core.setGlobalVariable(this.inputSourceID + btn.name(), false);
+                            this.buttonToggleStates.put(btn, false);
+                            this.buttonStates.put(btn, false);
+                            this.buttonStatesLast.put(btn, false);
+                        }
+                        for(AnalogTypes an: AnalogTypes.values()){
+                            this.core.setGlobalVariable(this.inputSourceID + an.name(), 0);
+                            this.analogStates.put(an, 0.0);
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -67,27 +76,37 @@ public abstract class InputSource extends CoreComponent {
 
     // calls actions and updates global variables
     protected final void sendInputs(){
-        for(ButtonTypes btn: this.buttonStates.keySet()){
-            this.core.setGlobalVariable(this.inputSourceID + btn.name(), this.buttonStates.get(btn));
-        }
-        for(AnalogTypes an: this.analogStates.keySet()){
-            this.core.setGlobalVariable(this.inputSourceID + an.name(), this.analogStates.get(an));
-        }
-        for(ButtonTypes btn: this.buttonStates.keySet()){
-            if(this.buttonStatesLast.get(btn) == false && this.buttonStates.get(btn) == true){
-                this.triggerPressed(btn);
-                this.buttonToggleStates.put(btn, !this.buttonToggleStates.get(btn));
-            }else if(this.buttonStatesLast.get(btn) == true && this.buttonStates.get(btn) == true){
-                this.triggerDown(btn);
-                if (this.buttonToggleStates.get(btn)) {
-                    this.triggerToggle(btn);
+        synchronized (this.buttonStates){
+            synchronized (this.analogStates){
+                synchronized (this.buttonStatesLast){
+                    synchronized (this.buttonToggleStates){
+                        synchronized (this.buttonStatesLast){
+                            for(ButtonTypes btn: this.buttonStates.keySet()){
+                                this.core.setGlobalVariable(this.inputSourceID + btn.name(), this.buttonStates.get(btn));
+                            }
+                            for(AnalogTypes an: this.analogStates.keySet()){
+                                this.core.setGlobalVariable(this.inputSourceID + an.name(), this.analogStates.get(an));
+                            }
+                            for(ButtonTypes btn: this.buttonStates.keySet()){
+                                if(this.buttonStatesLast.get(btn) == false && this.buttonStates.get(btn) == true){
+                                    this.triggerPressed(btn);
+                                    this.buttonToggleStates.put(btn, !this.buttonToggleStates.get(btn));
+                                }else if(this.buttonStatesLast.get(btn) == true && this.buttonStates.get(btn) == true){
+                                    this.triggerDown(btn);
+                                    if (this.buttonToggleStates.get(btn)) {
+                                        this.triggerToggle(btn);
+                                    }
+                                }else{
+                                    this.triggerUP(btn);
+                                }
+                            }
+                            for(ButtonTypes btn: this.buttonStates.keySet()){
+                                this.buttonStatesLast.put(btn, this.buttonStates.get(btn));
+                            }
+                        }
+                    }
                 }
-            }else{
-                this.triggerUP(btn);
             }
-        }
-        for(ButtonTypes btn: this.buttonStates.keySet()){
-            this.buttonStatesLast.put(btn, this.buttonStates.get(btn));
         }
     }
 }

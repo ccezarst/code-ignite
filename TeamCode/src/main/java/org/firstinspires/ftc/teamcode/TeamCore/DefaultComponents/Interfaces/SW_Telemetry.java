@@ -32,17 +32,25 @@ public class SW_Telemetry extends SW_UserInterface {
 
     @Override
     public void showMenu(String title, ArrayList<String> options, Consumer<Integer> callback) {
-        if(!this.busy && this.telemetry != null){
-            this.menuTitle = title;
-            this.menuOptions = options;
-            this.menuCallback = callback;
-            this.busy = true;
-            this.selection = 0;
+        synchronized (this.menuTitle){
+            synchronized (this.menuOptions){
+                synchronized (this.menuCallback){
+                    synchronized (this.telemetry){
+                        if(!this.busy && this.telemetry != null){
+                            this.menuTitle = title;
+                            this.menuOptions = options;
+                            this.menuCallback = callback;
+                            this.busy = true;
+                            this.selection = 0;
+                        }
+                    }
+                }
+            }
         }
     }
 
     @Override
-    public void updatePrint() {if(this.telemetry != null){this.telemetry.update();}}
+    public void updatePrint() {if(this.telemetry != null){synchronized(this.telemetry){this.telemetry.update();}}}
 
     @Override
     public boolean isBusy() {
@@ -51,28 +59,34 @@ public class SW_Telemetry extends SW_UserInterface {
 
     @Override
     public void step(TeamCore core) {
-        if(this.busy && this.telemetry != null){
-            this.telemetry.addLine("Browse menu(GP1) -> DPAP UP/DOWN, confirm -> A, cancel -> B");
-            this.telemetry.addLine(this.menuTitle);
-            int count = 0;
-            for(String option: this.menuOptions){
-                if(count == selection){
-                    this.telemetry.addLine(option + " <----");
-                }else{
-                    this.telemetry.addLine(option);
+        synchronized (this.telemetry){
+            synchronized (this.menuOptions){
+                if(this.busy && this.telemetry != null){
+                    this.telemetry.addLine("Browse menu(GP1) -> DPAP UP/DOWN, confirm -> A, cancel -> B");
+                    this.telemetry.addLine(this.menuTitle);
+                    int count = 0;
+                    for(String option: this.menuOptions){
+                        if(count == selection){
+                            this.telemetry.addLine(option + " <----");
+                        }else{
+                            this.telemetry.addLine(option);
+                        }
+                        count += 1;
+                    }
                 }
-                count += 1;
             }
         }
     }
 
     @Override
     protected void update(TeamCore core) {
-        this.telemetry = this.core.getGlobalVariable("Telemetry", Telemetry.class);
-        this.core.subscribeToAction("1" + ButtonTypes.DPAD_DOWN.name() + "_PRESSED", (ActionDataContainer data) ->{this.dpadDown_pressed();});
-        this.core.subscribeToAction("1" + ButtonTypes.DPAD_UP.name() + "_PRESSED", (ActionDataContainer data) ->{this.dpadUp_pressed();});
-        this.core.subscribeToAction("1" + ButtonTypes.A.name() + "_PRESSED", (ActionDataContainer data) ->{this.a_pressed();});
-        this.core.subscribeToAction("1" + ButtonTypes.B.name() + "_PRESSED", (ActionDataContainer data) ->{this.b_pressed();});
+        synchronized (this.telemetry){
+            this.telemetry = this.core.getGlobalVariable("Telemetry", Telemetry.class);
+            this.core.subscribeToAction("1" + ButtonTypes.DPAD_DOWN.name() + "_PRESSED", (ActionDataContainer data) ->{this.dpadDown_pressed();});
+            this.core.subscribeToAction("1" + ButtonTypes.DPAD_UP.name() + "_PRESSED", (ActionDataContainer data) ->{this.dpadUp_pressed();});
+            this.core.subscribeToAction("1" + ButtonTypes.A.name() + "_PRESSED", (ActionDataContainer data) ->{this.a_pressed();});
+            this.core.subscribeToAction("1" + ButtonTypes.B.name() + "_PRESSED", (ActionDataContainer data) ->{this.b_pressed();});
+        }
     }
     public void dpadDown_pressed(){
         if(this.selection < this.menuOptions.size() - 1){

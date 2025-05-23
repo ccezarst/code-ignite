@@ -18,13 +18,17 @@ public class CustomGamepad extends InputSource {
 
     @Override
     protected void step(TeamCore core) {
-        for(ButtonTypes btn: ButtonTypes.values()){
-            this.buttonStates.put(btn, gamepad.checkHold(btn));
+        synchronized(this.buttonStates){
+            synchronized (this.analogStates){
+                for(ButtonTypes btn: ButtonTypes.values()){
+                    this.buttonStates.put(btn, gamepad.checkHold(btn));
+                }
+                for(AnalogTypes an: AnalogTypes.values()){
+                    this.analogStates.put(an, (double) gamepad.getAnalog(an));
+                }
+                this.sendInputs();
+            }
         }
-        for(AnalogTypes an: AnalogTypes.values()){
-            this.analogStates.put(an, (double) gamepad.getAnalog(an));
-        }
-        this.sendInputs();
     }
 
     @Override

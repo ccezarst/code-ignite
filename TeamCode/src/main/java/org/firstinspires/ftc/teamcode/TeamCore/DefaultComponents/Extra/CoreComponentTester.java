@@ -30,40 +30,44 @@ public class CoreComponentTester extends OneButtonMapper {
 
 
     private void acceptCallback(Integer select){
-        ArrayList<String> opts = new ArrayList<>();
-        opts.add("Confirm");
-        opts.add("Back");
-        switch(select){
-            case -1:
-            case 1:
-                if(this.current > 0){
-                    this.current -= 1;
-                }else{
-                    this.busy = false;
-                }
-                break;
-            case 0:
-                if(this.current < this.responses.size() - 1){
-                    this.current += 1;
-                }else{
-                    this.busy = false;
-                }
-                break;
-        }
-        if(this.busy){
-            this.core.getComponentFromName("UI_Manager", UI_Manager.class).showMenu(this.responses.get(current), opts, this::acceptCallback);
+        synchronized (this.responses){
+            ArrayList<String> opts = new ArrayList<>();
+            opts.add("Confirm");
+            opts.add("Back");
+            switch(select){
+                case -1:
+                case 1:
+                    if(this.current > 0){
+                        this.current -= 1;
+                    }else{
+                        this.busy = false;
+                    }
+                    break;
+                case 0:
+                    if(this.current < this.responses.size() - 1){
+                        this.current += 1;
+                    }else{
+                        this.busy = false;
+                    }
+                    break;
+            }
+            if(this.busy){
+                this.core.getComponentFromName("UI_Manager", UI_Manager.class).showMenu(this.responses.get(current), opts, this::acceptCallback);
+            }
         }
     }
     @Override
     public void buttonPressed() {
         if(!busy){
-            this.busy = true;
-            this.current = 0;
-            this.responses = this.core.testComponents();
-            ArrayList<String> opts = new ArrayList<>();
-            opts.add("Confirm");
-            opts.add("Back");
-            this.core.getComponentFromName("UI_Manager", UI_Manager.class).showMenu(responses.get(0), opts, this::acceptCallback);
+            synchronized (this.responses){
+                this.busy = true;
+                this.current = 0;
+                this.responses = this.core.testComponents();
+                ArrayList<String> opts = new ArrayList<>();
+                opts.add("Confirm");
+                opts.add("Back");
+                this.core.getComponentFromName("UI_Manager", UI_Manager.class).showMenu(responses.get(0), opts, this::acceptCallback);
+            }
         }
     }
 

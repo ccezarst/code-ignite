@@ -21,26 +21,38 @@ public class DrivingManager extends CoreComponent {
     }
 
     public void moveRobotCentricPolarNoPathing(double radius, double angle){
-        this.db.moveFieldCentricPolar(radius, angle);
+        synchronized (this.db) {
+            this.db.moveFieldCentricPolar(radius, angle);
+        }
     }; // move the robot in respect to it's current position radius cm in angle radians direction counteclockwise to the X axis
     public final void moveRobotCentricCartesianNoPathing(double x, double y){
-        this.db.moveRobotCentricCartesian(x, y);
+        synchronized (this.db) {
+            this.db.moveRobotCentricCartesian(x, y);
+        }
     }; // cm, cm
 
     public final void moveFieldCentricPointNoPathing(Point point){
-        this.db.moveFieldCentricPoint(point);
+        synchronized (this.db) {
+            this.db.moveFieldCentricPoint(point);
+        }
     }
     public final void moveFieldCentricCartesianNoPathing(double x, double y){
-        this.db.moveFieldCentricCartesian(x, y);
+        synchronized (this.db) {
+            this.db.moveFieldCentricCartesian(x, y);
+        }
     };
     public final void moveFieldCentricPolarNoPathing(double  radius, double angle){
-        this.db.moveRobotCentricPolar(radius, angle);
+        synchronized (this.db) {
+            this.db.moveRobotCentricPolar(radius, angle);
+        }
     };
 
     DriveBase db;
     @Override
     protected void update(TeamCore core) {
-        db = this.core.getComponentFromName("DriveBase", DriveBase.class);
+        synchronized (this.db){
+            db = this.core.getComponentFromName("DriveBase", DriveBase.class);
+        }
     }
 
     @Override

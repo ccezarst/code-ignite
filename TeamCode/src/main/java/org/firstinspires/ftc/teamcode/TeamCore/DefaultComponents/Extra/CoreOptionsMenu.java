@@ -72,7 +72,7 @@ public class CoreOptionsMenu extends CoreComponent {
         }
     }
     String selectedComponent = "";
-    public void settingsMenuCallbackA(int opts){
+    public void settingsMenuCallbackA(int opts){ // idk what happens if it gets called twice
         if(opts != -1){
             int i = 0;
             for(CoreComponent comp : this.core.getAllComponents()){

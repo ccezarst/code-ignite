@@ -47,42 +47,46 @@ public class JSONConfigManager extends SoftwareInterface implements ConfigsInter
 
     @Override
     public void saveValue(String valueName, String value) {
-        if(this.active){
-            // queue to batch up fileWrite requets and process them at the end
-            configQueue.add(new String[]{valueName, value});
+        synchronized (this.configQueue){
+            if(this.active){
+                // queue to batch up fileWrite requets and process them at the end
+                configQueue.add(new String[]{valueName, value});
+            }
         }
     }
 
     @Override
     public void step(TeamCore core) {
-        if(!configQueue.isEmpty()){ // if we have anything to save
-            File myFileName = AppUtil.getInstance().getSettingsFile(configFileName);
-            String result = "";
-            if(ReadWriteFile.readFile(myFileName).trim() == ""){
-                JSONObject jo = new JSONObject();
-                try {
-                    for(String[] pair: this.configQueue){
-                        jo.put(pair[0], pair[1]); // process first batch of configs after file creation
+        synchronized (this.configQueue){
+            if(!configQueue.isEmpty()){ // if we have anything to save
+                File myFileName = AppUtil.getInstance().getSettingsFile(configFileName);
+                String result = "";
+                if(ReadWriteFile.readFile(myFileName).trim() == ""){
+                    JSONObject jo = new JSONObject();
+                    try {
+                        for(String[] pair: this.configQueue){
+                            jo.put(pair[0], pair[1]); // process first batch of configs after file creation
+                        }
+                        result = jo.toString(2);
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
                     }
-                    result = jo.toString(2);
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }
-            }else{
-                try {
-                    JSONObject  obj = new JSONObject(ReadWriteFile.readFile(myFileName));
-                    for(String[] pair: this.configQueue){
-                        obj.put(pair[0], pair[1]); // process a batch of configs
+                }else{
+                    try {
+                        JSONObject  obj = new JSONObject(ReadWriteFile.readFile(myFileName));
+                        for(String[] pair: this.configQueue){
+                            obj.put(pair[0], pair[1]); // process a batch of configs
+                        }
+                        result = obj.toString(2);
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
                     }
-                    result = obj.toString(2);
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
                 }
-            }
-            // https://ftc-docs.firstinspires.org/en/latest/programming_resources/shared/myblocks/rw_example/rw-example.html
-            // https://www.geeksforgeeks.org/parse-json-java/
-            if(result != ""){
-                ReadWriteFile.writeFile(myFileName, result);
+                // https://ftc-docs.firstinspires.org/en/latest/programming_resources/shared/myblocks/rw_example/rw-example.html
+                // https://www.geeksforgeeks.org/parse-json-java/
+                if(result != ""){
+                    ReadWriteFile.writeFile(myFileName, result);
+                }
             }
         }
     }

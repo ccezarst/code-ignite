@@ -53,8 +53,12 @@ public class PeripheralValuePrinter extends CoreComponent {
 
     @Override
     public void update(TeamCore core) {
-        this.man = (UI_Manager) this.core.getComponentFromName("UI_Manager");
-        this.hwMap = this.core.getGlobalVariable("HardwareMap", HardwareMap.class);
+        synchronized (this.man){
+            synchronized (this.hwMap){
+                this.man = (UI_Manager) this.core.getComponentFromName("UI_Manager");
+                this.hwMap = this.core.getGlobalVariable("HardwareMap", HardwareMap.class);
+            }
+        }
     }
 
     @Override

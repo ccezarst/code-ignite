@@ -21,58 +21,68 @@ public class UI_Manager extends CoreComponent {
     public UI_Manager(Boolean active, TeamCore core) {
         super("UI_Manager", active, core, ComponentType.UI_MANAGER);
     }
-
-
     public void refresh(){
         if(this.active){
-            for(Interface interf : interfs){
-                if(this.secondaryTextOutput == ""){
-                    ((SW_UserInterface)interf).print(this.primaryTextOutput, false);
-                }else{
-                    ((SW_UserInterface)interf).print(this.secondaryTextOutput, true);
-                }
-                ((SW_UserInterface)interf).updatePrint();
-                if(System.currentTimeMillis() - this.lastTime > this.warningLastTime){
-                    this.secondaryTextOutput = "";
-                    if(!this.warningQueue.isEmpty()){
-                        this.secondaryTextOutput = this.warningQueue.remove(0);
-                        this.lastTime = System.currentTimeMillis();
+            synchronized (this.interfs){
+                synchronized (this.secondaryTextOutput){
+                    synchronized (this.warningQueue){
+                        for(Interface interf : interfs){
+                            if(this.secondaryTextOutput == ""){
+                                ((SW_UserInterface)interf).print(this.primaryTextOutput, false);
+                            }else{
+                                ((SW_UserInterface)interf).print(this.secondaryTextOutput, true);
+                            }
+                            ((SW_UserInterface)interf).updatePrint();
+                            if(System.currentTimeMillis() - this.lastTime > this.warningLastTime){
+                                this.secondaryTextOutput = "";
+                                if(!this.warningQueue.isEmpty()){
+                                    this.secondaryTextOutput = this.warningQueue.remove(0);
+                                    this.lastTime = System.currentTimeMillis();
+                                }
+                            }
+                            this.changed = true;
+                        }
                     }
                 }
-                this.changed = true;
             }
+
         }
 
     }
 
     public void showMenu(String title, ArrayList<String> options, Consumer<Integer> callback){ // TODO: implement support for a menu on multiple SW_UserInterface's at the same time
         if(this.active){
-            ((SW_UserInterface)interfs.get(0)).showMenu(title, options, callback);
+            synchronized (this.interfs){
+                ((SW_UserInterface)interfs.get(0)).showMenu(title, options, callback);
+            }
         }
         // >=0 selected option
         // -1 cancelled
     }
 
     public void print(String toPrint){
-        if(this.active){
-            if(this.changed){
-                // print the same text regardless of refreshes until a new print is called
-                this.primaryTextOutput = "";
-                this.changed = false;
-            }
-            if(toPrint.endsWith("\n")){
-                this.primaryTextOutput += toPrint;
-            }else{
-                this.primaryTextOutput += toPrint + "\n";
+        synchronized (this.primaryTextOutput){
+            if(this.active){
+                if(this.changed){
+                    // print the same text regardless of refreshes until a new print is called
+                    this.primaryTextOutput = "";
+                    this.changed = false;
+                }
+                if(toPrint.endsWith("\n")){
+                    this.primaryTextOutput += toPrint;
+                }else{
+                    this.primaryTextOutput += toPrint + "\n";
+                }
             }
         }
-
     }
     private final ArrayList<String> warningQueue = new ArrayList<>();
     public void showWarning(String warning){
-        if(this.active){
-            if(!warningQueue.contains(warning)){ // prevent spamming from step functions
-                warningQueue.add(warning);
+        synchronized (this.warningQueue){
+            if(this.active){
+                if(!warningQueue.contains(warning)){ // prevent spamming from step functions
+                    warningQueue.add(warning);
+                }
             }
         }
     }
@@ -84,7 +94,9 @@ public class UI_Manager extends CoreComponent {
 
     @Override
     public void update(TeamCore core) {
-        this.interfs = this.core.getInterfacesOfType(InterfaceType.USER_INTERFACE);
+        synchronized (this.interfs){
+            this.interfs = this.core.getInterfacesOfType(InterfaceType.USER_INTERFACE);
+        }
     }
 
     @Override
