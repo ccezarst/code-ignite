@@ -88,14 +88,19 @@ public abstract class CoreComponent {
         return new ArrayList<>();
     }
 
-    public final void changeSetting(String settingName, String option){
+    public final boolean changeSetting(String settingName, String option){
         synchronized (this.settings){
-            for(CoreComponentSettings caca: this.settings){
-                if(caca.getSettings().contains(settingName)){
-                    caca.changeSetting(settingName, option);
+            // first check if the option is still valid, as it can happen that after a code push the old config is applied and the component might not work.
+            if(this.getSettingOptions(settingName).contains(option)){
+                for(CoreComponentSettings caca: this.settings){
+                    if(caca.getSettings().contains(settingName)){
+                        caca.changeSetting(settingName, option);
+                    }
                 }
+                return true;
             }
         }
+        return false;
     }
     public final ArrayList<String> primitiveGetStatus(){
         if(this.active){

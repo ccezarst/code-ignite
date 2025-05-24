@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Interfaces.Configs;
 
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.CoreComponent;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Interfaces.Template.InterfaceType;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Interfaces.Template.SoftwareInterface;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Managers.UI_Manager;
 import org.firstinspires.ftc.teamcode.TeamCore.TeamCore;
 import org.firstinspires.ftc.teamcode.TeamCore.TestingEnviromentCore;
 import org.json.JSONException;
@@ -54,46 +56,79 @@ public class JSONConfigManager extends SoftwareInterface implements ConfigsInter
             }
         }
     }
-
+    boolean isInited = false;
     @Override
     public void step(TeamCore core) {
-        synchronized (this.configQueue){
-            if(!configQueue.isEmpty()){ // if we have anything to save
-                File myFileName = AppUtil.getInstance().getSettingsFile(configFileName);
-                String result = "";
-                if(ReadWriteFile.readFile(myFileName).trim() == ""){
-                    JSONObject jo = new JSONObject();
-                    try {
-                        for(String[] pair: this.configQueue){
-                            jo.put(pair[0], pair[1]); // process first batch of configs after file creation
+        if(!isInited){ // it is a blocking operation, but since each comp. is on it's own thread it's only blocking the current thread
+            for(CoreComponent comp : this.core.getAllComponents()){
+                for(String setting: comp.getAllSettings()){
+                    String valueName = comp.name + "." + setting;
+                    String value = this.loadValue(valueName);
+                    if(value == ""){
+                        this.requestSetting(comp.name, setting);
+                    }else{
+                        if(this.core.getComponentFromName(comp.name).changeSetting(setting, value) == false){
+                            this.requestSetting(comp.name, setting);
                         }
-                        result = jo.toString(2);
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
-                }else{
-                    try {
-                        JSONObject  obj = new JSONObject(ReadWriteFile.readFile(myFileName));
-                        for(String[] pair: this.configQueue){
-                            obj.put(pair[0], pair[1]); // process a batch of configs
-                        }
-                        result = obj.toString(2);
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
                     }
                 }
-                // https://ftc-docs.firstinspires.org/en/latest/programming_resources/shared/myblocks/rw_example/rw-example.html
-                // https://www.geeksforgeeks.org/parse-json-java/
-                if(result != ""){
-                    ReadWriteFile.writeFile(myFileName, result);
+            }
+            isInited = true;
+        }else{
+            synchronized (this.configQueue){
+                if(!configQueue.isEmpty()){ // if we have anything to save
+                    File myFileName = AppUtil.getInstance().getSettingsFile(configFileName);
+                    String result = "";
+                    if(ReadWriteFile.readFile(myFileName).trim() == ""){
+                        JSONObject jo = new JSONObject();
+                        try {
+                            for(String[] pair: this.configQueue){
+                                jo.put(pair[0], pair[1]); // process first batch of configs after file creation
+                            }
+                            result = jo.toString(2);
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }else{
+                        try {
+                            JSONObject  obj = new JSONObject(ReadWriteFile.readFile(myFileName));
+                            for(String[] pair: this.configQueue){
+                                obj.put(pair[0], pair[1]); // process a batch of configs
+                            }
+                            result = obj.toString(2);
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    // https://ftc-docs.firstinspires.org/en/latest/programming_resources/shared/myblocks/rw_example/rw-example.html
+                    // https://www.geeksforgeeks.org/parse-json-java/
+                    if(result != ""){
+                        ReadWriteFile.writeFile(myFileName, result);
+                    }
                 }
             }
         }
     }
 
+    private void requestSetting(String compName, String setttingName){
+        UI_Manager man = this.core.getComponentFromName("UI_Manager", UI_Manager.class);
+        man.showMenu(compName + " -> " + setttingName, this.core.getComponentFromName(compName).getSettingOptions(setttingName), (Integer opt) -> {
+            if(opt == -1){
+                this.requestSetting(compName, setttingName); // keep requesting
+            }
+            this.handleSettingRequest(compName, setttingName, opt);
+        });
+        waitingForSetting = true;
+        while(waitingForSetting){}
+    }
+    boolean waitingForSetting = false;
+    private void handleSettingRequest(String compName, String settingName, int opt){
+        this.core.getComponentFromName(compName).changeSetting(settingName, this.core.getComponentFromName(compName).getSettingOptions(settingName).get(opt));
+          waitingForSetting = false;
+    }
     @Override
     public void update(TeamCore core) {
-
+        this.isInited = false;
     }
 
     @Override

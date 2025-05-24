@@ -2,18 +2,62 @@ package org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Drive.Localiza
 
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.ComponentType;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.CoreComponent;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.GameMap.GameMap;
 import org.firstinspires.ftc.teamcode.TeamCore.TeamCore;
 import org.firstinspires.ftc.teamcode.TeamCore.TestingEnviromentCore;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.GameMap.GameObjects.Robot;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class LocalizationManager extends CoreComponent implements Runnable {
-    public LocalizationManager(String name, Boolean active, TeamCore core) {
-        super(name, active, core, ComponentType.LOCALIZATION_MANAGER);
-    }
 
+    public ArrayList<LocalizationPacket> packets = new ArrayList<>();
+
+    public static class AveregeSensorFusion implements LocalizationManagerSensorFusion{
+
+        @Override
+        public double fuseValues(ArrayList<Double> values) {
+            double total = 0;
+            for(Double val: values){
+                total += val;
+            }
+            return total / values.size();
+        }
+    }
+    public LocalizationManagerSensorFusion fuser;
+    public GameMap map;
+    public LocalizationManager(String name, Boolean active, TeamCore core, LocalizationManagerSensorFusion fuser) {
+        super(name, active, core, ComponentType.LOCALIZATION_MANAGER);
+        synchronized (this.fuser){
+            this.fuser = fuser;
+        }
+    }
+    public Map<LocalizationPacket.Features, Double> FeatureValues = new HashMap<>();
     @Override
     public void run() {
+        Robot rob = this.map.getRobotSelf();
         while(true){
+            synchronized (rob){
+                for(LocalizationPacket.Features feat: LocalizationPacket.Features.values()){
+                    ArrayList<Double> values = new ArrayList<>();
+                    for(LocalizationPacket pac: this.packets){
+                        if(pac.activeFeatures.contains(feat)){
+                            values.add(pac.getFeatureValue(feat));
+                        }
+                        double val = this.fuser.fuseValues(values);
+                        FeatureValues.put(feat, val);
+                        this.core.setGlobalVariable(feat.name(), val);
+                    }
+                }
+                rob.center.orientation = this.FeatureValues.get(LocalizationPacket.Features.FIELD_ORIENTATION);
+                rob.center.cartesianX = this.FeatureValues.get(LocalizationPacket.Features.X);
+                rob.center.cartesianY = this.FeatureValues.get(LocalizationPacket.Features.Y);
+                rob.speed = this.FeatureValues.get(LocalizationPacket.Features.SPEED);
 
+            }
         }
     }
 
@@ -22,9 +66,12 @@ public class LocalizationManager extends CoreComponent implements Runnable {
 
     }
 
+
     @Override
     protected void update(TeamCore core) {
-
+        synchronized (this.map){
+            this.map = this.core.getComponentFromName("GameMap", GameMap.class);
+        }
     }
 
     @Override

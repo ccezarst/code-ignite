@@ -11,6 +11,7 @@ public enum ComponentType {
     DRIVE_BASE,
     DRIVING_MANAGER,
     LOCALIZATION_MANAGER,
+    LOCALIZER,
     OTHER
 
 
