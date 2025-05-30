@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.function.Consumer;
 
 public class UI_Manager extends CoreComponent {
-    public ArrayList<Interface> interfs;
+    public ArrayList<Interface> interfs = new ArrayList<>();
     private String secondaryTextOutput = "";
     private String primaryTextOutput = "";
     private boolean changed = false;
@@ -94,9 +94,7 @@ public class UI_Manager extends CoreComponent {
 
     @Override
     public void update(TeamCore core) {
-        synchronized (this.interfs){
-            this.interfs = this.core.getInterfacesOfType(InterfaceType.USER_INTERFACE);
-        }
+        this.interfs = this.core.getInterfacesOfType(InterfaceType.USER_INTERFACE);
     }
 
     @Override

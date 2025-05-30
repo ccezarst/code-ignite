@@ -10,6 +10,9 @@ import org.firstinspires.ftc.teamcode.TeamCore.Actions.ActionDataContainer;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.ComponentType;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.CoreComponent;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Drive.DrivingManager;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Drive.Localization.LocalizationManager;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Extra.CoreComponentTester;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Extra.CoreOptionsMenu;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.GameMap.GameMap;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.GlobalVariableContainer;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Interfaces.SW_Telemetry;
@@ -31,6 +34,9 @@ public class TeamCore {
 
     private ArrayList<Action> actions = new ArrayList<>();
 
+    public int threads = 2;
+    public ArrayList<CoreComponent.CoreComponentBackingThread> threadsList = new ArrayList<>();
+
     private boolean logInteractions = false;
 
     public TeamCore(Telemetry telem, HardwareMap hwMap){
@@ -44,6 +50,9 @@ public class TeamCore {
         this.addComponent(new SW_Telemetry(true, this));
         this.addComponent(new GameMap(true, this));
         this.addComponent(new DrivingManager(true, this));
+        this.addComponent(new LocalizationManager(true, this, new LocalizationManager.AveregeSensorFusion()));
+        this.addComponent(new CoreOptionsMenu(true, this));
+        this.addComponent(new CoreComponentTester(true, this));
         if(telem != null){
             //this.addComponent(new SW_Telemetry(true, this, telem));
             this.setGlobalVariable("Telemetry", telem);
@@ -291,16 +300,72 @@ public class TeamCore {
         return toReturn;
     }
 
+    public void reportThreadLoopTime(String threadID, double ms){
+        this.getGlobalVariable("Telemetry", Telemetry.class).addLine(threadID + ": " + ms);
+    }
+
     public void init(){this.update();} // the same
 
     public void update(){
+        this.reorderComponents(); // just to be safe
+        int threadNr = 0;
+        ArrayList<ArrayList<Consumer<Integer>>> temp = new ArrayList<>(); // temp list of lists to hold the consumers for each thread, then push consumers to each thread
+        for(int i = 0; i < this.threads; i++){
+            temp.add(new ArrayList<>()); // fill with empty lists
+        }
+        for(CoreComponent comp : this .components){
+            temp.get(threadNr).add((Integer o) -> {
+               // integer is js as placeholder, not used
+               comp.primitiveStep(this);
+            });
+            if(threadNr >= this.threads-1){
+                threadNr = 0;
+            }else{
+                threadNr += 1;
+            };
+        }
+        for(ArrayList<Consumer<Integer>> threadSteps: temp){
+            this.threadsList.add(new CoreComponent.CoreComponentBackingThread(threadSteps, this));
+        }
+        /*
+
+        int compsPerThread = (int) Math.ceil(this.components.size() / this.threads);
+        ArrayList<CoreComponent> tempList = this.components;
+        threadsList.clear();
+        for(int i = 0; i < this.threads-1; i++){
+            ArrayList<Consumer<Integer>> temp = new ArrayList<>();
+            for(int b = 0; b < compsPerThread; b++){
+                temp.add((Integer c) -> {
+                    tempList.remove(0).primitiveStep(this);
+                });
+            }
+            threadsList.add(new CoreComponent.CoreComponentBackingThread(temp));
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        ArrayList<Consumer<Integer>> temp = new ArrayList<>();
+        while(!tempList.isEmpty()){
+            temp.add((Integer c) -> {
+                tempList.remove(0).primitiveStep(this);
+            });
+        }
+        threadsList.add(new CoreComponent.CoreComponentBackingThread(temp));
+         */
         if(this.logInteractions){
             this.logInteraction("Core updated");
         }
         for(int i = 0; i < this.components.size(); i++){
             this.components.get(i).primitiveUpdate(this);
         }
-        this.reorderComponents(); // just to be safe
+    }
+
+    public void start(){
+        for(CoreComponent.CoreComponentBackingThread th : this.threadsList){
+            th.startRunning();
+        }
     }
 
     public void step(){
@@ -316,6 +381,7 @@ public class TeamCore {
         if(!this.actionWaitingList.isEmpty()){
             this.subscribeToAction(this.actionWaitingList.remove(0), this.callbackWaitingList.remove(0));
         }
+
     }
 
     public String getStatus(){
@@ -338,6 +404,9 @@ public class TeamCore {
     }
 
     public void exit(){
+        for(CoreComponent.CoreComponentBackingThread thread: this.threadsList){
+            thread.stopRunning();
+        }
         for(CoreComponent comp : this.components){
             comp.primitiveExit();
         }

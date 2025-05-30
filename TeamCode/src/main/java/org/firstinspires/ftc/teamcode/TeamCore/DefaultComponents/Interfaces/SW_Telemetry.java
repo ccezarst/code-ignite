@@ -59,9 +59,9 @@ public class SW_Telemetry extends SW_UserInterface {
 
     @Override
     public void step(TeamCore core) {
-        synchronized (this.telemetry){
-            synchronized (this.menuOptions){
-                if(this.busy && this.telemetry != null){
+        if(this.busy && this.telemetry != null){
+            synchronized (this.telemetry){
+                synchronized (this.menuOptions){
                     this.telemetry.addLine("Browse menu(GP1) -> DPAP UP/DOWN, confirm -> A, cancel -> B");
                     this.telemetry.addLine(this.menuTitle);
                     int count = 0;
@@ -80,13 +80,11 @@ public class SW_Telemetry extends SW_UserInterface {
 
     @Override
     protected void update(TeamCore core) {
-        synchronized (this.telemetry){
-            this.telemetry = this.core.getGlobalVariable("Telemetry", Telemetry.class);
-            this.core.subscribeToAction("1" + ButtonTypes.DPAD_DOWN.name() + "_PRESSED", (ActionDataContainer data) ->{this.dpadDown_pressed();});
-            this.core.subscribeToAction("1" + ButtonTypes.DPAD_UP.name() + "_PRESSED", (ActionDataContainer data) ->{this.dpadUp_pressed();});
-            this.core.subscribeToAction("1" + ButtonTypes.A.name() + "_PRESSED", (ActionDataContainer data) ->{this.a_pressed();});
-            this.core.subscribeToAction("1" + ButtonTypes.B.name() + "_PRESSED", (ActionDataContainer data) ->{this.b_pressed();});
-        }
+        this.telemetry = this.core.getGlobalVariable("Telemetry", Telemetry.class);
+        this.core.subscribeToAction("1" + ButtonTypes.DPAD_DOWN.name() + "_PRESSED", (ActionDataContainer data) ->{this.dpadDown_pressed();});
+        this.core.subscribeToAction("1" + ButtonTypes.DPAD_UP.name() + "_PRESSED", (ActionDataContainer data) ->{this.dpadUp_pressed();});
+        this.core.subscribeToAction("1" + ButtonTypes.A.name() + "_PRESSED", (ActionDataContainer data) ->{this.a_pressed();});
+        this.core.subscribeToAction("1" + ButtonTypes.B.name() + "_PRESSED", (ActionDataContainer data) ->{this.b_pressed();});
     }
     public void dpadDown_pressed(){
         if(this.selection < this.menuOptions.size() - 1){

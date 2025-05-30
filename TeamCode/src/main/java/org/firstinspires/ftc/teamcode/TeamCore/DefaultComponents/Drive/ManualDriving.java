@@ -17,9 +17,7 @@ public class ManualDriving extends CoreComponent {
     DrivingManager man;
     @Override
     protected void update(TeamCore core) {
-        synchronized (this.man){
-            man = this.core.getComponentFromName("DrivingManager", DrivingManager.class);
-        }
+        man = this.core.getComponentFromName("DrivingManager", DrivingManager.class);
     }
 
     @Override

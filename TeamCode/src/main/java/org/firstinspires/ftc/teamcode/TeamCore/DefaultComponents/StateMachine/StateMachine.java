@@ -321,20 +321,16 @@ public class StateMachine extends CoreComponent {
 
     @Override
     public void update(TeamCore core){
-        synchronized (this.hwInterfaces){
-            synchronized (this.swInterfaces){
-                ArrayList<CoreComponent> caca = this.core.getComponentsOfType(ComponentType.HARDARE_INTERFACE);
-                this.hwInterfaces.clear();
-                for(int i = 0; i < caca.size(); i++){
-                    this.hwInterfaces.add((HardwareInterface) caca.get(i));
-                }
+        ArrayList<CoreComponent> caca = this.core.getComponentsOfType(ComponentType.HARDARE_INTERFACE);
+        this.hwInterfaces.clear();
+        for(int i = 0; i < caca.size(); i++){
+            this.hwInterfaces.add((HardwareInterface) caca.get(i));
+        }
 
-                ArrayList<CoreComponent> maca = this.core.getComponentsOfType(ComponentType.SOFTWARE_INTERFACE);
-                this.swInterfaces.clear();
-                for(int i = 0; i < maca.size(); i++){
-                    this.swInterfaces.add((SoftwareInterface) maca.get(i));
-                }
-            }
+        ArrayList<CoreComponent> maca = this.core.getComponentsOfType(ComponentType.SOFTWARE_INTERFACE);
+        this.swInterfaces.clear();
+        for(int i = 0; i < maca.size(); i++){
+            this.swInterfaces.add((SoftwareInterface) maca.get(i));
         }
     }
 

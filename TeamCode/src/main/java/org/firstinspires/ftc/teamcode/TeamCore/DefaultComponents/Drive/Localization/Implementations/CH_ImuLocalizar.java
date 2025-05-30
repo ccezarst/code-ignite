@@ -61,7 +61,24 @@ public class CH_ImuLocalizar extends Localizer{
                         logoDir = RevHubOrientationOnRobot.LogoFacingDirection.BACKWARD;
                     }
                 }else if(settingName == "Usb direction"){
-
+                    if(option == "Up"){
+                        usbDir = RevHubOrientationOnRobot.UsbFacingDirection.UP;
+                    }
+                    if(option == "Down"){
+                        usbDir = RevHubOrientationOnRobot.UsbFacingDirection.DOWN;
+                    }
+                    if(option == "Left"){
+                        usbDir = RevHubOrientationOnRobot.UsbFacingDirection.LEFT;
+                    }
+                    if(option == "Right"){
+                        usbDir = RevHubOrientationOnRobot.UsbFacingDirection.RIGHT;
+                    }
+                    if(option == "Forward"){
+                        usbDir = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
+                    }
+                    if(option == "Backward"){
+                        usbDir = RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
+                    }
                 }
             }
         });

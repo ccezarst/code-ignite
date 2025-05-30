@@ -18,11 +18,13 @@ public abstract class CoreComponent {
 
     protected CoreComponentBackingThread runningThread;
 
-    private static class CoreComponentBackingThread extends Thread{
+    public static class CoreComponentBackingThread extends Thread{
 
-        public Consumer<Integer> stepFunc;
-        public CoreComponentBackingThread(Consumer<Integer> callback){
-            this.stepFunc = callback;
+        public ArrayList<Consumer<Integer>> stepFuncs;
+        public TeamCore core;
+        public CoreComponentBackingThread(ArrayList<Consumer<Integer>> callback, TeamCore core){
+            this.stepFuncs = callback;
+            this.core = core;
         }
 
         public void startRunning(){
@@ -33,10 +35,17 @@ public abstract class CoreComponent {
         private Boolean run = false;
         private Boolean stoppedRunning = true;
         public void run(){
-            if(run){
-                this.stepFunc.accept(0);
-            }else{
-                this.stoppedRunning = true;
+            while(true){
+                if(run){
+                    double start = System.currentTimeMillis();
+                    for(Consumer<Integer> cons: this.stepFuncs){
+                        cons.accept(0);
+                    }
+                    this.core.reportThreadLoopTime(Thread.currentThread().getName(), System.currentTimeMillis()-start);
+                }else{
+                    this.stoppedRunning = true;
+                    break;
+                }
             }
         }
 
@@ -58,7 +67,6 @@ public abstract class CoreComponent {
             this.core = core;
             this.settings = new ArrayList<CoreComponentSettings>();
             this.dependencies = dependencies;
-            this.runningThread = new CoreComponentBackingThread((Integer x) -> {this.step(this.core);});
         }else{
             throw new IllegalArgumentException("Name cannot be empty (CoreComponent constructor)");
         }
@@ -126,10 +134,8 @@ public abstract class CoreComponent {
     protected abstract void step(TeamCore core);
 
     public final void primitiveUpdate(TeamCore core){
-        this.runningThread.stopRunning();
         if(this.active){
             this.update(core);
-            this.runningThread.startRunning();
         }
     }
     protected abstract void update(TeamCore core); // update function should contain all init code

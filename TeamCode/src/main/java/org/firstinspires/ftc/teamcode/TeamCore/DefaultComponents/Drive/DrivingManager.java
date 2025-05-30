@@ -50,9 +50,7 @@ public class DrivingManager extends CoreComponent {
     DriveBase db;
     @Override
     protected void update(TeamCore core) {
-        synchronized (this.db){
-            db = this.core.getComponentFromName("DriveBase", DriveBase.class);
-        }
+        db = this.core.getComponentFromName("DriveBase", DriveBase.class);
     }
 
     @Override

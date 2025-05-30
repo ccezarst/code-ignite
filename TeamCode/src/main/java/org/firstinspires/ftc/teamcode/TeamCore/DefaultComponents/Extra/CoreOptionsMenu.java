@@ -18,8 +18,8 @@ import org.firstinspires.ftc.teamcode.TeamCore.TestingEnviromentCore;
 import java.util.ArrayList;
 
 public class CoreOptionsMenu extends CoreComponent {
-    public CoreOptionsMenu(String name, Boolean active, TeamCore core, ComponentType... type) {
-        super(name, active, core, type);
+    public CoreOptionsMenu(Boolean active, TeamCore core, ComponentType... type) {
+        super("CoreOptionsMenu", active, core, type);
     }
 
     public void showMenu(){

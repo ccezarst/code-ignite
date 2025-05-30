@@ -27,10 +27,10 @@ public class LocalizationManager extends CoreComponent implements Runnable {
             return total / values.size();
         }
     }
-    public LocalizationManagerSensorFusion fuser;
+    public LocalizationManagerSensorFusion fuser = new AveregeSensorFusion();
     public GameMap map;
-    public LocalizationManager(String name, Boolean active, TeamCore core, LocalizationManagerSensorFusion fuser) {
-        super(name, active, core, ComponentType.LOCALIZATION_MANAGER);
+    public LocalizationManager(Boolean active, TeamCore core, LocalizationManagerSensorFusion fuser) {
+        super("Localization Manager", active, core, ComponentType.LOCALIZATION_MANAGER);
         synchronized (this.fuser){
             this.fuser = fuser;
         }
@@ -69,9 +69,7 @@ public class LocalizationManager extends CoreComponent implements Runnable {
 
     @Override
     protected void update(TeamCore core) {
-        synchronized (this.map){
-            this.map = this.core.getComponentFromName("GameMap", GameMap.class);
-        }
+        this.map = this.core.getComponentFromName("GameMap", GameMap.class);
     }
 
     @Override

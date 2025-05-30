@@ -44,14 +44,17 @@ public final class LocalizationPacket {
         return 0;
     }
 
-    public ArrayList<Features> activeFeatures;
-    public LocalizationPacket(Features... feat){
+    public ArrayList<Features> activeFeatures = new ArrayList<>();
+    public LocalizationPacket(Features... feats){
         this.fieldOrientation = 0;
         this.acceleration = 0;
         this.speed = 0;
         this.x = 0;
         this.y = 0;
         this.z = 0;
-        activeFeatures = (ArrayList<Features>) Arrays.asList(feat);
+        this.activeFeatures.clear();
+        for(Features feat: feats){
+            this.activeFeatures.add(feat);
+        }
     }
 }

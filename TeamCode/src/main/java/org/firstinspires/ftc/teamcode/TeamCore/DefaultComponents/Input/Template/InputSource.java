@@ -18,28 +18,19 @@ public abstract class InputSource extends CoreComponent {
     }
 
     protected final void setup(){
-        synchronized (this.buttonStates){
-            synchronized (this.buttonToggleStates){
-                synchronized (this.buttonStatesLast){
-
-                    synchronized (this.analogStates){
-                        this.buttonStates = new HashMap<>();
-                        this.buttonStatesLast = new HashMap<>();
-                        this.analogStates = new HashMap<>();
-                        this.buttonToggleStates = new HashMap<>();
-                        for(ButtonTypes btn: ButtonTypes.values()){
-                            this.core.setGlobalVariable(this.inputSourceID + btn.name(), false);
-                            this.buttonToggleStates.put(btn, false);
-                            this.buttonStates.put(btn, false);
-                            this.buttonStatesLast.put(btn, false);
-                        }
-                        for(AnalogTypes an: AnalogTypes.values()){
-                            this.core.setGlobalVariable(this.inputSourceID + an.name(), 0);
-                            this.analogStates.put(an, 0.0);
-                        }
-                    }
-                }
-            }
+        this.buttonStates = new HashMap<>();
+        this.buttonStatesLast = new HashMap<>();
+        this.analogStates = new HashMap<>();
+        this.buttonToggleStates = new HashMap<>();
+        for(ButtonTypes btn: ButtonTypes.values()){
+            this.core.setGlobalVariable(this.inputSourceID + btn.name(), false);
+            this.buttonToggleStates.put(btn, false);
+            this.buttonStates.put(btn, false);
+            this.buttonStatesLast.put(btn, false);
+        }
+        for(AnalogTypes an: AnalogTypes.values()){
+            this.core.setGlobalVariable(this.inputSourceID + an.name(), 0);
+            this.analogStates.put(an, 0.0);
         }
     }
 
@@ -68,11 +59,11 @@ public abstract class InputSource extends CoreComponent {
         this.core.getActionFromName(this.inputSourceID + btn.name() + "_TOGGLE").trigger();
     }
 
-    protected Map<ButtonTypes, Boolean> buttonStates;
-    private Map<ButtonTypes, Boolean> buttonStatesLast;
-    private Map<ButtonTypes, Boolean> buttonToggleStates;
+    protected Map<ButtonTypes, Boolean> buttonStates = new HashMap<>();
+    private Map<ButtonTypes, Boolean> buttonStatesLast = new HashMap<>();
+    private Map<ButtonTypes, Boolean> buttonToggleStates = new HashMap<>();
 
-    protected Map<AnalogTypes, Double> analogStates;
+    protected Map<AnalogTypes, Double> analogStates = new HashMap<>();
 
     // calls actions and updates global variables
     protected final void sendInputs(){
