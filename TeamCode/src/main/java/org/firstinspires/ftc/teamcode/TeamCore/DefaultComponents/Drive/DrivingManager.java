@@ -21,29 +21,39 @@ public class DrivingManager extends CoreComponent {
     }
 
     public void moveRobotCentricPolarNoPathing(double radius, double angle){
-        synchronized (this.db) {
-            this.db.moveFieldCentricPolar(radius, angle);
+        if(this.db!=null) {
+            synchronized (this.db) {
+                this.db.moveFieldCentricPolar(radius, angle);
+            }
         }
     }; // move the robot in respect to it's current position radius cm in angle radians direction counteclockwise to the X axis
     public final void moveRobotCentricCartesianNoPathing(double x, double y){
-        synchronized (this.db) {
-            this.db.moveRobotCentricCartesian(x, y);
+        if(this.db!=null) {
+            synchronized (this.db) {
+                this.db.moveRobotCentricCartesian(x, y);
+            }
         }
     }; // cm, cm
 
     public final void moveFieldCentricPointNoPathing(Point point){
-        synchronized (this.db) {
-            this.db.moveFieldCentricPoint(point);
+        if(this.db!=null) {
+            synchronized (this.db) {
+                this.db.moveFieldCentricPoint(point);
+            }
         }
     }
     public final void moveFieldCentricCartesianNoPathing(double x, double y){
-        synchronized (this.db) {
-            this.db.moveFieldCentricCartesian(x, y);
+        if(this.db!=null) {
+            synchronized (this.db) {
+                this.db.moveFieldCentricCartesian(x, y);
+            }
         }
     };
     public final void moveFieldCentricPolarNoPathing(double  radius, double angle){
-        synchronized (this.db) {
-            this.db.moveRobotCentricPolar(radius, angle);
+        if(this.db != null){
+            synchronized (this.db) {
+                this.db.moveRobotCentricPolar(radius, angle);
+            }
         }
     };
 

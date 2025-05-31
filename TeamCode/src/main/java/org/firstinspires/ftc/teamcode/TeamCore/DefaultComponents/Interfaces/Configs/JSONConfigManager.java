@@ -20,7 +20,7 @@ import java.util.Vector;
 public class JSONConfigManager extends SoftwareInterface implements ConfigsInterface {
     private final String configFileName ;
     public JSONConfigManager(Boolean active, TeamCore core) {
-        this( active, core, "IGNITE_CUSTOM_CODE_CONFIGS.json");
+        this( active, core, "CUSTOM_CODE_CONFIGS.json");
     }
     public JSONConfigManager(Boolean active, TeamCore core, String configFileName) {
         super("JSONConfigManager", active, core, InterfaceType.CONFIGS);

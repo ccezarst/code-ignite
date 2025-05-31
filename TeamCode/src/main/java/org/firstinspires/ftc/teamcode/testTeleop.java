@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Drive.Localizat
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Extra.CoreComponentTester;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Extra.PeripheralValuePrinter;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Extra.PrintCoreStatusBind;
+import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Interfaces.Configs.JSONConfigManager;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Interfaces.Template.HardwareInterface;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Interfaces.Template.SoftwareInterface;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Managers.Template.OldCustomGamepad;
@@ -47,9 +48,11 @@ public class testTeleop extends OpMode {
         OldCustomGamepad gp1 = new OldCustomGamepad(gamepad1, 1);
         OldCustomGamepad gp2 = new OldCustomGamepad(gamepad2, 2);
         ManualCore core = new ManualCore(telemetry, hardwareMap, gp1, gp2);
+        core.threads = 10;
         //TeamCore core = new TeamCore(telem, hardwareMap);
         //core.addComponent(new PeripheralValuePrinter(true, core));
-        core.addComponent(new MecanumPedroDriveBase(true, core));
+        //core.addComponent(new MecanumPedroDriveBase(true, core));
+        //core.addComponent(new JSONConfigManager(true, core));
         core.addComponent(new CH_ImuLocalizar(true ,core));
         core.init();
         telemetry.addLine("Waiting for start..");

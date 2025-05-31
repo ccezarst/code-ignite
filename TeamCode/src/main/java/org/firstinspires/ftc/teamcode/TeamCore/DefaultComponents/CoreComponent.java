@@ -37,11 +37,11 @@ public abstract class CoreComponent {
         public void run(){
             while(true){
                 if(run){
-                    double start = System.currentTimeMillis();
+                    double start = System.nanoTime();
                     for(Consumer<Integer> cons: this.stepFuncs){
                         cons.accept(0);
                     }
-                    this.core.reportThreadLoopTime(Thread.currentThread().getName(), System.currentTimeMillis()-start);
+                    this.core.reportThreadLoopTime(Thread.currentThread().getName(), (System.nanoTime()-start)/1000000);
                 }else{
                     this.stoppedRunning = true;
                     break;

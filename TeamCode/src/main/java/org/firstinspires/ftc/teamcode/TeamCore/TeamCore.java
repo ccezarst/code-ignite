@@ -34,7 +34,7 @@ public class TeamCore {
 
     private ArrayList<Action> actions = new ArrayList<>();
 
-    public int threads = 2;
+    public int threads = 5;
     public ArrayList<CoreComponent.CoreComponentBackingThread> threadsList = new ArrayList<>();
 
     private boolean logInteractions = false;
@@ -299,9 +299,9 @@ public class TeamCore {
         }
         return toReturn;
     }
-
+    protected Map<String, Double> threadLoopTimes = new HashMap<>();
     public void reportThreadLoopTime(String threadID, double ms){
-        this.getGlobalVariable("Telemetry", Telemetry.class).addLine(threadID + ": " + ms);
+        this.threadLoopTimes.put(threadID, ms);
     }
 
     public void init(){this.update();} // the same
@@ -376,6 +376,9 @@ public class TeamCore {
             // primitive step to help not accidentally run components
             // that don't check if they should be active or not
             this.components.get(i).primitiveStep(this);
+        }
+        for(Map.Entry<String, Double> pair: this.threadLoopTimes.entrySet()){
+            this.getGlobalVariable("Telemetry", Telemetry.class).addData(pair.getKey(),pair.getValue() + " ms");
         }
         ((UI_Manager)this.getComponentFromName("UI_Manager")).refresh();
         if(!this.actionWaitingList.isEmpty()){
