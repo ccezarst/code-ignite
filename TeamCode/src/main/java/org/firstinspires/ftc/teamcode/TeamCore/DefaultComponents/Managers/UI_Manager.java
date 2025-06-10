@@ -9,6 +9,10 @@ import org.firstinspires.ftc.teamcode.TeamCore.TeamCore;
 import org.firstinspires.ftc.teamcode.TeamCore.TestingEnviromentCore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.function.Consumer;
 
 public class UI_Manager extends CoreComponent {
@@ -21,7 +25,17 @@ public class UI_Manager extends CoreComponent {
     public UI_Manager(Boolean active, TeamCore core) {
         super("UI_Manager", active, core, ComponentType.UI_MANAGER);
     }
+
+    Map<String, String> keysToThreadID = new HashMap<>();
+    Map<String, Thread> threadIDToThread = new HashMap<>();
+
+
+    private Boolean updateNotifer = false; // basically when a thread calls a print func, it gets paused until the refresh. This is done so code that prints repeatedly is easier to make and doesn't need extra checks
+    // to do this i use .wait and .notify on the object.
+    // for example: thread A calls print. Print adds to queue and pauses by using updateNotifier.wait
+    // then, the core calls refresh, which after updating interfaces, calls updateNotifier, letting thread A continue running(and all other waiting threads)
     public void refresh(){
+
         if(this.active){
             synchronized (this.interfs){
                 synchronized (this.secondaryTextOutput){
@@ -41,11 +55,13 @@ public class UI_Manager extends CoreComponent {
                                 }
                             }
                             this.changed = true;
+                            synchronized (this.updateNotifer){
+                                this.updateNotifer.notifyAll();
+                            }
                         }
                     }
                 }
             }
-
         }
 
     }
@@ -55,6 +71,13 @@ public class UI_Manager extends CoreComponent {
             synchronized (this.interfs){
                 ((SW_UserInterface)interfs.get(0)).showMenu(title, options, callback);
             }
+        }
+        try {
+            synchronized (this.updateNotifer){
+                this.updateNotifer.wait();
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
         // >=0 selected option
         // -1 cancelled
@@ -75,6 +98,13 @@ public class UI_Manager extends CoreComponent {
                 }
             }
         }
+        try {
+            synchronized (this.updateNotifer){
+                this.updateNotifer.wait();
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
     private final ArrayList<String> warningQueue = new ArrayList<>();
     public void showWarning(String warning){
@@ -85,16 +115,23 @@ public class UI_Manager extends CoreComponent {
                 }
             }
         }
+        try {
+            synchronized (this.updateNotifer){
+                this.updateNotifer.wait();
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void step(TeamCore core) {
 
     }
-
     @Override
     public void update(TeamCore core) {
         this.interfs = this.core.getInterfacesOfType(InterfaceType.USER_INTERFACE);
+        this.refresh();
     }
 
     @Override

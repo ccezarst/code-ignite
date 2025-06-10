@@ -2,10 +2,13 @@ package org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.apache.commons.math3.analysis.integration.IterativeLegendreGaussIntegrator;
 import org.firstinspires.ftc.teamcode.TeamCore.TeamCore;
 import org.firstinspires.ftc.teamcode.TeamCore.TestingEnviromentCore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public abstract class CoreComponent {
@@ -17,13 +20,69 @@ public abstract class CoreComponent {
     public final ArrayList<ComponentType> dependencies;
 
     protected CoreComponentBackingThread runningThread;
-
+    public int threadId = 0;
     public static class CoreComponentBackingThread extends Thread{
 
-        public ArrayList<Consumer<Integer>> stepFuncs;
+        public ArrayList<Consumer<Integer>> stepFuncs = new ArrayList<>();
+        public Map<String, Integer> attachedComponentStepIndex = new HashMap<>();
         public TeamCore core;
-        public CoreComponentBackingThread(ArrayList<Consumer<Integer>> callback, TeamCore core){
-            this.stepFuncs = callback;
+        public Boolean stepNotifier = false;
+
+        private ArrayList<Integer> pausedComponents = new ArrayList<>();
+
+        public boolean isComponentAttached(String compName){
+            return this.attachedComponentStepIndex.containsKey(compName);
+        }
+
+        public void attachComponent(CoreComponent comp){
+            if(this.run){
+                this.stopRunning();
+            }
+            // TODO: prob should verify if component is already in list(2 lazy to do)
+            this.stepFuncs.add((Integer o) -> {comp.step(this.core);});
+            this.attachedComponentStepIndex.put(comp.name, this.stepFuncs.size()-1);
+            this.startRunning();
+        }
+
+        public void deattachComponent(CoreComponent comp){
+            if(this.run){
+                this.stopRunning();
+            }
+            int index = -1;
+            for(Map.Entry<String, Integer> cEntry: this.attachedComponentStepIndex.entrySet()){
+                if(cEntry.getKey() == comp.name){
+                    index = cEntry.getValue();
+                }
+            }
+            if(index == -1){
+                throw new IllegalArgumentException("Component was not attached to thread. CoreComponentBackingThread.deattachComponent, component name: " + comp.name + ", threadName: " + this.getName());
+            }
+            this.stepFuncs.remove(index);
+            this.attachedComponentStepIndex.remove(comp.name);
+            this.startRunning();
+        }
+
+        public void pauseComponentExecution(String name){
+            int index = -1;
+            for(Map.Entry<String, Integer> cEntry: this.attachedComponentStepIndex.entrySet()){
+                if(cEntry.getKey() == name){
+                    index = cEntry.getValue();
+                }
+            }
+            this.pausedComponents.add(index);
+        }
+
+        public void resumeComponentExecution(String name){
+            int index = -1;
+            for(Map.Entry<String, Integer> cEntry: this.attachedComponentStepIndex.entrySet()){
+                if(cEntry.getKey() == name){
+                    index = cEntry.getValue();
+                }
+            }
+            this.pausedComponents.remove(index);
+        }
+
+        public CoreComponentBackingThread(TeamCore core){
             this.core = core;
         }
 
@@ -38,22 +97,34 @@ public abstract class CoreComponent {
             while(true){
                 if(run){
                     double start = System.nanoTime();
+                    int index = 0;
                     for(Consumer<Integer> cons: this.stepFuncs){
-                        cons.accept(0);
+                        if(!this.pausedComponents.contains(index)){
+                            cons.accept(0);
+                        }
+                        index += 1;
                     }
                     this.core.reportThreadLoopTime(Thread.currentThread().getName(), (System.nanoTime()-start)/1000000);
                 }else{
                     this.stoppedRunning = true;
                     break;
                 }
+                this.stepNotifier.notifyAll();
             }
         }
 
         public void stopRunning(){
             this.run = false;
-            while(this.stoppedRunning != true){} // COULD END REALLY BADLY IF THIS RUNS forever...
+            // basically this func runs on the calling thread, which is usually the core.
+            // however, if this runs on the same thread as the this thread, it's gonna get caught forever.
+            // ex: current thread is T1(contains a comps named compA,compB). T1.run -> compA.step -> core.moveComponentToThread(compB, T2)-runs on T1 -> T1.deattachComponent(compB)-runs on T1 -> T1.stopRunning() -> hogs all execution time because it's still T1, and thus does not allow T1.run to finish the while loop and recheck the condition
+            // because the func runs on the calling func's thread, which in this example is the current thread.
+
+            long loopOut = 0;
+            while(this.stoppedRunning != true && loopOut < 2000){loopOut += 1;} // fail safe in case the ^ex happens
         }
     }
+
 
     public CoreComponent(String name, Boolean active, TeamCore core, ComponentType... type){
         this(name, active, core, new ArrayList<>(), type);

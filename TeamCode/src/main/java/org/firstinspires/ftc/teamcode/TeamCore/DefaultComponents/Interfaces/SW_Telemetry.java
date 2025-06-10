@@ -34,9 +34,21 @@ public class SW_Telemetry extends SW_UserInterface {
     public void showMenu(String title, ArrayList<String> options, Consumer<Integer> callback) {
         synchronized (this.menuTitle){
             synchronized (this.menuOptions){
-                synchronized (this.menuCallback){
-                    synchronized (this.telemetry){
-                        if(!this.busy && this.telemetry != null){
+                if(this.menuCallback != null){
+                    synchronized (this.menuCallback){
+                        synchronized (this.telemetry){
+                            if(!this.busy && this.telemetry != null){
+                                this.menuTitle = title;
+                                this.menuOptions = options;
+                                this.menuCallback = callback;
+                                this.busy = true;
+                                this.selection = 0;
+                            }
+                        }
+                    }
+                }else{
+                    synchronized (this.telemetry) {
+                        if (!this.busy && this.telemetry != null) {
                             this.menuTitle = title;
                             this.menuOptions = options;
                             this.menuCallback = callback;
@@ -45,6 +57,7 @@ public class SW_Telemetry extends SW_UserInterface {
                         }
                     }
                 }
+
             }
         }
     }

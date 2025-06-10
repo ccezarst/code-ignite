@@ -63,6 +63,10 @@ public class TeamCore {
         }
     }
 
+
+    //                                          -- ACTIONS
+
+
     public final ArrayList<Action> getAllActions(){
         return this.actions;
     }
@@ -109,6 +113,10 @@ public class TeamCore {
         }
     }
 
+
+    //                                              -- GLOBAL VARIABLES
+
+
     public final <T> void setGlobalVariable(String name, T instance){
         if(this.globalVariables.containsKey(name)){
             this.globalVariables.get(name).value = instance;
@@ -139,6 +147,10 @@ public class TeamCore {
     }
 
     public void logInteraction(String message){}
+
+
+    //                                              -- COMPONENTS
+
 
     private String compsToString(ArrayList<CoreComponent> in){
         String res = "";
@@ -257,7 +269,6 @@ public class TeamCore {
         }
         return toReturn;
     }
-
     public final <T> ArrayList<T> getComponentsOfType(ComponentType type, Class<? extends T> caster){
         ArrayList<T> toReturn = new ArrayList<T>();
 
@@ -271,6 +282,10 @@ public class TeamCore {
         }
         return toReturn;
     }
+
+
+    //                      -- INTERFACES
+
 
     public final ArrayList<Interface> getInterfacesOfType(InterfaceType type){
         ArrayList<CoreComponent> interfs = this.getComponentsOfType(ComponentType.INTERFACE);
@@ -299,21 +314,74 @@ public class TeamCore {
         }
         return toReturn;
     }
+
+
+    //                      -- THREADING
+
+
     protected Map<String, Double> threadLoopTimes = new HashMap<>();
     public void reportThreadLoopTime(String threadID, double ms){
         this.threadLoopTimes.put(threadID, ms);
     }
 
+    public CoreComponent.CoreComponentBackingThread createNewThread(){
+        CoreComponent.CoreComponentBackingThread toReturn = new CoreComponent.CoreComponentBackingThread(this);
+        this.threadsList.add(toReturn);
+        return toReturn;
+    }
+
+    public void addComponentToThread(String componentName, String threadName){
+        for(CoreComponent.CoreComponentBackingThread thread : this.threadsList){
+            if(thread.getName() == threadName){
+                thread.attachComponent(this.getComponentFromName(componentName));
+            }
+        }
+    }
+
+    public CoreComponent.CoreComponentBackingThread getComponentBackingThread(String componentName){
+        for(CoreComponent.CoreComponentBackingThread th: this.threadsList){
+            if(th.isComponentAttached(componentName)){
+                return th;
+            }
+        }
+        return null;
+    }
+
+    public void pauseComponentExecution(String componentName){
+        this.getComponentBackingThread(componentName).pauseComponentExecution(componentName);
+    }
+
+    public void resumeComponentExecution(String componentName){
+        this.getComponentBackingThread(componentName).resumeComponentExecution(componentName);
+    }
+
+
+    //                      -- EXTRA
+
+
     public void init(){this.update();} // the same
 
     public void update(){
         this.reorderComponents(); // just to be safe
+
+        this.threadsList.clear();
+        for(int i = 0; i < this.threads; i++){
+            this.createNewThread();
+        }
+        int threadNr = 0;
+        for(CoreComponent comp: this.components){
+            this.threadsList.get(threadNr).attachComponent(comp);
+            threadNr += 1;
+        }
+
+        /* v2
         int threadNr = 0;
         ArrayList<ArrayList<Consumer<Integer>>> temp = new ArrayList<>(); // temp list of lists to hold the consumers for each thread, then push consumers to each thread
         for(int i = 0; i < this.threads; i++){
             temp.add(new ArrayList<>()); // fill with empty lists
         }
-        for(CoreComponent comp : this .components){
+        for(CoreComponent comp : this.components){
+            comp.threadId = threadNr;
             temp.get(threadNr).add((Integer o) -> {
                // integer is js as placeholder, not used
                comp.primitiveStep(this);
@@ -327,7 +395,9 @@ public class TeamCore {
         for(ArrayList<Consumer<Integer>> threadSteps: temp){
             this.threadsList.add(new CoreComponent.CoreComponentBackingThread(threadSteps, this));
         }
-        /*
+        *\
+
+        /* v1
 
         int compsPerThread = (int) Math.ceil(this.components.size() / this.threads);
         ArrayList<CoreComponent> tempList = this.components;
@@ -380,7 +450,7 @@ public class TeamCore {
         for(Map.Entry<String, Double> pair: this.threadLoopTimes.entrySet()){
             this.getGlobalVariable("Telemetry", Telemetry.class).addData(pair.getKey(),pair.getValue() + " ms");
         }
-        ((UI_Manager)this.getComponentFromName("UI_Manager")).refresh();
+        //((UI_Manager)this.getComponentFromName("UI_Manager")).refresh();
         if(!this.actionWaitingList.isEmpty()){
             this.subscribeToAction(this.actionWaitingList.remove(0), this.callbackWaitingList.remove(0));
         }
