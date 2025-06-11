@@ -355,6 +355,11 @@ public class TeamCore {
         this.getComponentBackingThread(componentName).resumeComponentExecution(componentName);
     }
 
+    public void moveComponentToThread(CoreComponent comp, String newThreadName){
+        this.getComponentBackingThread(comp.name).deattachComponent(comp);
+        this.addComponentToThread(comp.name, newThreadName);
+    }
+
 
     //                      -- EXTRA
 

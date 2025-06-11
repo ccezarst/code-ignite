@@ -35,7 +35,6 @@ public class UI_Manager extends CoreComponent {
     // for example: thread A calls print. Print adds to queue and pauses by using updateNotifier.wait
     // then, the core calls refresh, which after updating interfaces, calls updateNotifier, letting thread A continue running(and all other waiting threads)
     public void refresh(){
-
         if(this.active){
             synchronized (this.interfs){
                 synchronized (this.secondaryTextOutput){
@@ -63,7 +62,6 @@ public class UI_Manager extends CoreComponent {
                 }
             }
         }
-
     }
 
     public void showMenu(String title, ArrayList<String> options, Consumer<Integer> callback){ // TODO: implement support for a menu on multiple SW_UserInterface's at the same time
@@ -126,12 +124,32 @@ public class UI_Manager extends CoreComponent {
 
     @Override
     public void step(TeamCore core) {
-
+        try {
+            this.uiThread.stepNotifier.wait();
+            this.refresh();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
+
+    CoreComponentBackingThread uiThread; // for the components which print regularly
+    CoreComponentBackingThread uiManagerThread; // for the ui_manager itself because it's easier to wait in the ui_managers step func
+
     @Override
     public void update(TeamCore core) {
         this.interfs = this.core.getInterfacesOfType(InterfaceType.USER_INTERFACE);
         this.refresh();
+        this.uiThread = this.core.createNewThread();
+        this.uiThread.setName("UI-thread");
+        this.uiManagerThread = this.core.createNewThread();
+        this.uiManagerThread.setName("UI_Manager-thread");
+        this.core.moveComponentToThread(this, "UI_Manager-thread");
+    }
+
+    public void enableRegularPrintingForComponent(CoreComponent comp){
+        CoreComponentBackingThread orgThread = core.getComponentBackingThread(comp.name);
+        orgThread.deattachComponent(comp);
+        this.uiThread.attachComponent(comp);
     }
 
     @Override
