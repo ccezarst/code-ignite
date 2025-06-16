@@ -35,31 +35,45 @@ public abstract class CoreComponent {
         }
 
         public void attachComponent(CoreComponent comp){
-            if(this.run){
-                this.stopRunning();
+            synchronized (this.stepFuncs){
+                synchronized (this.attachedComponentStepIndex){
+                    boolean wasRunning = run;
+                    if(this.run){
+                        this.stopRunning();
+                    }
+                    // TODO: prob should verify if component is already in list(2 lazy to do)
+                    this.stepFuncs.add((Integer o) -> {comp.step(this.core);});
+                    this.attachedComponentStepIndex.put(comp.name, this.stepFuncs.size()-1);
+                    if(wasRunning){
+                        this.startRunning();
+                    }
+                }
             }
-            // TODO: prob should verify if component is already in list(2 lazy to do)
-            this.stepFuncs.add((Integer o) -> {comp.step(this.core);});
-            this.attachedComponentStepIndex.put(comp.name, this.stepFuncs.size()-1);
-            this.startRunning();
         }
 
         public void deattachComponent(CoreComponent comp){
-            if(this.run){
-                this.stopRunning();
-            }
-            int index = -1;
-            for(Map.Entry<String, Integer> cEntry: this.attachedComponentStepIndex.entrySet()){
-                if(cEntry.getKey() == comp.name){
-                    index = cEntry.getValue();
+            synchronized (this.stepFuncs){
+                synchronized (this.attachedComponentStepIndex){
+                    boolean wasRunning = run;
+                    if(this.run){
+                        this.stopRunning();
+                    }
+                    int index = -1;
+                    for(Map.Entry<String, Integer> cEntry: this.attachedComponentStepIndex.entrySet()){
+                        if(cEntry.getKey() == comp.name){
+                            index = cEntry.getValue();
+                        }
+                    }
+                    if(index == -1){
+                        throw new IllegalArgumentException("Component was not attached to thread. CoreComponentBackingThread.deattachComponent, component name: " + comp.name + ", threadName: " + this.getName());
+                    }
+                    this.stepFuncs.remove(index);
+                    this.attachedComponentStepIndex.remove(comp.name);
+                    if(wasRunning){
+                        this.startRunning();
+                    }
                 }
             }
-            if(index == -1){
-                throw new IllegalArgumentException("Component was not attached to thread. CoreComponentBackingThread.deattachComponent, component name: " + comp.name + ", threadName: " + this.getName());
-            }
-            this.stepFuncs.remove(index);
-            this.attachedComponentStepIndex.remove(comp.name);
-            this.startRunning();
         }
 
         public void pauseComponentExecution(String name){
@@ -96,15 +110,22 @@ public abstract class CoreComponent {
         public void run(){
             while(true){
                 if(run){
-                    double start = System.nanoTime();
-                    int index = 0;
-                    for(Consumer<Integer> cons: this.stepFuncs){
-                        if(!this.pausedComponents.contains(index)){
-                            cons.accept(0);
+                    synchronized (this.attachedComponentStepIndex){
+                        synchronized (this.pausedComponents){
+                            double start = System.nanoTime();
+                            int index = 0;
+                            for(Consumer<Integer> cons: this.stepFuncs){
+                                cons.accept(0);
+                                /*
+                                if(!this.pausedComponents.contains(index)){
+
+                                }
+                                index += 1;
+                                 */
+                            }
+                            this.core.reportThreadLoopTime(Thread.currentThread().getName(), (System.nanoTime()-start)/1000000);
                         }
-                        index += 1;
                     }
-                    this.core.reportThreadLoopTime(Thread.currentThread().getName(), (System.nanoTime()-start)/1000000);
                 }else{
                     this.stoppedRunning = true;
                     break;

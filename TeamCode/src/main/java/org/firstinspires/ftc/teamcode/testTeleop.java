@@ -54,6 +54,7 @@ public class testTeleop extends OpMode {
         //core.addComponent(new MecanumPedroDriveBase(true, core));
         //core.addComponent(new JSONConfigManager(true, core));
         core.addComponent(new CH_ImuLocalizar(true ,core));
+        core.enableDebugging();
         core.init();
         telemetry.addLine("Waiting for start..");
         telemetry.update();

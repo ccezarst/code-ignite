@@ -361,14 +361,22 @@ public class TeamCore {
     }
 
 
+
     //                      -- EXTRA
 
+
+    public boolean debugMode = false;
+
+    public void enableDebugging(){
+        this.debugMode = true;
+        this.logInteractions = true;
+    }
 
     public void init(){this.update();} // the same
 
     public void update(){
         this.reorderComponents(); // just to be safe
-
+        this.getComponentFromName("UI_Manager", UI_Manager.class).showWarning(this.components.toString());
         this.threadsList.clear();
         for(int i = 0; i < this.threads; i++){
             this.createNewThread();
@@ -376,9 +384,19 @@ public class TeamCore {
         int threadNr = 0;
         for(CoreComponent comp: this.components){
             this.threadsList.get(threadNr).attachComponent(comp);
-            threadNr += 1;
+            if(threadNr >= this.threads-1){
+                threadNr = 0;
+            }else{
+                threadNr += 1;
+            };
         }
-
+        if(this.debugMode){
+            String toPrint = "";
+            for(CoreComponent.CoreComponentBackingThread th: this.threadsList){
+                toPrint += th.getName() + " - " + th.attachedComponentStepIndex.keySet().toString() + "\n";
+            }
+            this.getComponentFromName("UI_Manager", UI_Manager.class).showWarning(toPrint);
+        }
         /* v2
         int threadNr = 0;
         ArrayList<ArrayList<Consumer<Integer>>> temp = new ArrayList<>(); // temp list of lists to hold the consumers for each thread, then push consumers to each thread

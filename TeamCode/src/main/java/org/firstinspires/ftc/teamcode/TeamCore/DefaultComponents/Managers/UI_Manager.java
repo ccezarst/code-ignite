@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Managers;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.ComponentType;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.CoreComponent;
 import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Interfaces.Template.Interface;
@@ -41,11 +42,20 @@ public class UI_Manager extends CoreComponent {
                     synchronized (this.warningQueue){
                         for(Interface interf : interfs){
                             if(this.secondaryTextOutput == ""){
+                                if(this.core.debugMode){
+                                    this.core.getGlobalVariable("Telemetry", Telemetry.class).addLine(this.primaryTextOutput);
+                                }
                                 ((SW_UserInterface)interf).print(this.primaryTextOutput, false);
                             }else{
                                 ((SW_UserInterface)interf).print(this.secondaryTextOutput, true);
+                                if(this.core.debugMode){
+                                    this.core.getGlobalVariable("Telemetry", Telemetry.class).addLine(this.secondaryTextOutput);
+                                }
                             }
                             ((SW_UserInterface)interf).updatePrint();
+                            if(this.core.debugMode){
+                                this.core.getGlobalVariable("Telemetry", Telemetry.class).update();
+                            }
                             if(System.currentTimeMillis() - this.lastTime > this.warningLastTime){
                                 this.secondaryTextOutput = "";
                                 if(!this.warningQueue.isEmpty()){
@@ -144,6 +154,8 @@ public class UI_Manager extends CoreComponent {
         this.uiManagerThread = this.core.createNewThread();
         this.uiManagerThread.setName("UI_Manager-thread");
         this.core.moveComponentToThread(this, "UI_Manager-thread");
+        this.uiThread.startRunning();
+        this.uiManagerThread.startRunning();
     }
 
     public void enableRegularPrintingForComponent(CoreComponent comp){
