@@ -12,8 +12,11 @@ import org.firstinspires.ftc.teamcode.TeamCore.Interfaces.SW_Telemetry;
 import org.firstinspires.ftc.teamcode.TeamCore.Interfaces.Template.Interface;
 import org.firstinspires.ftc.teamcode.TeamCore.Interfaces.Template.InterfaceType;
 import org.firstinspires.ftc.teamcode.TeamCore.Managers.UI_Manager;
+import org.firstinspires.ftc.teamcode.TeamCore.Pathing.LocalPathFetcher;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import EngineCore.DefaultComponents.CoreComponent;
 import EngineCore.EngineCore;
@@ -23,10 +26,15 @@ public class RobotTCore extends EngineCore {
         this.addComponent(new UI_Manager(true, this));
         this.addComponent(new SW_Telemetry(true, this));
         this.addComponent(new GameMap(true, this));
-        this.addComponent(new DrivingManager(true, this));
+        LocalPathFetcher localFetcher = new LocalPathFetcher(true, this);
+        this.addComponent(localFetcher);
+        this.addComponent(new DrivingManager(true, this, localFetcher));
         this.addComponent(new LocalizationManager(true, this, new LocalizationManager.AveregeSensorFusion()));
         this.addComponent(new CoreOptionsMenu(true, this));
         this.addComponent(new CoreComponentTester(true, this));
+        // shared executor for background tasks like path following
+        ExecutorService exec = Executors.newSingleThreadExecutor();
+        this.setGlobalVariable("PathExecutor", exec);
         if(telem != null){
             //this.addComponent(new SW_Telemetry(true, this, telem));
             this.setGlobalVariable("Telemetry", telem);
