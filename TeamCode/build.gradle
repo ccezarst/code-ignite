@@ -2,8 +2,13 @@ apply from: '../build.common.gradle'
 apply from: '../build.dependencies.gradle'
 apply plugin: 'kotlin-android'
 
-android {
+repositories {
+    google()
+    mavenCentral() // needed for io.github.ccezarst:componentEngine
+    mavenLocal()
+}
 
+android {
     packagingOptions {
         jniLibs {
             pickFirsts += ['**/*.so']
@@ -14,16 +19,19 @@ android {
 
 dependencies {
     implementation project(':FtcRobotController')
+
+    // If you're compiling Kotlin + Java and need annotation processing for Kotlin, consider the 'kapt' plugin.
     annotationProcessor files('lib/OpModeAnnotationProcessor.jar')
+
     implementation "androidx.core:core-ktx:1.6.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     implementation 'org.apache.commons:commons-math3:3.6.1'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.7'
     implementation 'com.acmerobotics.roadrunner:core:0.5.5'
-
     implementation 'org.openftc:easyopencv:1.5.2'
-}
-dependencies {
     implementation 'org.openftc:apriltag:1.1.0'
+
+    // NEW: componentEngine (replace version if you want another)
+    implementation 'io.github.ccezarst:componentEngine:1.0.2'
 }

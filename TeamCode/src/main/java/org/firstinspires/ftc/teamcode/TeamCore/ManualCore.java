@@ -3,12 +3,13 @@ package org.firstinspires.ftc.teamcode.TeamCore;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Drive.ManualDriving;
-import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Input.CustomGamepad;
-import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.StateMachine.StateMachine;
-import org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Managers.Template.OldCustomGamepad;
+import org.firstinspires.ftc.teamcode.TeamCore.Input.Template.OldCustomGamepad;
+import org.firstinspires.ftc.teamcode.TeamCore.Drive.ManualDriving;
+import org.firstinspires.ftc.teamcode.TeamCore.Input.CustomGamepad;
+import org.firstinspires.ftc.teamcode.TeamCore.StateMachine.StateMachine;
 
-public class ManualCore extends TeamCore {
+public class ManualCore extends RobotTCore {
+
     public ManualCore(Telemetry telem, HardwareMap hwMap, OldCustomGamepad... gps){
         super(telem, hwMap);
         for(OldCustomGamepad caca : gps){
