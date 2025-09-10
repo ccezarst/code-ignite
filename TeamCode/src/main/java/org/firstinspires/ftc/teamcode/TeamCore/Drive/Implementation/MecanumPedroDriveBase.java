@@ -82,7 +82,6 @@ public class MecanumPedroDriveBase extends DriveBase {
         BL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    @Override
     protected void measureMaxVelocity(){
         int start = FR.getCurrentPosition();
         long startTime = System.currentTimeMillis();
@@ -95,7 +94,6 @@ public class MecanumPedroDriveBase extends DriveBase {
         this.maxVelocity = Math.abs(end - start)/dt;
     }
 
-    @Override
     protected void measureInertia(){
         int before = FR.getCurrentPosition();
         FR.setPower(1); FL.setPower(1); BR.setPower(1); BL.setPower(1);

@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.TeamCore.Interfaces.SW_Telemetry;
 import org.firstinspires.ftc.teamcode.TeamCore.Interfaces.Template.Interface;
 import org.firstinspires.ftc.teamcode.TeamCore.Interfaces.Template.InterfaceType;
 import org.firstinspires.ftc.teamcode.TeamCore.Managers.UI_Manager;
-import org.firstinspires.ftc.teamcode.TeamCore.Pathing.LocalPathFetcher;
+import org.firstinspires.ftc.teamcode.TeamCore.Drive.Implementation.LocalPathFetcher;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;

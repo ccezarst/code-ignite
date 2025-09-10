@@ -12,7 +12,6 @@ import org.firstinspires.ftc.teamcode.TeamCore.Input.Template.*;
 @TeleOp
 public class testTeleop extends OpMode {
     private RobotTCore core;
-    private Telemetry telem;
 
     @Override
     public void init() {

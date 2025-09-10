@@ -100,14 +100,9 @@ public abstract class DriveBase extends CoreComponent {
     /**
      * Measure maximum velocity using encoders.
      */
-    protected void measureMaxVelocity(){
-        // default implementation does nothing; override in concrete drive base
-    }
-
+    protected abstract void measureMaxVelocity();
     /**
      * Measure inertia characteristic for predictive follower.
      */
-    protected void measureInertia(){
-        // default implementation does nothing; override in concrete drive base
-    }
+    protected abstract void measureInertia();
 }
