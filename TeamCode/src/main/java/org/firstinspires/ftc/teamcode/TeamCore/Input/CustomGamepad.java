@@ -34,8 +34,6 @@ public class CustomGamepad extends InputSource {
 
     @Override
     protected void update(EngineCore core) {
-        this.setup();
-
         this.registerActionsForButtons(ButtonTypes.values()); // because the gamepad has them all for now
     }
 

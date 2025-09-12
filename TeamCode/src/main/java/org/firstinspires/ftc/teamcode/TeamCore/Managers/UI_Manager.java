@@ -135,7 +135,11 @@ public class UI_Manager extends CoreComponent {
     @Override
     public void step(EngineCore core) {
         try {
-            this.uiThread.stepNotifier.wait();
+            if(this.uiThread != null){
+                synchronized (this.uiThread){
+                    this.uiThread.stepNotifier.wait();
+                }
+            }
             this.refresh();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -150,19 +154,24 @@ public class UI_Manager extends CoreComponent {
         RobotTCore core = (RobotTCore) c;
         this.interfs = core.getInterfacesOfType(InterfaceType.USER_INTERFACE);
         this.refresh();
-        this.uiThread = this.core.createNewThread();
-        this.uiThread.setName("UI-thread");
-        this.uiManagerThread = this.core.createNewThread();
-        this.uiManagerThread.setName("UI_Manager-thread");
-        this.core.moveComponentToThread(this, "UI_Manager-thread");
-        this.uiThread.startRunning();
-        this.uiManagerThread.startRunning();
+        synchronized (this.uiThread){
+            this.uiThread = new CoreComponentBackingThread(this.core);
+            this.uiThread.setName("UI-thread");
+
+            this.uiThread.startRunning();
+        }
+        //this.uiManagerThread = this.core.createNewThread();
+        //this.uiManagerThread.setName("UI_Manager-thread");
+        //this.core.moveComponentToThread(this, "UI_Manager-thread");
+        //this.uiManagerThread.startRunning();
     }
 
     public void enableRegularPrintingForComponent(CoreComponent comp){
         CoreComponentBackingThread orgThread = core.getComponentBackingThread(comp.name);
         orgThread.deattachComponent(comp);
-        this.uiThread.attachComponent(comp);
+        synchronized (this.uiThread){
+            this.uiThread.attachComponent(comp);
+        }
     }
 
     @Override

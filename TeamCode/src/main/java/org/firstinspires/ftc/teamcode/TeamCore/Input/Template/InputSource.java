@@ -10,9 +10,12 @@ import java.util.Map;
 
 public abstract class InputSource extends CoreComponent {
     private int inputSourceID;
+    private boolean shouldBeActive = false;
     public InputSource(String name, Boolean active, EngineCore core, int inputSourceID) {
         super(name, active, core, ComponentType.INPUT_SOURCE);
         this.inputSourceID = inputSourceID;
+        this.shouldBeActive = active;
+        this.active = false;
         this.setup();
     }
 
@@ -28,8 +31,8 @@ public abstract class InputSource extends CoreComponent {
             this.buttonStatesLast.put(btn, false);
         }
         for(AnalogTypes an: AnalogTypes.values()){
-            this.core.setGlobalVariable(this.inputSourceID + an.name(), 0);
-            this.analogStates.put(an, 0.0);
+            this.core.setGlobalVariable(this.inputSourceID + an.name(), (Double)0.0);
+            this.analogStates.put(an, (Double)0.0);
         }
     }
 
@@ -40,21 +43,26 @@ public abstract class InputSource extends CoreComponent {
             this.core.addAction(this.inputSourceID + btn.name() + "_UP", ButtonTypes.class);
             this.core.addAction(this.inputSourceID + btn.name() + "_TOGGLE", ButtonTypes.class);
         }
+        this.active = shouldBeActive;
     }
 
     private void triggerPressed(ButtonTypes btn){
+        while(!this.active);
         this.core.getActionFromName(this.inputSourceID + btn.name() + "_PRESSED").trigger();
     }
 
     private void triggerDown(ButtonTypes btn){
+        while(!this.active);
         this.core.getActionFromName(this.inputSourceID + btn.name() + "_DOWN").trigger();
     }
 
     private void triggerUP(ButtonTypes btn){
+        while(!this.active);
         this.core.getActionFromName(this.inputSourceID + btn.name() + "_UP").trigger();
     }
 
     private void triggerToggle(ButtonTypes btn){
+        while(!this.active);
         this.core.getActionFromName(this.inputSourceID + btn.name() + "_TOGGLE").trigger();
     }
 

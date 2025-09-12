@@ -23,8 +23,10 @@ import EngineCore.EngineCore;
 import EngineCore.DefaultComponents.ComponentType;
 public class RobotTCore extends EngineCore {
     public RobotTCore(Telemetry telem, HardwareMap hwMap) {
+        super(false, null); // THIS IS TO DISALBE INSTRUMENTATION BECAUSE THE INSTRUMENTATION LIBRARY CANNOT BE FOUND??
+        this.removeComponent("GeneralCommandsHandler");
+        this.removeComponent("ConsoleInterface");
         this.addComponent(new UI_Manager(true, this));
-        this.addComponent(new SW_Telemetry(true, this));
         this.addComponent(new GameMap(true, this));
         LocalPathFetcher localFetcher = new LocalPathFetcher(true, this);
         this.addComponent(localFetcher);
@@ -36,7 +38,7 @@ public class RobotTCore extends EngineCore {
         ExecutorService exec = Executors.newSingleThreadExecutor();
         this.setGlobalVariable("PathExecutor", exec);
         if(telem != null){
-            //this.addComponent(new SW_Telemetry(true, this, telem));
+            this.addComponent(new SW_Telemetry(true, this));
             this.setGlobalVariable("Telemetry", telem);
         }
         if(hwMap != null){

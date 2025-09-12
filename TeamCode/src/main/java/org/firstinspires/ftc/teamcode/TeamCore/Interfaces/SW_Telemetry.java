@@ -23,9 +23,9 @@ public class SW_Telemetry extends SW_UserInterface {
 
 
     @Override
-    public void print(String toPrint, boolean pl) {if(this.telemetry != null && !this.busy && !this.core.debugMode){this.telemetry.addLine(toPrint);}}
+    public void print(String toPrint, boolean pl) {if(this.telemetry != null && !this.busy){this.telemetry.addLine(toPrint);}}
     @Override
-    public void printLine(String toPrint, boolean pl) {if(this.telemetry != null && !this.busy && !this.core.debugMode) {this.telemetry.addLine(toPrint + "\n");}}
+    public void printLine(String toPrint, boolean pl) {if(this.telemetry != null && !this.busy ) {this.telemetry.addLine(toPrint + "\n");}}
     private String menuTitle = "";
     private ArrayList<String> menuOptions = new ArrayList<>();
     private Consumer<Integer> menuCallback;
