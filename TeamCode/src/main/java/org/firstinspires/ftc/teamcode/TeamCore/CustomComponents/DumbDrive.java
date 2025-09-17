@@ -20,7 +20,7 @@ public class DumbDrive extends CoreComponent {
     protected void step(EngineCore c) {
         RobotTCore core = (RobotTCore) c;
         // pune aici codul
-        DcMotor FL = core.getHwMap().dcMotor.get(" SCRIE ");
+        DcMotor FL = core.getHwMap().dcMotor.get( " SCRIE ");
         DcMotor FR = core.getHwMap().dcMotor.get( " SCRIE ");
         DcMotor RR = core.getHwMap().dcMotor.get( " SCRIE ");
         DcMotor RL = core.getHwMap().dcMotor.get( " SCRIE ");

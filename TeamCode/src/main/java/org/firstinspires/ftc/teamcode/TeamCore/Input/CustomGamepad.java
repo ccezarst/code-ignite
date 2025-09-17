@@ -27,16 +27,16 @@ public class CustomGamepad extends InputSource {
                 for(AnalogTypes an: AnalogTypes.values()){
                     this.analogStates.put(an, (double) gamepad.getAnalog(an));
                 }
-                this.sendInputs();
             }
         }
+        this.sendInputs();
     }
 
     @Override
     protected void update(EngineCore core) {
-        this.setup();
-
+        System.out.println(this.name + "-> Initialising actions for buttons");
         this.registerActionsForButtons(ButtonTypes.values()); // because the gamepad has them all for now
+        System.out.println(this.name + "-> Inited actions for buttons");
     }
 
     @Override

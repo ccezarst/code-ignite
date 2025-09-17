@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.TeamCore.Drive.Localization.Implementations;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.sun.tools.javac.util.List;
 
 
 import org.firstinspires.ftc.teamcode.TeamCore.Drive.Localization.Localizer;
@@ -11,12 +10,12 @@ import EngineCore.EngineCore;
 import EngineCore.TestingEnviromentCore;
 import java.util.ArrayList;
 
-public class CH_ImuLocalizar extends Localizer {
+public class CH_ImuLocalizer extends Localizer {
 
     public static RevHubOrientationOnRobot.LogoFacingDirection logoDir;
     public static RevHubOrientationOnRobot.UsbFacingDirection usbDir;
 
-    public CH_ImuLocalizar(Boolean active, EngineCore core) {
+    public CH_ImuLocalizer(Boolean active, EngineCore core) {
         super("ControlHubIMULocalizer", active, core);
         this.settings.add(new CoreComponentSettings() {
             @Override

@@ -4,8 +4,8 @@ apply plugin: 'kotlin-android'
 
 repositories {
     google()
-    mavenCentral() // needed for io.github.ccezarst:componentEngine
     mavenLocal()
+    mavenCentral() // needed for io.github.ccezarst:componentEngine
 }
 
 android {
@@ -15,6 +15,15 @@ android {
         }
     }
     namespace = 'org.firstinspires.ftc.teamcode'
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    compileSdk 35
+
+    defaultConfig {
+        minSdk 24
+    }
 }
 
 dependencies {
@@ -33,5 +42,6 @@ dependencies {
     implementation 'org.openftc:apriltag:1.1.0'
 
     // NEW: componentEngine (replace version if you want another)
-    implementation 'io.github.ccezarst:componentEngine:1.0.2'
+    implementation 'io.github.ccezarst:componentEngine:1.0.5'
+
 }

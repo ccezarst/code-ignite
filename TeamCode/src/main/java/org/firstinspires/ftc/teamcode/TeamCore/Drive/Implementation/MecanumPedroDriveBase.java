@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.TeamCore.DefaultComponents.Drive.Implementation;
+package org.firstinspires.ftc.teamcode.TeamCore.Drive.Implementation;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.TeamCore.Pathing.Point;
 
 import EngineCore.EngineCore;
 import EngineCore.TestingEnviromentCore;
+
 public class MecanumPedroDriveBase extends DriveBase {
     public MecanumPedroDriveBase(Boolean active, EngineCore core) {
         super(active, core);
@@ -81,8 +82,31 @@ public class MecanumPedroDriveBase extends DriveBase {
         BL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
+    protected void measureMaxVelocity(){
+        int start = FR.getCurrentPosition();
+        long startTime = System.currentTimeMillis();
+        FR.setPower(1); FL.setPower(1); BR.setPower(1); BL.setPower(1);
+        try{ Thread.sleep(1000); }catch(InterruptedException e){ }
+        long endTime = System.currentTimeMillis();
+        int end = FR.getCurrentPosition();
+        FR.setPower(0); FL.setPower(0); BR.setPower(0); BL.setPower(0);
+        double dt = (endTime - startTime)/1000.0;
+        this.maxVelocity = Math.abs(end - start)/dt;
+    }
+
+    protected void measureInertia(){
+        int before = FR.getCurrentPosition();
+        FR.setPower(1); FL.setPower(1); BR.setPower(1); BL.setPower(1);
+        try{ Thread.sleep(500); }catch(InterruptedException e){ }
+        FR.setPower(0); FL.setPower(0); BR.setPower(0); BL.setPower(0);
+        try{ Thread.sleep(500); }catch(InterruptedException e){ }
+        int after = FR.getCurrentPosition();
+        this.inertia = Math.abs(after - before);
+    }
+
     @Override
     protected int test(TestingEnviromentCore core) {
+        super.test(core);
         return 0;
     }
 }

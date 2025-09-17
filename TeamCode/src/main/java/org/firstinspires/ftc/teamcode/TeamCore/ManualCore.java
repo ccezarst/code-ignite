@@ -13,7 +13,6 @@ public class ManualCore extends RobotTCore {
     public ManualCore(Telemetry telem, HardwareMap hwMap, OldCustomGamepad... gps){
         super(telem, hwMap);
         for(OldCustomGamepad caca : gps){
-
             this.addComponent(new CustomGamepad("Gamepad Manager: " + caca.getNumber(), true, this, caca.getNumber(), caca.getGp()));
         }
         this.addComponent(new ManualDriving(true, this));

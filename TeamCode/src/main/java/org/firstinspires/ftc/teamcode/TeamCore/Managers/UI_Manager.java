@@ -20,6 +20,7 @@ public class UI_Manager extends CoreComponent {
     public ArrayList<Interface> interfs = new ArrayList<>();
     private String secondaryTextOutput = "";
     private String primaryTextOutput = "";
+    private final Object outputLock = new Object();
     private boolean changed = false;
     private long lastTime = 0;
     private int warningLastTime = 3000;
@@ -31,17 +32,17 @@ public class UI_Manager extends CoreComponent {
     Map<String, Thread> threadIDToThread = new HashMap<>();
 
 
-    private Boolean updateNotifer = false; // basically when a thread calls a print func, it gets paused until the refresh. This is done so code that prints repeatedly is easier to make and doesn't need extra checks
+    private final Object updateNotifier = new Object(); // basically when a thread calls a print func, it gets paused until the refresh. This is done so code that prints repeatedly is easier to make and doesn't need extra checks
     // to do this i use .wait and .notify on the object.
     // for example: thread A calls print. Print adds to queue and pauses by using updateNotifier.wait
     // then, the core calls refresh, which after updating interfaces, calls updateNotifier, letting thread A continue running(and all other waiting threads)
     public void refresh(){
         if(this.active){
             synchronized (this.interfs){
-                synchronized (this.secondaryTextOutput){
+                synchronized (this.outputLock){
                     synchronized (this.warningQueue){
                         for(Interface interf : interfs){
-                            if(this.secondaryTextOutput == ""){
+                            if(this.secondaryTextOutput.equals("")){
                                 if(this.core.debugMode){
                                     this.core.getGlobalVariable("Telemetry", Telemetry.class).addLine(this.primaryTextOutput);
                                 }
@@ -63,11 +64,8 @@ public class UI_Manager extends CoreComponent {
                                     this.lastTime = System.currentTimeMillis();
                                 }
                             }
-                            this.changed = true;
-                            synchronized (this.updateNotifer){
-                                this.updateNotifer.notifyAll();
-                            }
                         }
+                        this.changed = true;
                     }
                 }
             }
@@ -80,19 +78,15 @@ public class UI_Manager extends CoreComponent {
                 ((SW_UserInterface)interfs.get(0)).showMenu(title, options, callback);
             }
         }
-        try {
-            synchronized (this.updateNotifer){
-                this.updateNotifer.wait();
-            }
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+
         // >=0 selected option
         // -1 cancelled
     }
 
+    // TODO: ADD A SHOW MENU FUNC WITH NO CALLBACK, HANDLE IT INTERNALLY
+
     public void print(String toPrint){
-        synchronized (this.primaryTextOutput){
+        synchronized (this.outputLock){
             if(this.active){
                 if(this.changed){
                     // print the same text regardless of refreshes until a new print is called
@@ -106,13 +100,7 @@ public class UI_Manager extends CoreComponent {
                 }
             }
         }
-        try {
-            synchronized (this.updateNotifer){
-                this.updateNotifer.wait();
-            }
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+
     }
     private final ArrayList<String> warningQueue = new ArrayList<>();
     public void showWarning(String warning){
@@ -123,21 +111,17 @@ public class UI_Manager extends CoreComponent {
                 }
             }
         }
-        try {
-            synchronized (this.updateNotifer){
-                this.updateNotifer.wait();
-            }
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Override
     public void step(EngineCore core) {
         try {
-            this.uiThread.stepNotifier.wait();
+            if(this.uiThread != null){
+                // manually step the threads to make sure they are in-sync
+                this.uiThread.stepComponents();
+            }
             this.refresh();
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -149,25 +133,35 @@ public class UI_Manager extends CoreComponent {
     public void update(EngineCore c) {
         RobotTCore core = (RobotTCore) c;
         this.interfs = core.getInterfacesOfType(InterfaceType.USER_INTERFACE);
-        this.refresh();
-        this.uiThread = this.core.createNewThread();
+        this.uiThread = new CoreComponentBackingThread(this.core);
         this.uiThread.setName("UI-thread");
-        this.uiManagerThread = this.core.createNewThread();
-        this.uiManagerThread.setName("UI_Manager-thread");
-        this.core.moveComponentToThread(this, "UI_Manager-thread");
-        this.uiThread.startRunning();
-        this.uiManagerThread.startRunning();
+        for(Interface interf: interfs){
+            this.enableRegularPrintingForComponent(interf);
+        }
+        this.uiThread.updateComponents();// TODO: HAVE A SEPRATE THREAD FOR THE INTERFACES, SO IT'S REGULAR PRINTING THEN THE INTERFACES(stepping)
+        this.refresh();
+        //this.uiManagerThread = this.core.createNewThread();
+        //this.uiManagerThread.setName("UI_Manager-thread");
+        //this.core.moveComponentToThread(this, "UI_Manager-thread");
+        //this.uiManagerThread.startRunning();
     }
 
     public void enableRegularPrintingForComponent(CoreComponent comp){
         CoreComponentBackingThread orgThread = core.getComponentBackingThread(comp.name);
         orgThread.deattachComponent(comp);
-        this.uiThread.attachComponent(comp);
+        synchronized (this.uiThread){
+            this.uiThread.attachComponent(comp);
+        }
     }
 
     @Override
     public int test(TestingEnviromentCore core) {
         // there aren't really any tests to be done rn
         return 0;
+    }
+
+    @Override
+    public void exit(){
+        this.uiThread.stopRunning();
     }
 }
