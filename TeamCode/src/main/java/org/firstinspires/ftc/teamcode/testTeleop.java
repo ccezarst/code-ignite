@@ -26,7 +26,9 @@ public class testTeleop extends OpMode {
         core.addComponent(new CH_ImuLocalizer(true ,core));
         //core.enableDebugging();
         core.init();
+        telemetry.addLine("Components initialsed");
         telemetry.addLine("Waiting for start..");
+        System.out.println("Waiting for start");
         telemetry.update();
         this.core = core;
         this.telemetry = telemetry;
