@@ -69,9 +69,6 @@ public class UI_Manager extends CoreComponent {
                     }
                 }
             }
-            synchronized (this.updateNotifier){
-                this.updateNotifier.notifyAll();
-            }
         }
     }
 
@@ -81,16 +78,12 @@ public class UI_Manager extends CoreComponent {
                 ((SW_UserInterface)interfs.get(0)).showMenu(title, options, callback);
             }
         }
-        try {
-            synchronized (this.updateNotifier){
-                this.updateNotifier.wait();
-            }
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+
         // >=0 selected option
         // -1 cancelled
     }
+
+    // TODO: ADD A SHOW MENU FUNC WITH NO CALLBACK, HANDLE IT INTERNALLY
 
     public void print(String toPrint){
         synchronized (this.outputLock){
@@ -107,13 +100,7 @@ public class UI_Manager extends CoreComponent {
                 }
             }
         }
-        try {
-            synchronized (this.updateNotifier){
-                this.updateNotifier.wait();
-            }
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+
     }
     private final ArrayList<String> warningQueue = new ArrayList<>();
     public void showWarning(String warning){
@@ -124,25 +111,17 @@ public class UI_Manager extends CoreComponent {
                 }
             }
         }
-        try {
-            synchronized (this.updateNotifier){
-                this.updateNotifier.wait();
-            }
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Override
     public void step(EngineCore core) {
         try {
             if(this.uiThread != null){
-                synchronized (this.uiThread.stepNotifier){
-                    this.uiThread.stepNotifier.wait();
-                }
+                // manually step the threads to make sure they are in-sync
+                this.uiThread.stepComponents();
             }
             this.refresh();
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -154,10 +133,13 @@ public class UI_Manager extends CoreComponent {
     public void update(EngineCore c) {
         RobotTCore core = (RobotTCore) c;
         this.interfs = core.getInterfacesOfType(InterfaceType.USER_INTERFACE);
-        this.refresh();
         this.uiThread = new CoreComponentBackingThread(this.core);
         this.uiThread.setName("UI-thread");
-        this.uiThread.startRunning();
+        for(Interface interf: interfs){
+            this.enableRegularPrintingForComponent(interf);
+        }
+        this.uiThread.updateComponents();// TODO: HAVE A SEPRATE THREAD FOR THE INTERFACES, SO IT'S REGULAR PRINTING THEN THE INTERFACES(stepping)
+        this.refresh();
         //this.uiManagerThread = this.core.createNewThread();
         //this.uiManagerThread.setName("UI_Manager-thread");
         //this.core.moveComponentToThread(this, "UI_Manager-thread");
@@ -176,5 +158,10 @@ public class UI_Manager extends CoreComponent {
     public int test(TestingEnviromentCore core) {
         // there aren't really any tests to be done rn
         return 0;
+    }
+
+    @Override
+    public void exit(){
+        this.uiThread.stopRunning();
     }
 }

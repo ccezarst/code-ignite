@@ -33,12 +33,24 @@ public class SW_Telemetry extends SW_UserInterface {
 
     @Override
     public void showMenu(String title, ArrayList<String> options, Consumer<Integer> callback) {
-        synchronized (this.menuTitle){
-            synchronized (this.menuOptions){
-                if(this.menuCallback != null){
-                    synchronized (this.menuCallback){
-                        synchronized (this.telemetry){
-                            if(!this.busy && this.telemetry != null){
+        if(!this.busy){
+            synchronized (this.menuTitle){
+                synchronized (this.menuOptions){
+                    if(this.menuCallback != null){
+                        synchronized (this.menuCallback){
+                            synchronized (this.telemetry){
+                                if(!this.busy && this.telemetry != null){
+                                    this.menuTitle = title;
+                                    this.menuOptions = options;
+                                    this.menuCallback = callback;
+                                    this.busy = true;
+                                    this.selection = 0;
+                                }
+                            }
+                        }
+                    }else{
+                        synchronized (this.telemetry) {
+                            if (!this.busy && this.telemetry != null) {
                                 this.menuTitle = title;
                                 this.menuOptions = options;
                                 this.menuCallback = callback;
@@ -47,18 +59,8 @@ public class SW_Telemetry extends SW_UserInterface {
                             }
                         }
                     }
-                }else{
-                    synchronized (this.telemetry) {
-                        if (!this.busy && this.telemetry != null) {
-                            this.menuTitle = title;
-                            this.menuOptions = options;
-                            this.menuCallback = callback;
-                            this.busy = true;
-                            this.selection = 0;
-                        }
-                    }
-                }
 
+                }
             }
         }
     }
@@ -92,6 +94,7 @@ public class SW_Telemetry extends SW_UserInterface {
         }
     }
 
+
     @Override
     protected void update(EngineCore core) {
         this.telemetry = this.core.getGlobalVariable("Telemetry", Telemetry.class);
@@ -99,6 +102,7 @@ public class SW_Telemetry extends SW_UserInterface {
         this.core.subscribeToAction("1" + ButtonTypes.DPAD_UP.name() + "_PRESSED", (ActionDataContainer data) ->{this.dpadUp_pressed();});
         this.core.subscribeToAction("1" + ButtonTypes.A.name() + "_PRESSED", (ActionDataContainer data) ->{this.a_pressed();});
         this.core.subscribeToAction("1" + ButtonTypes.B.name() + "_PRESSED", (ActionDataContainer data) ->{this.b_pressed();});
+        System.out.println(this.name + "-> Subscribed to input actions");
     }
     public void dpadDown_pressed(){
         if(this.selection < this.menuOptions.size() - 1){

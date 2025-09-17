@@ -10,7 +10,7 @@ import java.util.Map;
 
 public abstract class InputSource extends CoreComponent {
     private int inputSourceID;
-    private boolean shouldBeActive = false;
+    private boolean shouldBeActive;
     public InputSource(String name, Boolean active, EngineCore core, int inputSourceID) {
         super(name, active, core, ComponentType.INPUT_SOURCE);
         this.inputSourceID = inputSourceID;
@@ -49,6 +49,7 @@ public abstract class InputSource extends CoreComponent {
     private void triggerPressed(ButtonTypes btn){
         while(!this.active);
         this.core.getActionFromName(this.inputSourceID + btn.name() + "_PRESSED").trigger();
+        System.out.println(this.name + "-> pressed " + btn.name());
     }
 
     private void triggerDown(ButtonTypes btn){

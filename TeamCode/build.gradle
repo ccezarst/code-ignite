@@ -42,6 +42,6 @@ dependencies {
     implementation 'org.openftc:apriltag:1.1.0'
 
     // NEW: componentEngine (replace version if you want another)
-    implementation 'io.github.ccezarst:componentEngine:1.0.3'
+    implementation 'io.github.ccezarst:componentEngine:1.0.5'
 
 }
