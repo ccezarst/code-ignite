@@ -1,29 +1,28 @@
 package org.firstinspires.ftc.teamcode.TeamCore.Drive;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
+
 import org.firstinspires.ftc.teamcode.TeamCore.GameMap.GameMap;
 import org.firstinspires.ftc.teamcode.TeamCore.GameMap.GameObjects.Robot;
 import org.firstinspires.ftc.teamcode.TeamCore.Pathing.Point;
 import org.firstinspires.ftc.teamcode.TeamCore.Pathing.BasePath;
 import org.firstinspires.ftc.teamcode.TeamCore.Drive.PathFollower.PathFollower;
-import org.firstinspires.ftc.teamcode.TeamCore.Drive.PathFollower.PredictivePathFollower;
-import org.firstinspires.ftc.teamcode.TeamCore.Drive.PathFollower.ReactivePathFollower;
 
 import EngineCore.DefaultComponents.CoreComponent;
 import EngineCore.EngineCore;
 import EngineCore.DefaultComponents.ComponentType;
-import EngineCore.TestingEnviromentCore;
 
 public abstract class DriveBase extends CoreComponent {
 
-    protected PathFollower predictiveFollower;
-    protected PathFollower reactiveFollower;
-    protected double maxVelocity = 0; // cm/s
-    protected double inertia = 0;     // arbitrary units
-
-    public DriveBase(Boolean active, EngineCore core) {
+    protected DcMotor[] motors;
+    protected MotorConfiguration conf;
+    public DriveBase(Boolean active, EngineCore core, MotorConfiguration conf) {
         super("DriveBase", active, core, ComponentType.DRIVE_BASE);
-        this.predictiveFollower = new PredictivePathFollower();
-        this.reactiveFollower = new ReactivePathFollower();
+        this.conf = conf;
+    }
+
+    protected void setMotors(DcMotor... motors){
+        this.motors = motors;
     }
 
     public abstract void rotateRobotCentric(double angle);
@@ -63,46 +62,30 @@ public abstract class DriveBase extends CoreComponent {
         this.moveFieldCentricPoint(Point.fromPolar(radius, angle));
     };
 
-    // --- Path following support ---
-    public void setPathFollowers(PathFollower predictive, PathFollower reactive){
-        this.predictiveFollower = predictive;
-        this.reactiveFollower = reactive;
-    }
-
-    public double getMaxVelocity(){
-        return maxVelocity;
-    }
-
-    public double getInertia(){
-        return inertia;
-    }
-
-    /**
-     * Follow a path using predictive and reactive followers.
-     */
-    public void followPath(BasePath path){
-        if(path == null) return;
-        if(predictiveFollower != null){
-            predictiveFollower.follow(this, path);
-        }
-        if(reactiveFollower != null){
-            reactiveFollower.follow(this, path);
-        }
-    }
-
     @Override
-    protected int test(TestingEnviromentCore core) {
-        measureMaxVelocity();
-        measureInertia();
-        return 0;
+    public void step(EngineCore core){
+        if(currentPath != null){
+            synchronized (this.currentPath){
+                if(this.currentPath.step()){ // returns true when done
+                    this.currentPath = null;
+                }
+            }
+        }
+        this.customStep(core);
     }
 
+    public abstract void customStep(EngineCore core);
+
     /**
-     * Measure maximum velocity using encoders.
+     * Follow a path
      */
-    protected abstract void measureMaxVelocity();
-    /**
-     * Measure inertia characteristic for predictive follower.
-     */
-    protected abstract void measureInertia();
+    protected BasePath currentPath = null;
+    public void followPath(BasePath path){
+        if(currentPath == null){
+            path.configurate(this.conf, motors);
+            this.currentPath = path;
+        }else{
+            System.out.println("Couldn't follow path because DriveBase is busy, " + path.getStart() + "->" + path.getEnd());
+        }
+    }
 }

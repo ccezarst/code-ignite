@@ -34,7 +34,7 @@ public class DrivingManager extends CoreComponent {
     public void moveRobotCentricPolarNoPathing(double radius, double angle){
         if(this.db!=null) {
             synchronized (this.db) {
-                this.db.moveFieldCentricPolar(radius, angle);
+                this.db.moveRobotCentricPolar(radius, angle);
             }
         }
     }; // move the robot in respect to it's current position radius cm in angle radians direction counteclockwise to the X axis

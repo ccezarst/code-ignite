@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.TeamCore.Input.Template.OldCustomGamepad;
-import org.firstinspires.ftc.teamcode.TeamCore.Drive.ManualDriving;
+import org.firstinspires.ftc.teamcode.TeamCore.Drive.Implementation.ManualDriving;
 import org.firstinspires.ftc.teamcode.TeamCore.Input.CustomGamepad;
 import org.firstinspires.ftc.teamcode.TeamCore.StateMachine.StateMachine;
 
