@@ -19,7 +19,7 @@ import EngineCore.EngineCore;
 public abstract class BasePath {
     protected final Point start;
     protected final Point end;
-    protected final PathFollower pf;
+    public PathFollower pf;
 
     protected final EngineCore core;
 

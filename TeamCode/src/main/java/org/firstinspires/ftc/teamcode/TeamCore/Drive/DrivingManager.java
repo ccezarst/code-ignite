@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.TeamCore.Drive;
 
+import org.firstinspires.ftc.teamcode.TeamCore.Drive.PathFollower.PathFollower;
 import org.firstinspires.ftc.teamcode.TeamCore.Pathing.Point;
 import org.firstinspires.ftc.teamcode.TeamCore.Pathing.BasePath;
 
@@ -20,6 +21,7 @@ public class DrivingManager extends CoreComponent {
     private final PathFetcher preferredFetcher;
     private final List<PathFetcher> fetchers = new ArrayList<>();
     private ExecutorService pathExecutor;
+
 
     public DrivingManager(Boolean active, EngineCore core, PathFetcher preferredFetcher) {
         super("DrivingManager", active, core, ComponentType.DRIVING_MANAGER);
@@ -70,17 +72,18 @@ public class DrivingManager extends CoreComponent {
 
     // --- Path based movement ---
 
-    public void followPath(BasePath path){
+    public void followPath(BasePath path, PathFollower pf){
         if(this.db!=null && path!=null && pathExecutor!=null){
             pathExecutor.submit(() -> {
                 synchronized (this.db){
+                    path.pf = pf;
                     this.db.followPath(path);
                 }
             });
         }
     }
 
-    public void followPath(Point start, Point end){
+    public void followPath(Point start, Point end, PathFollower pf){
         if(fetchers.isEmpty()) return;
 
         ExecutorService exec = Executors.newFixedThreadPool(fetchers.size());
@@ -101,7 +104,7 @@ public class DrivingManager extends CoreComponent {
                     if(path != null) break;
                 }
             }
-            followPath(path);
+            followPath(path, pf);
         } catch (InterruptedException | ExecutionException e) {
             // ignore and do not follow any path
         } finally {
