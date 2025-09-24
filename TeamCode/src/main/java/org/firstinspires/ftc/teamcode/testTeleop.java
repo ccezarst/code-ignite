@@ -20,7 +20,6 @@ public class testTeleop extends OpMode {
         ManualCore core = new ManualCore(telemetry, hardwareMap, gp1, gp2);
         core.useInstrumentation = false;
         //core.addComponent(new PeripheralValuePrinter(true, core));
-        core.addComponent(new MecanumPedroDriveBase(true, core));
         core.addComponent(new JSONConfigManager(true, core));
         core.addComponent(new CH_ImuLocalizer(true ,core));
         //core.enableDebugging();
