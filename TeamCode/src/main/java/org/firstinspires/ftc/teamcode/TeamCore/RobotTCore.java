@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.TeamCore.Interfaces.Template.Interface;
 import org.firstinspires.ftc.teamcode.TeamCore.Interfaces.Template.InterfaceType;
 import org.firstinspires.ftc.teamcode.TeamCore.Managers.UI_Manager;
 import org.firstinspires.ftc.teamcode.TeamCore.Drive.Implementation.LocalPathFetcher;
+import org.firstinspires.ftc.teamcode.TeamCore.Drive.Implementation.FourWheelMecanumDriveBase;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
@@ -28,6 +29,7 @@ public class RobotTCore extends EngineCore {
         this.removeComponent("ConsoleInterface");
         this.addComponent(new UI_Manager(true, this));
         this.addComponent(new GameMap(true, this));
+        this.addComponent(new FourWheelMecanumDriveBase(true, this));
         LocalPathFetcher localFetcher = new LocalPathFetcher(true, this);
         this.addComponent(localFetcher);
         this.addComponent(new DrivingManager(true, this, localFetcher));
